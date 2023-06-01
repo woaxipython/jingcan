@@ -1,0 +1,308 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends"backBase.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="col d-flex flex-column">
+        <div class="tab-content">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
+                    role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-xhs" class="nav-link active" data-bs-toggle="tab"
+                           aria-selected="true" role="tab">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-square-letter-x" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                                <path d="M10 8l4 8"></path>
+                                <path d="M10 16l4 -8"></path>
+                            </svg>
+                            小红书维护</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-dy" class="nav-link" data-bs-toggle="tab"
+                           aria-selected="false" role="tab" tabindex="-1">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-square-rounded-letter-d"
+                                 width="24" height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M10 8v8h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-2z"></path>
+                                <path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z"></path>
+                            </svg>
+                            抖音维护</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-ks" class="nav-link" data-bs-toggle="tab"
+                           aria-selected="false" tabindex="-1" role="tab">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-square-letter-k" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                                <path d="M10 8v8"></path>
+                                <path d="M14 8l-2.5 4l2.5 4"></path>
+                                <path d="M10 12h1.5"></path>
+                            </svg>
+                            快手维护</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-pro" class="nav-link" data-bs-toggle="tab"
+                           aria-selected="false" tabindex="-1" role="tab">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-stack-pop" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M7 9.5l-3 1.5l8 4l8 -4l-3 -1.5"></path>
+                                <path d="M4 15l8 4l8 -4"></path>
+                                <path d="M12 11v-7"></path>
+                                <path d="M9 7l3 -3l3 3"></path>
+                            </svg>
+                            推广管理</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="tabs-xhs" role="tabpanel">
+                        <div class="card-body" style="min-height: 25rem">
+                            <small class="text-muted mb-1">小红书令牌管理</small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="xhsLoginForm">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="text" placeholder="微信号" class="form-control">
+                                                <small class="text-danger d-none"
+                                                       data-input="xhsWechat">不能为空</small>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="text" placeholder="小红书绑定手机号" class="form-control">
+                                                <small class="text-danger d-none"
+                                                       data-input="xhsPhone">不能为空</small>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <input type="text" placeholder="Token"
+                                                       name="xhsToken"
+                                                       class="me-2 form-control required mt-2">
+                                                <small class="text-danger d-none"
+                                                       data-input="xhsToken">不能为空</small>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="row mt-2">
+                                        <div class="d-flex col-12">
+                                            <div class="col-6  pe-2">
+                                                <button href="#" class="btn btn-primary w-100" id="xhsLoginBtn">
+                                                    更新令牌
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <button href="#" class="btn btn-primary w-100" id="testSpyderXhs">
+                                                    批量测试
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div style="height: 20rem"
+                                 class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                <table class="table no-footer table-hover" id="atom_table">
+                                    <thead class="sticky-top">
+                                    <tr>
+                                        <th>微信</th>
+                                        <th>手机号</th>
+                                        <th>token值</th>
+                                        <th>状态</th>
+                                        <th>测试</th>
+                                        <th>编辑</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for xhs_token in xhs_tokens %}
+                                        <tr data-id="{{ xhs_token.id }}">
+                                            <td>{{ xhs_token.wechat }}</td>
+                                            <td>{{ xhs_token.phone }}</td>
+                                            <td>{{ xhs_token.name }}</td>
+                                            <td>{{ xhs_token.status }}</td>
+                                            <td class="testXhs"><a class="cursor-pointer text-blue">测试</a></td>
+                                            <td class="editXhs"><a class="cursor-pointer text-danger"
+                                                                   href="#"
+                                                                   data-bs-target="#edit-xhsToken-report"
+                                                                   data-bs-toggle="modal"
+                                                                   aria-label="edit-xhsToken-report">编辑</a></td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-dy" role="tabpanel">
+                        <div class="card-body border-top-0" style="min-height: 25rem">
+                            <div class="pb-2 mb-2 border-bottom">
+                                <small class="text-muted mb-1">抖音令牌管理</small>
+                                <div class="d-flex justify-content-start align-items-center mb-3">
+                                    <div class="col-6 px-6">
+                                        <form id="dyTestForm">
+
+                                        <textarea class="form-control" data-id="dyToken"
+                                                  style="height: 15rem;"></textarea>
+
+                                        </form>
+                                    </div>
+                                    <div class="col-3 px-2 ms-auto">
+                                        <button href="#" class="btn btn-primary" id="dyLoginBtn">
+                                            更新令牌
+                                        </button>
+                                        <button href="#" class="btn btn-primary" id="testSpyderDy">
+                                            连接测试
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-ks" role="tabpanel">
+                        <div class="card-body border-top-0" style="min-height: 25rem">
+                            <div class="pb-2 mb-2 border-bottom">
+                                <small class="text-muted mb-1">快手测试管理</small>
+                                <div class="d-flex justify-content-start align-items-center mb-3">
+                                    <form id="ksLoginForm">
+                                        <input type="hidden" name="ksAccount" class="required"
+                                               value="15369140121">
+                                        <input type="hidden" name="ksPhoneCode" class="required">
+                                    </form>
+                                    <div class="col-3">
+                                        <input type="text" placeholder="输入账号"
+                                               name="ksAccount" value="15369140121"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="ksAccount">不能为空</small>
+                                    </div>
+                                    <div class="col-auto ps-2">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div>
+                                                <input type="text" placeholder="输入手机验证码"
+                                                       name="ksPhoneCode"
+                                                       class="me-2 form-control required">
+                                                <small class="text-danger d-none"
+                                                       data-input="ksPhoneCode">不能为空</small>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn" id="getPhoneCodeKs">获取验证码</button>
+                                        <small class="text-muted text-nowrap"
+                                               id="ksPhoneCodeTimer"></small>
+                                    </div>
+
+                                    <div class="col-3 px-2 ms-auto">
+                                        <button href="#" class="btn btn-primary" id="ksLoginBtn">
+                                            更新令牌
+                                        </button>
+                                        <button href="#" class="btn btn-primary" id="testKsSpyder">
+                                            连接测试
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-pro" role="tabpanel">
+                        <div class="card-body border-top-0" style="min-height: 25rem">
+                            <div class="col-auto">
+                                <a class="btn btn-primary" id="getPVContentData">
+                                    同步推广数据
+                                </a>
+                            </div>
+                            <hr>
+                            <div class="col-12 pb-3">
+                                <small>批量上传推广记录</small>
+                                <form class="dropzone form-control " action="../"
+                                      autocomplete="off" novalidate>
+                                    <div class="fallback">
+                                        <input name="promotionFile" type="file"
+                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    </div>
+                                </form>
+                                <div class="d-flex mt-2 justify-content-start align-items-center">
+                                    <div class="col-auto px-2 ms-auto">
+                                        <a href="{{ url_for("promotion.downFile") }}">下载模板</a>
+                                    </div>
+                                    <div class="px-2 col-2">
+                                        <button type="button" class="btn  btn-primary w-100"
+                                                id="uploadPromotionFile">
+                                            提交
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal modal-blur" id="edit-xhsToken-report"
+         role="dialog">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="{{ url_for('back.editXhsToken') }}" method="post">
+                    <div class="modal-body">
+                        <div class="modal-title">填入新Token值</div>
+                        <input type="hidden" name="csrf_token"
+                               value="{{ csrf_token() }}">
+                        <input type="text" class="form-control" name="xhsToken">
+                        <input type="hidden" class="form-control" name="token_id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel
+                        </button>
+                        <button class="btn btn-danger" data-bs-dismiss="modal">ok
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var nav_bar = $('.list-group-transparent li>a');
+        nav_bar.removeClass('active');
+        nav_bar.eq(3).addClass('active');
+    </script>
+{% endblock %}

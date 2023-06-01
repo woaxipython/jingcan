@@ -1,0 +1,1444 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends"backBase.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="col d-flex flex-column">
+        <div class="tab-content">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
+                            role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a href="#tabs-atoms" class="nav-link active" data-bs-toggle="tab"
+                                   aria-selected="true" role="tab">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2"
+                                         width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M5 12l-2 0l9 -9l9 9l-2 0"></path>
+                                        <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
+                                        <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path>
+                                    </svg>
+                                    材料管理</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#tabs-sales" class="nav-link" data-bs-toggle="tab"
+                                   aria-selected="false" role="tab" tabindex="-1">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="icon icon-tabler icon-tabler-archive" width="24"
+                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                                        <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10"></path>
+                                        <path d="M10 12l4 0"></path>
+                                    </svg>
+                                    商品管理</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#tabs-groups" class="nav-link" data-bs-toggle="tab"
+                                   aria-selected="false" tabindex="-1" role="tab">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="icon icon-tabler icon-tabler-api-app" width="24"
+                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M12 15h-6.5a2.5 2.5 0 1 1 0 -5h.5"></path>
+                                        <path d="M15 12v6.5a2.5 2.5 0 1 1 -5 0v-.5"></path>
+                                        <path d="M12 9h6.5a2.5 2.5 0 1 1 0 5h-.5"></path>
+                                        <path d="M9 12v-6.5a2.5 2.5 0 0 1 5 0v.5"></path>
+                                    </svg>
+                                    组合商品</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#tabs-suppliers" class="nav-link" data-bs-toggle="tab"
+                                   aria-selected="false" tabindex="-1" role="tab">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2"
+                                         width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M3 12h4l3 8l4 -16l3 8h4"></path>
+                                    </svg>
+                                    供应商管理</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#tabs-batch" class="nav-link" data-bs-toggle="tab"
+                                   aria-selected="false" tabindex="-1" role="tab">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="icon icon-tabler icon-tabler-drone me-2" width="24"
+                                         height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M10 10h4v4h-4z"></path>
+                                        <path d="M10 10l-3.5 -3.5"></path>
+                                        <path d="M9.96 6a3.5 3.5 0 1 0 -3.96 3.96"></path>
+                                        <path d="M14 10l3.5 -3.5"></path>
+                                        <path d="M18 9.96a3.5 3.5 0 1 0 -3.96 -3.96"></path>
+                                        <path d="M14 14l3.5 3.5"></path>
+                                        <path d="M14.04 18a3.5 3.5 0 1 0 3.96 -3.96"></path>
+                                        <path d="M10 14l-3.5 3.5"></path>
+                                        <path d="M6 14.04a3.5 3.5 0 1 0 3.96 3.96"></path>
+                                    </svg>
+                                    商品编码对照表</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active show" id="tabs-atoms" role="tabpanel">
+                                <div class="card-body">
+                                    <div class="border-bottom mb-3">
+                                        <div class="mb-0 d-flex justify-content-start align-items-center">
+                                            <hr class="mt-0">
+                                            <div class="col-auto mx-2">
+                                                <a href="#" class="btn btn-primary"
+                                                   data-bs-target="#new-atom-report"
+                                                   data-bs-toggle="modal"
+                                                   aria-label="new-atom-report">
+                                                    新增原材料
+                                                </a>
+                                            </div>
+
+                                            <div class="col-auto me-2">
+                                                <a href="#" class="btn btn-primary"
+                                                   data-bs-target="#new-purchase-report"
+                                                   data-bs-toggle="modal"
+                                                   aria-label="new-purchase-report">
+                                                    新增采购入库
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card border-0">
+                                        <form id="searchAtomForm"
+                                              action="{{ url_for("product.manage") }}"
+                                              method="post">
+                                            <input type="hidden" name="csrf_token"
+                                                   value="{{ csrf_token() }}">
+                                            <input type="hidden" name="searchAtomCategory"
+                                                   value="all">
+
+                                            <div class="d-flex">
+                                                <div class="">
+                                                    <small class="text-muted">简称</small>
+                                                    <div class="mx-2 d-inline-block">
+                                                        <input type="text" name="searchAtomName"
+                                                               class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="me-2 d-inline-block">
+                                                        <select data-select="searchAtomCategory"
+                                                                class="form-control px-2 select-input">
+                                                            <option value="" disabled selected>
+                                                                属类选择
+                                                            </option>
+                                                            <option value="all">所有分类</option>
+                                                            {% for atom_category in atom_categories %}
+                                                                <option value="{{ atom_category.id }}">{{ atom_category.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="ms-auto text-muted">
+                                                    <button class="btn btn-blue px-3">筛选</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div style="height: 25rem"
+                                         class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                        <table class="table no-footer table-hover" id="atom_table">
+                                            <thead class="sticky-top">
+                                            <tr>
+                                                <th>编码</th>
+                                                <th>简称</th>
+                                                <th>属类</th>
+                                                <th>供应商</th>
+                                                <th>成本</th>
+                                                <th>重量</th>
+                                                <th>库存</th>
+                                                <th>数据</th>
+                                                <th>创建时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for atom in atoms %}
+                                                <tr data-id="{{ atom.id }}">
+                                                    <td>{{ atom.code }}</td>
+                                                    <td>{{ atom.name }}</td>
+                                                    <td>
+                                                        <div>{{ atom.category.name }}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="text-truncate"
+                                                             style="max-width: 8rem">
+                                                            {% for supplier in atom.suppliers %}
+                                                                <div>
+                                                                    <span class="badge bg-danger"></span>
+                                                                    {{ supplier.campany_simple_name }}
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </td>
+                                                    <td>{% if atom.cost %}
+                                                        {{ atom.cost }}元/{{ atom.unit.name }}
+                                                    {% else %}
+                                                        {{ "待更新" }}
+                                                    {% endif %} </td>
+                                                    <td>{{ atom.weight }}/克</td>
+                                                    <td>{% if atom.quantity %}
+                                                        {{ atom.quantity }}/{{ atom.unit.name }}
+                                                    {% else %}
+                                                        0/{{ atom.unit.name }}
+                                                    {% endif %}
+                                                    </td>
+                                                    <td><span
+                                                            class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            aria-label="数据展示功能待开发"
+                                                            data-bs-original-title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span></td>
+                                                    <td>{{ atom.createtime.strftime('%Y-%m-%d') }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabs-sales" role="tabpanel">
+                                <div class="card-body border-top-0">
+                                    <div class="border-bottom mb-3">
+                                        <div class="mb-0 d-flex justify-content-start align-items-center">
+                                            <hr class="mt-0">
+                                            <div class="col-auto mx-2">
+                                                <a href="#" class="btn btn-primary"
+                                                   data-bs-target="#new-sale-product-report"
+                                                   data-bs-toggle="modal"
+                                                   aria-label="new-sale-product-report">
+                                                    新增商品
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card border-0">
+                                        <form id="searchSaleForm"
+                                              action="{{ url_for("product.manage") }}"
+                                              method="post">
+                                            <input type="hidden" name="csrf_token"
+                                                   value="{{ csrf_token() }}">
+                                            <div class="d-flex">
+                                                <div class="">
+                                                    <small class="text-muted">商品简称</small>
+                                                    <div class="mx-2 d-inline-block">
+                                                        <input type="text" name="searchSaleName"
+                                                               class="form-control">
+                                                        <input type="hidden" name="searchSaleC"
+                                                               value="all">
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <select class="select-input form-select"
+                                                            data-select="searchSaleC">
+                                                        <option value="" disabled selected>
+                                                            筛选商品
+                                                        </option>
+                                                        <option value="all">所有商品</option>
+                                                        <option value="0">name缺失</option>
+                                                        <option value="1">name存在</option>
+                                                    </select>
+                                                </div>
+                                                <div class="ms-auto text-muted">
+                                                    <button class="btn btn-blue px-3">筛选</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div style="height: 25rem"
+                                             class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                            <table class="table no-footer table-hover" id="sale_table">
+                                                <thead class="sticky-top">
+                                                <tr>
+                                                    <th>商品信息</th>
+                                                    <th>成本</th>
+                                                    <th>重量</th>
+                                                    <th>库存</th>
+                                                    <th>数据</th>
+                                                    <th>创建时间</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for sale in sales %}
+                                                    <tr>
+                                                        <td>
+                                                            <div class="cursor-pointer"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="商品编码：{{ sale.code }}"
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="
+                                                                     {% if sale.name %}
+                                                                     商品简称：{{ sale.name }}<br>
+                                                                     {% else %}
+                                                                     -
+                                                                     {% endif %}
+                                                                     销售命名：{{ sale.sale_name }}">
+                                                                <div><small class="text-muted">
+                                                                    {{ sale.code }}</small>
+                                                                </div>
+                                                                <div class="text-muted text-truncate"
+                                                                     style="max-width: 15rem">
+                                                                    <a href="">
+                                                                        <samll>
+                                                                            {% if sale.name %}
+                                                                                商品简称：
+                                                                                {{ sale.name }}<br>
+                                                                            {% else %}
+                                                                                -
+                                                                            {% endif %}</samll>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="text-muted text-truncate"
+                                                                     style="max-width: 15rem">
+                                                                    <a>
+                                                                        <samll>
+                                                                            sku名称：{{ sale.sale_name }}</samll>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="cursor-pointer"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="成本明细"
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="
+                                                                    {% for atom in sale.atoms %}
+                                                                        {{ atom.name }}:{{ atom.cost }}元/
+                                                                        {{ atom.unit.name }}<br>
+                                                                    {% endfor %}">
+                                                                {{ sale.cost }} 元
+                                                                <div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="cursor-pointer"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="重量明细"
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="
+                                                                    {% for atom in sale.atoms %}
+                                                                        {{ atom.name }}:{{ atom.weight }}克<br>
+                                                                    {% endfor %}">
+                                                                {{ sale.weight }} 克
+                                                                <div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="cursor-pointer"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="库存明细"
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="
+                                                                    {% for atom in sale.atoms %}
+                                                                        {{ atom.name }}:
+                                                                     {{ atom.quantity }}{{ atom.unit }}<br>
+                                                                    {% endfor %}">
+                                                                {% if sale.min_quantity >200 %}
+                                                                    <small class="text-black">{{ sale.min_quantity }}</small>{% else %}
+                                                                    <small class="text-warning">{{ sale.min_quantity }}</small>
+                                                                {% endif %}
+
+                                                                <div>
+                                                        </td>
+                                                        <td><span
+                                                                class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                aria-label="数据展示功能待开发"
+                                                                data-bs-original-title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span></td>
+                                                        <td>{{ sale.createtime}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabs-groups" role="tabpanel">
+                                <div class="card-body border-top-0">
+                                    <div class="border-bottom mb-3">
+                                        <div class="mb-0 d-flex justify-content-start align-items-center">
+                                            <hr class="mt-0">
+                                            <div class="col-auto mx-2">
+                                                <a href="#" class="btn btn-primary"
+                                                   data-bs-target="#new-group-product-report"
+                                                   data-bs-toggle="modal"
+                                                   aria-label="new-group-product-report">
+                                                    新增组合商品
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card border-0">
+                                        <form id="searchGroupForm"
+                                              action="{{ url_for("product.manage") }}"
+                                              method="post">
+                                            <input type="hidden" name="csrf_token"
+                                                   value="{{ csrf_token() }}">
+                                            <div class="d-flex">
+                                                <div>
+                                                    <div class="me-2 d-inline-block">
+                                                        <input type="text" class=" form-control"
+                                                               name="searchGroupName"
+                                                               placeholder="名称查询">
+                                                    </div>
+                                                </div>
+                                                <div class="ms-auto text-muted">
+                                                    <button class="btn btn-blue px-3">筛选</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div style="height: 25rem"
+                                             class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                            <table class="table no-footer table-hover" id="group_table">
+                                                <thead class="sticky-top">
+                                                <tr>
+                                                    <th>编码</th>
+                                                    <th>名称</th>
+                                                    <th>组成信息</th>
+                                                    <th>数据</th>
+                                                    <th>创建时间</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for group in groups %}
+                                                    <tr data-id="{{ group.id }}">
+                                                        <td>{{ group.code }}</td>
+                                                        <td>{{ group.name }}</td>
+                                                        <td>
+                                                            <div class="cursor-pointer text-truncate"
+                                                                 style="max-width: 15rem"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="组成信息"
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="
+                                                                    {% for sale in group.sales %}
+                                                                        {{ sale.name }}:{{ sale.sale_name }}<br>
+                                                                    {% endfor %}">
+                                                                {% for sale in group.sales %}
+                                                                    {{ sale.name }}<br>
+                                                                {% endfor %}
+                                                                <div>
+                                                        </td>
+                                                        <td><span
+                                                                class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                aria-label="数据展示功能待开发"
+                                                                data-bs-original-title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span></td>
+                                                        <td>{{ group.createtime.strftime("%Y-%m-%d") }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabs-suppliers" role="tabpanel">
+                                <div class="card-body border-top-0">
+                                    <div class="border-bottom mb-3">
+                                        <div class="mb-0 d-flex justify-content-start align-items-center">
+                                            <hr class="mt-0">
+                                            <div class="col-auto ms-2">
+                                                <a href="#" class="btn btn-primary"
+                                                   data-bs-target="#new-supplier-report"
+                                                   data-bs-toggle="modal"
+                                                   aria-label="new-supplier-report">
+                                                    新增供应商
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card border-0">
+                                        <div style="height: 25rem"
+                                             class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                            <table class="table no-footer table-hover" id="supplier_table">
+                                                <thead class="sticky-top">
+                                                <tr>
+                                                    <th>公司信息</th>
+                                                    <th>负责人信息</th>
+                                                    <th>地址</th>
+                                                    <th>本公司联络人</th>
+                                                    <th>创建时间</th>
+                                                    <th>数据</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for supplier in suppliers %}
+                                                    <tr>
+                                                        <td>
+                                                            <div class="text-truncate cursor-pointer"
+                                                                 style="width: 6rem"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="{{ supplier.campany_simple_name }}"
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="{{ supplier.campany_name }}">
+                                                                <div>
+                                                                    <span>{{ supplier.campany_simple_name }}</span>
+                                                                </div>
+                                                                <div class="text-muted">
+                                                                    <small><span>{{ supplier.campany_name }}</span></small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-truncate cursor-pointer"
+                                                                 style="width: 8rem"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="{{ supplier.name }}-
+                                                                        {% if supplier.gender==1 %}
+                                                                        {{ "先生" }}
+                                                                        {% else %}
+                                                                        {{ "女士" }}
+                                                                        {% endif %}
+                                                                        "
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="微信：{{ supplier.wechat }}<br>
+                                                                                      电话：{{ supplier.phone }}<br>
+                                                                                      年龄：{{ supplier.age }}<br>">
+                                                                <div>
+                                                                        <span>{{ supplier.name }}
+                                                                            {% if supplier.gender==1 %}
+                                                                                {{ "先生" }}
+                                                                            {% else %}
+                                                                                {{ "女士" }}
+                                                                            {% endif %}</span>
+                                                                </div>
+                                                                <div class="text-muted">
+                                                                    <small>
+                                                                        <div>
+                                                                            <span>微信:</span><span>{{ supplier.wechat }}</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span>电话:</span><span>{{ supplier.phone }}</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span>年龄:</span><span>{{ supplier.age }}</span>
+                                                                        </div>
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-truncate cursor-pointer"
+                                                                 style="width: 8rem"
+                                                                 data-bs-container="body"
+                                                                 data-bs-toggle="popover"
+                                                                 data-bs-placement="top"
+                                                                 title="{{ supplier.city }}-{{ supplier.province }}"
+                                                                 data-bs-html="true"
+                                                                 data-bs-content="{{ supplier.address }}">
+                                                                <div>
+                                                                    <span>{{ supplier.city }}-{{ supplier.province }}</span>
+                                                                </div>
+                                                                <div class="text-muted">
+                                                                    <small>
+                                                                        {{ supplier.address }}
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>{{ supplier.user.name }}</td>
+                                                        <td>
+                                                            <div class="text-muted text-nowrap">
+                                                                {{ supplier.createtime.strftime('%Y-%m-%d') }}
+                                                            </div>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabs-batch" role="tabpanel">
+                                <div class="card-body border-top-0">
+                                    <div class="col-auto me-2">
+                                        <a class="btn btn-primary"
+                                           href="{{ url_for("store.refreshSale") }}">
+                                            更新商品对照表
+                                        </a>
+                                    </div>
+                                    <hr>
+                                    <div class="col-12 pb-3">
+                                        <small>上传编码对照表</small>
+                                        <form class="dropzone form-control " action="../"
+                                              autocomplete="off" novalidate="">
+                                            <div class="fallback">
+                                                <input name="codeFile" type="file"
+                                                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                            </div>
+                                        </form>
+                                        <div class="d-flex mt-2 justify-content-start align-items-center">
+                                            <div class="col-auto px-2 ms-auto">
+                                                <a href="/product/downFile">下载模板</a>
+                                            </div>
+                                            <div class="px-2 col-2">
+                                                <button type="button" class="btn  btn-primary w-100"
+                                                        id="uploadCodeConstractFile">
+                                                    提交
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div style="height: 25rem"
+                                         class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                        <table class="table no-footer table-hover promotion-table">
+                                            <thead class="sticky-top">
+                                            <tr>
+                                                <th>销售名称</th>
+                                                <th>销售店铺</th>
+                                                <th>商品编码</th>
+                                                <th>编辑</th>
+                                                <th>创建时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for codes in constract_codes %}
+                                                <tr data-id="{{ codes.id }}">
+                                                    <td>{{ codes.name }}</td>
+                                                    <td>
+                                                        <div>{{ codes.store.name }}</div>
+                                                    </td>
+                                                    <td>{{ codes.code }}</td>
+                                                    <td>
+                                                        <a href="">编辑</a>
+                                                    </td>
+                                                    <td>{{ codes.createTime.strftime('%Y-%m-%d') }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal modal-blur fade" id="new-sale-product-report"
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content atom-sale">
+                <div class="modal-header m-3">
+                    <h5 class="modal-title d-block"><strong>创建商品</strong></h5>
+                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
+                        <i class="text-dark cursor-pointer">—</i>
+                    </div>
+                </div>
+                <div class="modal-body row pt-0">
+                    <div class="col-6 pe-2 border-end">
+                        <form id="newSaleSearchAtomForm">
+                            <input type="hidden" name="searchAtomName">
+                            <input type="hidden" name="searchAtomCode">
+                        </form>
+                        <div class="row mb-1">
+                            <div class="col-12 mb-1">
+                                <small class="text-muted">步骤1：选择子商品</small>
+                            </div>
+                            <div class=" col-4 pe-1">
+                                <input type="text" placeholder="输入简称" class="form-control" name="searchAtomName">
+                            </div>
+                            <div class=" col-4 pe-1">
+                                <input type="text" placeholder="输入编码" class="form-control" name="searchAtomCode">
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-primary w-100" id="newSaleSearchAtom">查询</button>
+                            </div>
+                        </div>
+                        <div style="height: 18rem;"
+                             class="card-body-scrollable card-body-scrollable-shadow mt-0">
+                            <table class="table no-footer table-hover promotion-table">
+                                <thead class="sticky-top">
+                                <tr>
+                                    <th></th>
+                                    <th>基本信息</th>
+                                    <th>库存</th>
+                                    <th>成本/重量</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for atom in atoms %}
+                                    <tr>
+                                        <td><input class="form-check-input m-0 align-middle selectAtomCheck"
+                                                   type="checkbox"
+                                                   aria-label="Select invoice"></td>
+                                        <td><small class="text-muted">
+                                            <div class="text-truncate" style="width: 6rem">
+                                                <div data-id="{{ atom.code }}" class="orderPr">
+                                                    <span>简称:</span><span>{{ atom.name }}</span></div>
+                                                <div class="my-1"><span>编码:</span><code>{{ atom.code }}</code></div>
+                                            </div>
+                                        </small></td>
+                                        <td><small>{{ atom.quantity }} {{ atom.unit.name }}</small></td>
+                                        <td><small class="text-muted">{{ atom.cost }} / {{ atom.unit.name }}</small>
+                                            <div>
+                                                <small class="text-muted">{{ atom.weight }}g
+                                                    / {{ atom.unit.name }}</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="col-6 pe-2">
+                        <form id="newSaleForm">
+                            <input type="hidden" name="newSaleName" class="required">
+                            <input type="hidden" name="newSaleSkuName" class="required">
+                            <input type="hidden" name="newSalePrice" class="required">
+                        </form>
+                        <div class="row mb-1">
+                            <div class="col-12 mb-1">
+                                <small class="text-muted">步骤2：确定商品</small>
+                            </div>
+                            <div class=" col-8 mb-1">
+                                <input type="text" placeholder="输入简称" class="form-control" name="newSaleName">
+                                <small class="text-danger d-none" data-input="newSaleName">不能为空</small>
+                            </div>
+                            <div class=" col-4 mb-1">
+                                <input type="number" placeholder="输入售价" class="form-control" name="newSalePrice">
+                                <small class="text-danger d-none" data-input="newSalePrice">不能为空</small>
+                            </div>
+                            <div class=" col-12 mb-1">
+                                <input type="text" placeholder="输入建议销售命名" class="form-control"
+                                       name="newSaleSkuName">
+                                <small class="text-danger d-none" data-input="newSaleSkuName">不能为空</small>
+                            </div>
+                        </div>
+                        <div style="height: 18rem;"
+                             class="card-body-scrollable card-body-scrollable-shadow mt-0">
+                            <table class="table no-footer" id="createNewSaleTable">
+                                <thead class="sticky-top">
+                                <tr>
+                                    <th></th>
+                                    <th>货品信息</th>
+                                    <th>数量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </a>
+                    <a href="#" class="btn btn-primary ms-auto" id="createNewSale">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                             viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 5l0 14"></path>
+                            <path d="M5 12l14 0"></path>
+                        </svg>
+                        创建新商品
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="new-group-product-report"
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content atom-sale">
+                <div class="modal-header m-3">
+                    <h5 class="modal-title d-block"><strong>创建商品组</strong></h5>
+                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
+                        <i class="text-dark cursor-pointer">—</i>
+                    </div>
+                </div>
+                <div class="modal-body row pt-0">
+                    <div class="col-6 pe-2 border-end">
+                        <form id="newGroupSearchSaleForm">
+                            <input type="hidden" name="searchSaleName">
+                            <input type="hidden" name="searchSaleCode">
+                        </form>
+                        <div class="row mb-1">
+                            <div class="col-12 mb-1">
+                                <small class="text-muted">步骤1：选择商品</small>
+                            </div>
+                            <div class=" col-4 pe-1">
+                                <input type="text" placeholder="输入简称" class="form-control" name="searchSaleName">
+                            </div>
+                            <div class=" col-4 pe-1">
+                                <input type="text" placeholder="输入编码" class="form-control" name="searchSaleCode">
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-primary w-100" id="newGroupSearchSale">查询</button>
+                            </div>
+                        </div>
+                        <div style="height: 18rem;"
+                             class="card-body-scrollable card-body-scrollable-shadow mt-0">
+                            <table class="table no-footer table-hover promotion-table">
+                                <thead class="sticky-top">
+                                <tr>
+                                    <th></th>
+                                    <th>基本信息</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for sale in sales %}
+                                    {% if sale.name %}
+                                        <tr>
+                                            <td><input class="form-check-input m-0 align-middle selectSaleCheck"
+                                                       type="checkbox"
+                                                       aria-label="Select invoice"></td>
+                                            <td><small class="text-muted">
+                                                <div>
+                                                    <div data-id="{{ sale.code }}" class="orderPr">
+                                                        <span>简称:</span><span>{{ sale.name }}</span></div>
+                                                    <div class="my-1"><span>编码:</span><code>{{ sale.code }}</code>
+                                                    </div>
+                                                    <div><span>sku名称:</span><span>{{ sale.sale_name }}</span></div>
+                                                </div>
+                                            </small></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="col-6 pe-2">
+                        <form id="newGroupForm">
+                            <input type="hidden" name="newGroupName" class="required">
+                        </form>
+                        <div class="row mb-1">
+                            <div class="col-12 mb-1">
+                                <small class="text-muted">步骤2：确定组合</small>
+                            </div>
+                            <div class=" col-12">
+                                <input type="text" placeholder="输入简称" class="form-control" name="newGroupName">
+                                <small class="text-danger d-none" data-input="newGroupName">不能为空</small>
+                            </div>
+                        </div>
+                        <div style="height: 18rem;"
+                             class="card-body-scrollable card-body-scrollable-shadow mt-0">
+                            <table class="table no-footer" id="newGroupTable">
+                                <thead class="sticky-top">
+                                <tr>
+                                    <th></th>
+                                    <th>基本信息</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </a>
+                    <a href="#" class="btn btn-primary ms-auto" id="createNewGruop">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                             viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 5l0 14"></path>
+                            <path d="M5 12l14 0"></path>
+                        </svg>
+                        新增商品组
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="new-atom-report">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">增加新原料</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form id="newAtomForm">
+                            <input type="hidden" name="newAtomCode">
+                            <input type="hidden" name="newAtomName" class="required">
+                            <input type="hidden" name="newAtomCategory" class="required">
+                            <input type="hidden" name="newAtomWeight" class="required">
+                            <input type="hidden" name="newAtomUnit" class="required">
+                            <input type="hidden" name="newAtomSupplier" class="required">
+                            <input type="hidden" name="newAtomBrand" class="required">
+                            <input type="hidden" name="newAtomUnit" class="required">
+                        </form>
+                        <fieldset class="form-fieldset">
+                            <div class="row">
+                                <div class="mb-3 col-3">
+                                    <small class="form-label text-muted">商品编码</small>
+                                    <input type="text" class="form-control" autocomplete="off" name="newAtomCode"
+                                           placeholder="建议为空">
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">商品简称</small>
+                                    <input type="text" class="form-control" autocomplete="off" name="newAtomName"
+                                           placeholder="建议精简命名">
+                                    <small class="text-danger d-none" data-input="newAtomName">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">所属分类</small>
+                                    <div>
+                                        <select class="form-select select-input" data-select="newAtomCategory">
+                                            <option value="" selected disabled>选择产品分类</option>
+                                            {% for atom_category in atom_categories %}
+                                                <option value="{{ atom_category.id }}">{{ atom_category.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <small class="text-danger d-none" data-input="newAtomCategory">不能为空</small>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">产品重量</small>
+                                    <div>
+                                        <div class="input-group">
+                                            <input type="number" step="0.1" class="form-control" autocomplete="off"
+                                                   name="newAtomWeight">
+                                            <span class="input-group-text">克</span>
+                                        </div>
+                                        <small class="text-danger d-none" data-input="newAtomWeight">不能为空</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-3">
+                                    <small class="form-label text-muted required">选择计量单位</small>
+                                    <select name="" class=" form-select w-100 select-input"
+                                            data-select="newAtomUnit">
+                                        <option value="">选择计量单位</option>
+                                        {% for unit in units %}
+                                            <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newAtomUnit">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label text-muted required">选择品牌</small>
+                                    <select name="" class=" form-select w-100 select-input"
+                                            data-select="newAtomBrand">
+                                        <option value="" selected disabled>选择品牌</option>
+                                        {% for brand in brands %}
+                                            <option value="{{ brand.id }}">{{ brand.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newAtomBrand">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label text-muted required">选择供应商</small>
+                                    <select name="" class=" form-select w-100 select-input"
+                                            data-select="newAtomSupplier">
+                                        <option value="">选择供应商</option>
+                                        {% for supplier in suppliers %}
+                                            <option value="{{ supplier.id }}">{{ supplier.campany_simple_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newAtomSupplier">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label text-muted overflow-hidden">新建供应商</small>
+                                    <a href="" data-bs-target="#new-supplier-report"
+                                       data-bs-toggle="modal" aria-label="new-supplier-report"
+                                       class="btn w-100 btn-primary">点击新建</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-12">
+                                    <div>
+                                        <small class="form-label text-muted">备注</small>
+                                        <textarea class="form-control" style="height: 3rem;"
+                                                  data-id="new-atom"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                        <div class="modal-footer">
+                            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </a>
+                            <a href="#" class="btn btn-primary ms-auto" id="createNewAtom">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M12 5l0 14"></path>
+                                    <path d="M5 12l14 0"></path>
+                                </svg>
+                                创建新原料
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="new-supplier-report">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">新增供应商</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form id="newSupplierForm">
+                            <input type="hidden" name="newSupplierCampany" class="required">
+                            <input type="hidden" name="newSupplierSimpleName" class="required">
+                            <input type="hidden" name="newSupplierName" class="required">
+                            <input type="hidden" name="newSupplierGender" class="required">
+                            <input type="hidden" name="newSupplierAge">
+                            <input type="hidden" name="newSupplierWechat" class="required">
+                            <input type="hidden" name="newSupplierPhone" class="required">
+                            <input type="hidden" name="newSupplierCity" class="required">
+                            <input type="hidden" name="newSupplierProvince" class="required">
+                            <input type="hidden" name="newSupplierAddress" class="required">
+                            <input type="hidden" name="newSupplierUser" class="required">
+                        </form>
+                        <fieldset class="form-fieldset">
+                            <div class="row">
+                                <div class="mb-3 col-8">
+                                    <small class="form-label required text-muted">公司全称</small>
+                                    <input type="text" class="form-control" autocomplete="off" name="newSupplierCampany"
+                                           placeholder="公司全称">
+                                    <small class="text-danger d-none" data-input="newSupplierCampany">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">公司简称</small>
+                                    <input type="text" class="form-control" autocomplete="off"
+                                           name="newSupplierSimpleName"
+                                           placeholder="公司名称">
+                                    <small class="text-danger d-none"
+                                           data-input="newSupplierSimpleName">不能为空</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-2">
+                                    <small class="form-label required text-muted">负责人</small>
+                                    <input type="text" class="form-control" autocomplete="off" name="newSupplierName">
+                                    <small class="text-danger d-none" data-input="newSupplierName">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-2">
+                                    <small class="form-label required text-muted">性别</small>
+                                    <select class="form-select select-input" data-select="newSupplierGender">
+                                        <option value="" selected disabled>性别</option>
+                                        <option value="1">男</option>
+                                        <option value="0">女</option>
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newSupplierName">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-2">
+                                    <small class="form-label required text-muted">年龄段</small>
+                                    <select class="form-select select-input" data-select="newSupplierAge">
+                                        <option value="" selected disabled>年龄</option>
+                                        <option value="20以下">20岁以下</option>
+                                        <option value="20岁-30岁">20岁-30岁</option>
+                                        <option value="30岁-40岁">30岁-40岁</option>
+                                        <option value="40岁-50岁">40岁-50岁</option>
+                                        <option value="50岁-60岁">50岁-60岁</option>
+                                        <option value="60岁以上">60岁以上</option>
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newSupplierAge">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">电话</small>
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <input type="text" class="form-control" autocomplete="off" placeholder="电话"
+                                               name="newSupplierPhone">
+                                        <small class="text-danger d-none" data-input="newSupplierPhone">不能为空</small>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">微信</small>
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <input type="text" class="form-control" autocomplete="off" placeholder="微信"
+                                               name="newSupplierWechat">
+                                        <small class="text-danger d-none"
+                                               data-input="newSupplierWechat">不能为空</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <small class="form-label required text-nowrap">公司地址:</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2 mb-3">
+                                    <select name="" class="form-select w-100 select-input city-select"
+                                            data-select="newSupplierCity">
+                                        <option value="" selected disabled> 省份</option>
+                                        {% for city in citys %}
+                                            <option value="{{ city.name }}"> {{ city.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newSupplierCity">不能为空</small>
+                                </div>
+                                <div class="col-2 px-2">
+                                    <select name="" class="form-select w-100 select-input area-select"
+                                            data-select="newSupplierProvince">
+                                        <option value="">城市</option>
+                                        <option value="12">邢台市</option>
+                                    </select>
+                                    <small class="text-danger d-none"
+                                           data-input="newSupplierProvince">不能为空</small>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" placeholder="详细地址" class="form-control"
+                                           name="newSupplierAddress">
+                                    <small class="text-danger d-none"
+                                           data-input="newSupplierAddress">不能为空</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">本公司联络人</small>
+                                    <select name="" class="form-select select-input" data-select="newSupplierUser">
+                                        <option value="">选择联络人</option>
+                                        {% for user in users %}
+                                            <option value="{{ user.id }}">{{ user.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newSupplierUser">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-8">
+                                    <div>
+                                        <small class="form-label text-muted">备注</small>
+                                        <textarea class="form-control" rows="3" style="height: 2.3rem;"
+                                                  data-id="newSupplierText"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="modal-footer">
+                            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </a>
+                            <a href="#" class="btn btn-primary ms-auto" id="createNewSupplier">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M12 5l0 14"></path>
+                                    <path d="M5 12l14 0"></path>
+                                </svg>
+                                新增供应商
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="new-purchase-report">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content atom-sale">
+                <div class="modal-header m-3 ui-draggable-handle">
+                    <h5 class="modal-title d-block"><strong>创建采购单</strong></h5>
+                    <div href="#" class="close-form" data-bs-dismiss="modal">
+                        <i class=" text-dark">—</i>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <form id="newPurchasePrForm">
+                            <input type="hidden" name="purchasePr" class="required">
+                            <input type="hidden" name="newPurchaseNumber" class="required">
+                            <input type="hidden" name="newPurchasePrice" class="required">
+                            <input type="hidden" name="newPurchaseSupplier" class="required">
+                        </form>
+                        <form id="newPurchaseForm">
+                            <input type="hidden" name="newPurchaseUser" class="required">
+                            <input type="hidden" name="newPurchaseName" class="required">
+                            <input type="hidden" name="newPurchaseOther" class="required" value="0">
+                            <input type="hidden" name="newPurchaseFreight" class="required" value="0">
+                        </form>
+                        <div class="row">
+                            <div class="col-3 mb-3 pe-2">
+                                <label class="form-label text-nowrap required">采购品</label>
+                                <div class="w-100">
+                                    <select class="w-100 select-input form-select" data-select="purchasePr">
+                                        <option value="" selected disabled>选择产品</option>
+                                        {% for atom in atoms %}
+                                            <option value="{{ atom.id }}">{{ atom.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-danger d-none" data-input="purchasePr">不能为空</small>
+                                </div>
+                            </div>
+                            <div class="col-3 pe-2 mb-3">
+                                <label class="form-label text-nowrap required">采购数量</label>
+                                <div class="w-100">
+                                    <input class="form-control" type="number" name="newPurchaseNumber"
+                                           placeholder="数量">
+                                    <small class="text-danger d-none" data-input="newPurchaseNumber">不能为空</small>
+                                </div>
+                            </div>
+                            <div class="col-3 pe-2 mb-3">
+                                <label class="form-label text-nowrap required">采购单价</label>
+                                <div class="w-100">
+                                    <input class="form-control" type="number" name="newPurchasePrice"
+                                           placeholder="单价">
+                                    <small class="text-danger d-none" data-input="newPurchasePrice">不能为空</small>
+                                </div>
+                            </div>
+                            <div class="col-3 pe-2 mb-3">
+                                <label class="form-label text-nowrap required">供应商</label>
+                                <div class=w-100>
+                                    <select class="form-select select-input" data-select="newPurchaseSupplier">
+                                        <option value="" selected disabled></option>
+                                        {% for supplier in suppliers %}
+                                            <option value="{{ supplier.id }}">{{ supplier.campany_simple_name }}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newPurchaseSupplier">不能为空</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3 pe-2">
+                                <label class="form-label required">采购员</label>
+                                <div class="w-100">
+                                    <select class="form-select select-input" data-select="newPurchaseUser">
+                                        <option value="" selected disabled>选择采购员</option>
+                                        {% for user in users %}
+                                            <option value="{{ user.id }}">{{ user.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newPurchaseUser">不能为空</small>
+                                </div>
+                            </div>
+                            <div class="col-7 pe-2 mb-3">
+                                <label class="form-label required">采购单名称</label>
+                                <div class="w-100">
+                                    <input class="form-control" placeholder="输入名称" name="newPurchaseName">
+                                    <small class="text-danger d-none" data-input="newPurchaseName">不能为空</small>
+                                </div>
+                            </div>
+                            <div class="col-2 mb-3">
+                                <label class="form-label required">添加至列表</label>
+                                <div class="w-100">
+                                    <button class="btn-primary btn" id="addPurchaseList">添加采购</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3 pe-2">
+                                <div class="w-100">
+                                    <div>
+                                        <small class="form-label text-muted">备注</small>
+                                        <textarea class="form-control" rows="3" style="height: 2.3rem;"
+                                                  data-id="newPurchaseText"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body pt-0 px-1">
+                    <div class="col-12">
+                        <div style="height: 18rem"
+                             class="card-body-scrollable card-body-scrollable-shadow mt-0">
+                            <table class="table no-footer table-hover" id="purchaseListTable">
+                                <thead class="sticky-top">
+                                <tr>
+                                    <th>商品信息</th>
+                                    <th>供应商</th>
+                                    <th>采购数量</th>
+                                    <th>采购单价</th>
+                                    <th>采购总价</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-end">
+                            <small style="width: 6rem"
+                                   class="text-muted px-1 text-truncate"><span>数量：</span>
+                                <span id="purchase-pr-number">10000</span></small>
+                            <small class="text-nowrap text-muted px-1"><span>|</span></small>
+                            <small style="width: 8rem" class="text-muted px-1 text-truncate"><span>合计金额:</span>
+                                <span id="total-pr-price">0</span></small>
+                            <small class="text-nowrap text-muted px-1">运费</small>
+                            <div class="col-2">
+                                <input class=" form-control" placeholder="0" value="0" type="number"
+                                       name="newPurchaseFreight">
+                            </div>
+                            <small class="text-nowrap text-muted px-1"> + </small>
+                            <small class="text-nowrap text-muted px-1"><span>其他:</span></small>
+                            <div class="col-2">
+                                <input class=" form-control cal-input" placeholder="0" value="0"
+                                       type="number" name="newPurchaseOther">
+                            </div>
+                            <small style="width: 10rem"
+                                   class="text-muted px-1 text-truncate"><span>=</span><span
+                                    id="totalPrice">0</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger ms-auto" id="createNewPurchase">
+                        <i class="mdi mdi-upload text-white mt-2"></i>
+                        提交采购入库单
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function () {
+            $('#atom_table').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+            });
+        });
+        $(function () {
+            $('#sale_table').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+            });
+        });
+        $(function () {
+            $('#group_table').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+            });
+        });
+        $(function () {
+            $('#supplier_table').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+            });
+        });
+    </script>
+    <script>
+        var nav_bar = $('.list-group-transparent li>a');
+        nav_bar.removeClass('active');
+        nav_bar.eq(4).addClass('active');
+    </script>
+{% endblock %}

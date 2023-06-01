@@ -1,0 +1,279 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends"backBase.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="col d-flex flex-column">
+        <div class="tab-content">
+            <div class="tab-pane show active">
+                <div class="card-body">
+                    <h2 class="mb-0">用户管理</h2>
+                    <hr class="mt-0">
+                    <div class="card border-0">
+                        <div class="card-head">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="col-auto">
+                                    <a href="#" class="btn btn-primary"
+                                       data-bs-target="#new-user-report"
+                                       data-bs-toggle="modal" aria-label="new-user-report">
+                                        新增用户
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="my-3">现有用户</h3>
+                    <div class="row">
+                        {% for user in users %}
+                            <div class="col-md-6 col-xl-3" data-id="{{ user.id }}">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="mb-3">
+                                                            <span class="avatar avatar-xl rounded"
+                                                                  style="background-image: url(../static/upload/images/{{ user.avatar }})"></span>
+                                        </div>
+                                        <div class="card-title mb-1">{{ user.name }}
+                                            {% if user.status==1 %}
+                                                <span class="badge bg-green mx-1"></span>
+                                                <code>在职</code>
+                                            {% else %}
+                                                <span class="badge bg-red mx-1"></span>
+                                                <code>离职</code>
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-muted">
+                                            <small><span>入职日期:</span><span>{{ user.jointime }}</span></small>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="card-btn" data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       title="功能待开发">查看/编辑</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal modal-blur fade" id="new-user-report">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">创建新用户</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form id="newUserForm">
+                            <input type="hidden" name="newUserName" class="required">
+                            <input type="hidden" name="newUserPhone" class="required">
+                            <input type="hidden" name="newUserCity" class="required">
+                            <input type="hidden" name="newUserProvince" class="required">
+                            <input type="hidden" name="newUserCards" class="required">
+                            <input type="hidden" name="newUserAddress" class="required">
+                            <input type="hidden" name="newUserDegree" class="required">
+                            <input type="hidden" name="newUserUniversity">
+                            <input type="hidden" name="newUserCost" class="required">
+                            <input type="hidden" name="newUserEmail" class="required">
+                            <input type="hidden" name="newUserGender" class="required">
+                            <input type="hidden" name="newUserPassword" class="required">
+                            <input type="hidden" name="newUserRole" class="required">
+                            <input type="hidden" name="newUserWechat" class="required">
+                        </form>
+                        <fieldset class="form-fieldset">
+                            <div class="row">
+                                <div class="mb-3 col-4">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div class="col-6 pe-2">
+                                            <small class="form-label required text-muted">姓名</small>
+                                            <input type="text" class="form-control required" autocomplete="off"
+                                                   name="newUserName">
+                                            <small class="text-danger d-none" data-input="newUserName">不能为空</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="form-label required text-muted">性别</small>
+                                            <select name="" class="form-select select-input"
+                                                    data-select="newUserGender">
+                                                <option value="" selected disabled>选择性别</option>
+                                                <option value="1">男</option>
+                                                <option value="0">女</option>
+                                            </select>
+                                            <small class="text-danger d-none"
+                                                   data-input="newUserGender">不能为空</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">电话</small>
+                                    <input type="number" class="form-control required" autocomplete="off"
+                                           name="newUserPhone">
+                                    <small class="text-danger d-none" data-input="newUserPhone">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">微信</small>
+                                    <input type="text" class="form-control required" autocomplete="off"
+                                           name="newUserWechat">
+                                    <small class="text-danger d-none" data-input="newUserWechat">不能为空</small>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">户籍</small>
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div class="col-6 pe-2">
+                                            <select class="form-select select-input city-select"
+                                                    data-select="newUserCity">
+                                                <option value="" selected disabled>省份</option>
+                                                {% for city in citys %}
+                                                    <option value="{{ city.name }}">{{ city.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <small class="text-danger d-none"
+                                                   data-input="newUserCity">不能为空</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-select select-input area-select"
+                                                    data-select="newUserProvince">
+                                                <option value="" disabled selected>城市</option>
+                                            </select>
+                                            <small class="text-danger d-none"
+                                                   data-input="newUserProvince">不能为空</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">身份证号</small>
+                                    <input type="text" class="form-control required" autocomplete="off"
+                                           name="newUserCards">
+                                    <small class="text-danger d-none" data-input="newUserCards">不能为空</small>
+                                </div>
+
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">现居住地</small>
+                                    <input type="text" class="form-control" autocomplete="off"
+                                           name="newUserAddress">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">学历</small>
+                                    <select name="" id="" class="form-select select-input"
+                                            data-select="newUserDegree">
+                                        <option value="" selected disabled>选择最高学历</option>
+                                        <option value="小学">小学</option>
+                                        <option value="初中">初中</option>
+                                        <option value="高中/中专">高中/中专</option>
+                                        <option value="大专">大专</option>
+                                        <option value="本科">本科</option>
+                                        <option value="重点本科(985/211)">重点本科(985/211)</option>
+                                        <option value="硕士">硕士</option>
+                                        <option value="博士">博士</option>
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newUserDegree">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-4">
+                                    <small class="form-label text-muted">毕业学校</small>
+                                    <input type="text" class="form-control required" autocomplete="off"
+                                           name="newUserUniversity">
+                                    <small class="text-danger d-none" data-input="newUserName">不能为空</small>
+                                </div>
+
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">角色设置</small>
+                                    <select class="form-select select-input" data-select="newUserRole">
+                                        <option value="" disabled selected>选择网站角色</option>
+                                        {% for role in roles %}
+                                            <option value="{{ role.id }}">{{ role.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newUserRole">不能为空</small>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">邮箱</small>
+                                    <input type="email" class="form-control" autocomplete="off" name="newUserEmail">
+                                    <small class="text-danger d-none" data-input="newUserEmail">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">设置密码</small>
+                                    <input type="password" class="form-control" autocomplete="off"
+                                           name="newUserPassword">
+                                    <small class="text-danger d-none" data-input="newUserPassword">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">薪资</small>
+                                    <input type="number" class="form-control" autocomplete="off" min="0"
+                                           name="newUserCost">
+                                    <small class="text-danger d-none" data-input="newUserCost">不能为空</small>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-4">
+                                    <div class="mb-3 w-100">
+                                        <small class="form-label required text-muted">上传头像</small>
+                                        <form class="dropzone form-control" id="newUserImage"
+                                              action="../"
+                                              autocomplete="off" novalidate>
+                                            <div class="fallback">
+                                                <input name="newUserHeadPhoto" type="file" accept="image/*"/>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-8">
+                                    <div>
+                                        <small class="form-label text-muted">备注</small>
+                                        <textarea class="form-control" data-id="newUserTest"
+                                                  style="height: 10rem;"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                        <div class="modal-footer">
+                            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </a>
+                            <a href="#" class="btn btn-primary ms-auto" id="createNewUser">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M12 5l0 14"></path>
+                                    <path d="M5 12l14 0"></path>
+                                </svg>
+                                创建新用户
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        var nav_bar = $('.list-group-transparent li>a');
+        nav_bar.removeClass('active');
+        nav_bar.eq(1).addClass('active');
+    </script>
+{% endblock %}

@@ -1,0 +1,803 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends "base.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                        </div>
+                        <h2 class="page-title">
+                            销售数据总览
+                        </h2>
+                    </div>
+                    <!-- Page title actions -->
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal"
+                               data-bs-target="#upload-promotion-fee-report">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M12 5l0 14"></path>
+                                    <path d="M5 12l14 0"></path>
+                                </svg>
+                                上传推广数据
+                            </a>
+                            <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal"
+                               data-bs-target="#upload-promotion-fee-report" aria-label="upload-promotion-fee-report">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M12 5l0 14"></path>
+                                    <path d="M5 12l14 0"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">销售额</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h1 mb-3"><span>￥</span><span id="today_payment_orders"></span></div>
+                                <div class="d-flex mb-2">
+                                    <div>环比上月</div>
+                                    <div class="ms-auto">
+                                        <span class="text-green d-inline-flex align-items-center lh-1">
+                                          7% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24"
+                                               height="24"
+                                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none"
+                                                                                                    d="M0 0h24v24H0z"
+                                                                                                    fill="none"/><path
+                                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-primary" style="width: 75%" role="progressbar"
+                                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
+                                         aria-label="75% Complete">
+                                        <span class="visually-hidden">75% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">退款</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-0 me-2"><span>￥</span><span id="today_refund_payment"></span>
+                                    </div>
+                                    <div class="me-auto">
+                        <span class="text-green d-inline-flex align-items-center lh-1">
+                          8% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
+                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                    fill="none"/><path
+                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
+                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="chart-revenue-bg" class="chart-sm"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">站内推广</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-3 me-2"><span>￥</span><span id="today_store_pro"></span></div>
+                                    <div class="me-auto">
+                        <span class="text-yellow d-inline-flex align-items-center lh-1">
+                          0% <!-- Download SVG icon from http://tabler-icons.io/i/minus -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
+                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                    fill="none"/><path d="M5 12l14 0"/></svg>
+                        </span>
+                                    </div>
+                                </div>
+                                <div id="chart-new-clients" class="chart-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">站外推广</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-3 me-2"><span>￥</span><span>800</span></div>
+                                    <div class="me-auto">
+                        <span class="text-green d-inline-flex align-items-center lh-1">
+                          4% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
+                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                    fill="none"/><path
+                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
+                        </span>
+                                    </div>
+                                </div>
+                                <div id="chart-active-users" class="chart-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row row-cards">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-primary text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2"/><path
+                                      d="M12 3v3m0 12v3"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span id="today_order_count"></span><span> 订单</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small id="today_wait_orders"></small> <small> 待付款</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path
+                                      d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 17h-11v-14h-2"/><path
+                                      d="M6 5l14 1l-1 7h-13"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span id="today_express_d"></span><span> 已发货</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small id="today_express_w"></small><small>未发货</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span id="all_bloger">132</span><span> 累计博主</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small id="important_bloger">132</small><small><a href=""
+                                                                                                      data-bs-toggle="modal"
+                                                                                                      data-bs-target="#important_bloger_modal">
+                                                    重点博主</a>
+                                                </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-twitter text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-twitter -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c0 -.249 1.51 -2.772 1.818 -4.013z"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span id="all_pvcontent">132</span><span> 累计图文</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small id="important_pvcontent">132</small><small> <a href=""
+                                                                                                          data-bs-toggle="modal"
+                                                                                                          data-bs-target="#important_pv_modal">
+                                                    重点图文</a></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="tab-content h-100">
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
+                                        role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#tabs-sales" class="nav-link active" data-bs-toggle="tab"
+                                               aria-selected="true" role="tab">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-brand-cohost me-2" width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M17 14m-3 0a3 2 0 1 0 6 0a3 2 0 1 0 -6 0"></path>
+                                                    <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
+                                                    <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
+                                                </svg>
+                                                销售数据</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#tabs-refunds" class="nav-link" data-bs-toggle="tab"
+                                               aria-selected="false" role="tab" tabindex="-1">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-layout-navbar me-2" width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                                    <path d="M4 9l16 0"></path>
+                                                </svg>
+                                                订单数据</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active show row" id="tabs-sales"
+                                             role="tabpanel">
+                                            <div id="saleData" class="card-body w-100 p-0" style="height: 15rem"></div>
+                                        </div>
+                                        <div class="tab-pane row h-100 active show" id="tabs-refunds" role="tabpanel">
+                                            <div id="countData" class="card-body w-100 p-0"
+                                                 style="height: 15rem"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="tab-content h-100">
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
+                                        role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#tabs-map-sales" class="nav-link active" data-bs-toggle="tab"
+                                               aria-selected="true" role="tab">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-brand-cohost me-2" width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M17 14m-3 0a3 2 0 1 0 6 0a3 2 0 1 0 -6 0"></path>
+                                                    <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
+                                                    <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
+                                                </svg>
+                                                区域销售额数据</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#tabs-week-time" class="nav-link" data-bs-toggle="tab"
+                                               aria-selected="false" role="tab" tabindex="-1">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-layout-navbar me-2" width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                                    <path d="M4 9l16 0"></path>
+                                                </svg>
+                                                分时销售额数据</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active show row" id="tabs-map-sales"
+                                             role="tabpanel">
+                                            <div id="map-sales" class="card-body w-100 p-0" style="height: 15rem"></div>
+                                        </div>
+                                        <div class="tab-pane active show row" id="tabs-week-time" role="tabpanel">
+                                            <div id="week-time" class="card-body w-100 p-0"
+                                                 style="height: 15rem"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row row-cards">
+                            <div class="col-12 h-0">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="mb-3">本月累计完成 <strong
+                                                id="month_payment"></strong><small>元</small></p>
+                                        <div class="mb-3" id="storeSale"
+                                             style="height: 1rem">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="card h-100" style="max-height: 32rem">
+                                    <div class="card-body card-body-scrollable card-body-scrollable-shadow">
+                                        <div class="divide-y">
+                                            <div id="month_orders_div_show">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="position-relative  d-flex justify-content-end mt-3">
+                                <div class="position-absolute top-0 right-0 px-3 mt-1 w-75" style="height: 10rem">
+                                    <div class="row g-2">
+                                        <div class="col-auto">
+                                            <div class="chart-sparkline chart-sparkline-square"
+                                                 id="sparkline-activity"></div>
+                                        </div>
+                                        <div class="col pe-3">
+                                            <div class="text-end">自营推广费用</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div id="store-pro" style="min-height:15rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-table table-responsive" style="height: 19rem">
+                                <div class="card-body-scrollable h-100  card-body-scrollable-shadow">
+                                    <table class="table table-vcenter">
+                                        <thead>
+                                        <tr>
+                                            <th>账号</th>
+                                            <th>图文</th>
+                                            <th>发布时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="w-1">
+                                            <span class="avatar avatar-sm" data-bs-toggle="tooltip"
+                                                  data-bs-placement="top"
+                                                  title="这是一个博主"
+                                                  style="background-image: url(static/images/avatars/000m.jpg)"></span>
+                                            </td>
+                                            <td>
+                                                <div style="width:300px" class="text-truncate">
+                                                    <a href="">
+                                                        论，如何正确的选择一款手办胶水垃圾收到货福利卡就收到货弗兰克加水电费阿飞
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td class="text-nowrap text-muted">28 Nov 2019</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer footer-transparent d-print-none">
+            <div class="container-xl">
+                <div class="row text-center align-items-center flex-row-reverse">
+                    <div class="col-lg-auto ms-lg-auto">
+                        <ul class="list-inline list-inline-dots mb-0">
+                            <li class="list-inline-item"><a href="./docs/" class="link-secondary">Documentation</a>
+                            </li>
+                            <li class="list-inline-item"><a href="./license.html" class="link-secondary">License</a>
+                            </li>
+                            <li class="list-inline-item"><a href="https://github.com/tabler/tabler" target="_blank"
+                                                            class="link-secondary" rel="noopener">Source code</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="https://github.com/sponsors/codecalm" target="_blank"
+                                   class="link-secondary"
+                                   rel="noopener">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="icon text-pink icon-filled icon-inline" width="24" height="24"
+                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
+                                    </svg>
+                                    Sponsor
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                        <ul class="list-inline list-inline-dots mb-0">
+                            <li class="list-inline-item">
+                                Copyright &copy; 2023
+                                <a href="html" class="link-secondary">Tabler</a>.
+                                All rights reserved.
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="./changelog.html" class="link-secondary" rel="noopener">
+                                    v1.0.0-beta17
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal modal-blur fade" id="upload-promotion-fee-report" tabindex="-1" role="dialog" aria-modal="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content atom-sale">
+                <div class="modal-header m-3">
+                    <h5 class="modal-title d-block"><strong>推广费上传</strong></h5>
+                    <div class="close-form cursor-pointer" data-bs-dismiss="modal">
+                        <i class=" text-dark">—</i>
+                    </div>
+                </div>
+                <div class="modal-body justify-content-center align-content-center pt-0">
+                    <div class="pb-2 border-bottom">
+                        <small>上传推广数据</small>
+                        <form class="dropzone form-control form-control-sm" id="uploadAdFileForm"
+                              autocomplete="off" novalidate action="../..">
+                            <div class="fallback">
+                                <input type="file" name="storePromotionFile"
+                                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                            </div>
+                        </form>
+                        <div class="d-flex col-auto py-2 ">
+                            <a class="text-nowrap me-auto cursor-pointer"
+                               href="{{ url_for("sale.proFileModel") }}">下载模板</a>
+                            <button class="btn btn-sm w-5 btn-primary ms-auto" id="uploadAdFile">上传</button>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3 pe-2 border-end">
+                            <div class="row mb-1">
+                                <div class="col-12 mb-1">
+                                    <small class="text-muted">选择推广方式</small>
+                                </div>
+                            </div>
+                            <div style="height: 18rem;"
+                                 class="card-body-scrollable card-body-scrollable-shadow mt-0">
+                                <table class="table no-footer">
+                                    <thead class="sticky-top">
+                                    <tr>
+                                        <th></th>
+                                        <th>平台</th>
+                                        <th>方式</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for adMethod in adMethods %}
+                                        <tr>
+                                            <td>
+                                            <span class="selectProCheck hover hover-shadow text-danger cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-circle-chevron-right"
+                                                     width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                   <path d="M11 9l3 3l-3 3"></path>
+                                                   <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0z"></path>
+                                                </svg>
+                                            </span>
+                                            </td>
+                                            <td><small class="text-muted"
+                                                       data-id="{{ adMethod.plat.id }}">{{ adMethod.plat.name }}</small>
+                                            </td>
+                                            <td><small class="text-muted"
+                                                       data-id="{{ adMethod.id }}">{{ adMethod.name }}</small></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="col-9 pe-2">
+                            <div class="row mb-1">
+                                <div class="col-12 mb-1">
+                                    <small class="text-muted">确定店铺及金额</small>
+                                </div>
+                            </div>
+                            <div style="height: 18rem;"
+                                 class="card-body-scrollable card-body-scrollable-shadow mt-0">
+                                <form id="uploadAdForm">
+                                    <input type="hidden" name="">
+                                </form>
+                                <table class="table no-footer table-hover" id="storeProTable">
+                                    <thead class="sticky-top">
+                                    <tr>
+                                        <th></th>
+                                        <th>平台信息</th>
+                                        <th>店铺</th>
+                                        <th>商品/金额</th>
+                                        <th>日期</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary me-auto"
+                            data-bs-dismiss="modal">取消
+                    </button>
+                    <button class="btn btn-primary btn-sm ms-auto w-5" id="uploadStoreAd">
+                        提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="important_pv_modal">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header m-3 mb-0">
+                    <div class="modal-title d-block">
+                        <h4><strong>重点图文明细</strong></h4>
+                    </div>
+                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
+                        <i class="text-dark cursor-pointer">—</i>
+                    </div>
+                </div>
+                <div class="modal-body justify-content-start align-content-center">
+                    <div style="height: 28rem" class="card-body-scrollable card-body-scrollable-shadow">
+                        <table class="table card-table table-vcenter text-nowrap datatable" id="importantProTable">
+                            <thead class="sticky-top bg-blue text-white">
+                            <tr>
+                                <td>微信</td>
+                                <td>平台</td>
+                                <td>账号</td>
+                                <td>状态</td>
+                                <td>费用</td>
+                                <td>日期</td>
+                                <td>负责人</td>
+                                <td>产品</td>
+                                <td>产出模式</td>
+                                <td>进度</td>
+                                <td>标题</td>
+                                <td>点赞</td>
+                                <td>收藏</td>
+                                <td>转发</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="important_bloger_modal">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header m-3 mb-0">
+                    <div class="modal-title d-block">
+                        <h4><strong>重点博主明细</strong></h4>
+                    </div>
+                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
+                        <i class="text-dark cursor-pointer">—</i>
+                    </div>
+                </div>
+                <div class="modal-body justify-content-start align-content-center">
+                    <div style="height: 28rem" class="card-body-scrollable card-body-scrollable-shadow">
+                        <table class="table card-table table-vcenter text-nowrap datatable" id="importBlogerTable">
+                            <thead class="sticky-top bg-blue text-white">
+                            <tr>
+                                <td>微信</td>
+                                <td>累计点赞</td>
+                                <td>累计收藏</td>
+                                <td>累计转发</td>
+                                <td>联络人</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        getPromotiondata()
+        var saleChart = echarts.init(document.getElementById('saleData'));
+        var countChart = echarts.init(document.getElementById('countData'));
+        var storeSaleChart = echarts.init(document.getElementById('storeSale'));
+        var mapChart = echarts.init(document.getElementById('map-sales'));
+        var weekTimeChart = echarts.init(document.getElementById('week-time'));
+
+        saleStoreData(saleChart, countChart)
+        saleAllStoreBarShow(storeSaleChart)
+        saleMapShow(mapChart)
+        weekTimeChartShow(weekTimeChart)
+        writeTodayInfo()
+        window.addEventListener('resize', function () {
+            var activetab = $('.tab-pane.active')
+            $('.tab-pane').addClass("show active")
+            saleChart.resize();
+            countChart.resize();
+            storeSaleChart.resize();
+            mapChart.resize();
+            weekTimeChart.resize();
+            $('.tab-pane').removeClass("show active")
+            activetab.addClass("show active")
+        })
+        $('.tab-pane').removeClass("active")
+        $("#tabs-sales").addClass("show active")
+        $("#tabs-map-sales").addClass("show active")
+    </script>
+    <script>
+        var weekTimeChart = echarts.init(document.getElementById('store-pro'));
+        $(function () {
+            url = '/sale/storeAdData'
+            GetRequest(url)
+                .then(function (result) {
+                    var seriesItem = []
+                    console
+                    $.each(result, function (key, value) {
+                        if (key !== 'date') {
+                            var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "")
+                            saleItem.data = value
+                            seriesItem.push(saleItem)
+                        }
+                    })
+                    var saleOption = XOpention(xAxisData = result.date, seriesData = seriesItem,)
+                    weekTimeChart.setOption(saleOption);
+                })
+                .catch(function (error) {
+                    alert(error)
+                })
+        })
+    </script>
+    <script>
+        var nav_bar = $('.navbar-nav li');
+        nav_bar.removeClass('active');
+        nav_bar.eq(1).addClass('active');
+        var var_a = nav_bar.eq(1).find('a')
+        var_a.removeClass('active');
+        var_a.eq(1).addClass('active');
+    </script>
+{% endblock %}

@@ -1,0 +1,368 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends"backBase.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="col d-flex flex-column">
+        <div class="tab-content">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
+                    role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-permission" class="nav-link active" data-bs-toggle="tab"
+                           aria-selected="true" role="tab">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-brand-cohost me-2" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M17 14m-3 0a3 2 0 1 0 6 0a3 2 0 1 0 -6 0"></path>
+                                <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
+                                <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
+                            </svg>
+                            权限管理</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-role" class="nav-link" data-bs-toggle="tab"
+                           aria-selected="false" role="tab" tabindex="-1">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-layout-navbar me-2" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                <path d="M4 9l16 0"></path>
+                            </svg>
+                            角色管理</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="tabs-permission" role="tabpanel">
+                        <div class="card-body" style="min-height: 25rem">
+                            <div class="card-head">
+                                <div class="showDiv">
+                                    <div class="mb-1">
+                                        <small class="text-muted showSmall">
+                                            <span>当前可选模块：</span>
+                                            {% for perCategory in perCategories %}
+                                                <span class="me-2"><span
+                                                        class="badge bg-danger me-1"></span><code>{{ perCategory.name }}</code></span>
+                                            {% endfor %}
+                                        </small>
+                                    </div>
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <div class="col-6 me-2">
+                                            <form id="newPermissinModelForm">
+                                                <input type="text" placeholder="输入模块名称"
+                                                       name="newPermissinModel"
+                                                       class="form-control required">
+                                                <small class="text-danger d-none"
+                                                       data-input="newPermissinModel">不能为空</small>
+                                            </form>
+                                        </div>
+                                        <div class="col-auto mx-2 ms-auto">
+                                            <a href="#" class="btn btn-primary"
+                                               id="createNewPermissionModel">
+                                                新增模块
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="mb-3 mt-3">
+                                <div class="card border-0">
+                                    <form id="newPermissionForm">
+                                        <input type="hidden" name="permissionModel"
+                                               class="required">
+                                        <input type="hidden" name="newPermissionName"
+                                               class="required">
+                                    </form>
+                                    <div class="card-head mb-3">
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            <div class="col-3">
+                                                <select name="" class="form-select select-input"
+                                                        data-select="permissionModel">
+                                                    <option value="" selected disabled>
+                                                        选择所属模块
+                                                    </option>
+                                                    {% for perCategory in perCategories %}
+                                                        <option value="{{ perCategory.id }}">{{ perCategory.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <small class="text-danger d-none"
+                                                       data-input="permissionModel">不能为空</small>
+                                            </div>
+                                            <div class="col-3 px-2">
+                                                <input type="text" placeholder="输入权限名称"
+                                                       name="newPermissionName"
+                                                       class="form-control required">
+                                                <small class="text-danger d-none"
+                                                       data-input="newPermissionName">不能为空</small>
+                                            </div>
+                                            <div class="col-auto mx-2 ms-auto">
+                                                <a href="#" class="btn btn-primary"
+                                                   id="createNewPermission">
+                                                    新增权限
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="height: 18rem"
+                                         class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                        <table class="table no-footer table-hover promotion-table">
+                                            <thead class="sticky-top">
+                                            <tr>
+                                                <th>所属板块</th>
+                                                <th>权限名称</th>
+                                                <th>权限编号</th>
+                                                <th>所属角色</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for permission in permissions %}
+                                                <tr>
+                                                    <td>{{ permission.category.name }}</td>
+                                                    <td>{{ permission.name }}</td>
+                                                    <td>{{ permission.id }}</td>
+                                                    <td>{% for role in permission.roles %}
+                                                        <span class="badge bg-danger me-1"></span>
+                                                        <code>{{ role.name }}</code>
+                                                    {% endfor %}
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-role" role="tabpanel">
+                        <div class="card-body border-top-0" style="min-height: 25rem">
+                            <div class="card border-0">
+                                <form id="newRoleForm">
+                                    <input type="hidden" name="newRoleName" class="required">
+                                    <input type="hidden" name="newRoleDesc" class="required">
+                                </form>
+                                <div class="card-head">
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <div class="col-1 me-2 d-flex justify-content-end">
+                                            <a href="" data-bs-toggle="modal"
+                                               data-bs-target="#select-permission-report"
+                                               aria-label="select-permission-report">选择权限</a>
+                                        </div>
+                                        <div class="col-2 mx-2">
+                                            <input type="text" placeholder="输入名称"
+                                                   name="newRoleName"
+                                                   class="form-control required">
+                                            <small class="text-danger d-none"
+                                                   data-input="newRoleName">不能为空</small>
+                                        </div>
+                                        <div class="col-4 mx-2">
+                                            <input type="text" placeholder="输入描述"
+                                                   name="newRoleDesc"
+                                                   class="form-control required">
+                                            <small class="text-danger d-none"
+                                                   data-input="newRoleDesc">不能为空</small>
+                                        </div>
+                                        <div class="ms-auto mx-2">
+                                            <a href="#" class="btn btn-primary" id="createNewRole">
+                                                新增角色
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="height: 25rem"
+                                     class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                    <table class="table no-footer table-hover">
+                                        <thead class="sticky-top">
+                                        <tr>
+                                            <th>角色名称</th>
+                                            <th>角色描述</th>
+                                            <th>对应权限</th>
+                                            <th>所属用户</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for role in roles %}
+                                            <tr data-id="{{ role.id }}">
+                                                <td>{{ role.name }}</td>
+                                                <td>{{ role.desc }}</td>
+                                                <td>
+                                                    <div style="max-height: 8rem"
+                                                         class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                                        {% for permission in role.permission %}
+                                                            <small class="text-muted">
+                                                                <span class="badge bg-danger"></span>
+                                                                <code class="">{{ permission.name }}</code>
+                                                            </small>
+                                                        {% endfor %}
+                                                    </div>
+                                                </td>
+                                                <td>{% for user in role.users %}
+                                                    <span class="badge bg-danger me-1"></span>
+                                                    <code>{{ user.name }}</code>
+                                                {% endfor %}
+                                                </td>
+                                                <td>
+                                                    <a href="" data-bs-toggle="modal"
+                                                       class="edit-role"
+                                                       data-bs-target="#edit-permission-report"
+                                                       aria-label="edit-permission-report">编辑</a>
+                                                    <a href=""
+                                                       data-bs-toggle="tooltip"
+                                                       data-bs-placement="top"
+                                                       title="跳转功能待开发"
+                                                    >删除</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal modal-blur fade" id="select-permission-report"
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header m-3">
+                    <h5 class="modal-title d-block"><strong>选择权限</strong></h5>
+                    <div class="cursor-pointer" data-bs-dismiss="modal"><i class="text-dark">—</i>
+                    </div>
+                </div>
+                <div class="modal-body justify-content-start align-content-center mb-0 px-3 pt-0 border-bottom">
+                    <div style="height: 25rem" class="card-body-scrollable card-body-scrollable-shadow mt-2 w-100">
+                        <table class="table no-footer table-hover" id="rolePermissionTable">
+                            <thead>
+                            <tr>
+                                <td class="text-nowrap">权限模块</td>
+                                <td>权限选择</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for perCategory in perCategories %}
+                                <tr>
+                                    <td>
+                                        {{ perCategory.name }}
+                                    </td>
+                                    <td>
+                                        <div class="ms-3">
+                                            {% for permission in perCategory.permissions %}
+                                                <label class="form-check form-check-inline">
+                                                    <input class="form-check-input" data-id="{{ permission.id }}"
+                                                           type="checkbox"
+                                                           checked="">
+                                                    <small class="form-check-label">{{ permission.name }}</small>
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="edit-permission-report" data-id=""
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header m-3">
+                    <h5 class="modal-title d-block"><strong>选择权限</strong></h5>
+                    <div class="cursor-pointer" data-bs-dismiss="modal"><i class="text-dark">—</i>
+                    </div>
+                </div>
+                <div class="modal-body justify-content-start align-content-center mb-0 px-3 pt-0 border-bottom">
+                    <div style="height: 25rem" class="card-body-scrollable card-body-scrollable-shadow mt-2 w-100">
+                        <form id="editRoleForm">
+                            <input type="hidden" name="editRoleId">
+                        </form>
+                        <table class="table no-footer table-hover" id="roleEditPermissionTable">
+                            <thead>
+                            <tr>
+                                <td class="text-nowrap">权限模块</td>
+                                <td>权限选择</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for perCategory in perCategories %}
+                                <tr>
+                                    <td>
+                                        {{ perCategory.name }}
+                                    </td>
+                                    <td>
+                                        <div class="ms-3">
+                                            {% for permission in perCategory.permissions %}
+                                                <label class="form-check form-check-inline">
+                                                    <input class="form-check-input" data-id="{{ permission.id }}"
+                                                           type="checkbox"
+                                                           checked="">
+                                                    <small class="form-check-label">{{ permission.name }}</small>
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="me-auto cursor-pointer" data-bs-dismiss="modal">Close</a>
+                    <button type="button" class="btn btn-primary" id="editRole">确认</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function () {
+            $('.table').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+            });
+        });
+    </script>
+    <script>
+        var nav_bar = $('.list-group-transparent li>a');
+        nav_bar.removeClass('active');
+        nav_bar.eq(0).addClass('active');
+    </script>
+{% endblock %}

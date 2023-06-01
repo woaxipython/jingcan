@@ -1,0 +1,94 @@
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+```
+# Python
+```
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
+```
+# Java
+```
+*.class
+*.war
+*.ear
+```
+# C++
+```
+*.out
+*.app
+```
+# Compiled Dynamic libraries
+```
+*.dll
+*.so
+*.dylib
+```
+# Compiled Static libraries
+```
+*.lib
+*.a
+```
+# Executables
+```
+*.exe
+*.com
+*.bin
+*.hex
+```
+# Packages
+```
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.gz
+*.gzip
+*.tgz
+*.bzip
+*.bzip2
+*.xz
+*.cab
+*.msi
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+```
+# Logs
+```
+*.log
+```
+# OS generated files
+```
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+```
+# IDE generated files
+```
+*.iml
+*.ipr
+*.iws
+.idea/
+```
+# Compiled files
+```
+*.class
+*.war
+*.ear
+*.jar
+```
+# Maven
+```

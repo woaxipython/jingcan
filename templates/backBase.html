@@ -1,0 +1,433 @@
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>{% block title %}{% endblock %}</title>
+    <!-- CSS files -->
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/tabler.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/tabler-flags.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/tabler-payments.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/tabler-vendors.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/demo.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/dropZone/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/plugin/datatables.min.css') }}">
+    <style>
+        @import url('https://rsms.me/inter/inter.css');
+
+        :root {
+            --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+    </style>
+</head>
+<body>
+
+<script src="{{ url_for('static',filename='js/plugin/demo-theme.js') }}"></script>
+
+<div class="page">
+    <!-- Navbar -->
+    <header class="navbar navbar-expand-md navbar-light d-print-none">
+        <div class="container-xl">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+                    aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                <a href="index.html">
+                    <img src="../static/images/logo-small.svg" width="110" height="32" alt="Tabler"
+                         class="navbar-brand-image">
+                </a>
+            </h1>
+            <div class="navbar-nav flex-row order-md-last">
+                <div class="d-none d-md-flex me-md-3">
+                    <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/moon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
+                        </svg>
+                    </a>
+                    <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/sun -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
+                            <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
+                       aria-label="Open user menu">
+                        <span class="avatar avatar-sm"
+                              style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                        <div class="d-none d-xl-block ps-2">
+                            <div>赵延腾</div>
+                            <div class="mt-1 small text-muted">......</div>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <a href="{{ url_for("permission.manage") }}" class="dropdown-item active">后台管理</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">退出</a>
+                    </div>
+                </div>
+                <div class="nav-item d-none d-md-flex me-3">
+                    <div class="btn-list d-none">
+                        <a href="https://github.com/sponsors/codecalm" class="btn" target="_blank" rel="noreferrer">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink" width="24" height="24"
+                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
+                            </svg>
+                            Sponsor
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <header class="navbar-expand-md">
+        <div class="collapse navbar-collapse" id="navbar-menu">
+            <div class="navbar navbar-light">
+                <div class="container-xl">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for("index") }}">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                           stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                           stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path
+                              d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path
+                              d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/></svg>
+                    </span>
+                                <span class="nav-link-title">
+                      数据中心
+                    </span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
+                               data-bs-auto-close="outside" role="button" aria-expanded="false">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                           stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                           stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path
+                              d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5"/><path d="M12 12l8 -4.5"/><path
+                              d="M12 12l0 9"/><path d="M12 12l-8 -4.5"/><path d="M16 5.25l-8 4.5"/></svg>
+                    </span>
+                                <span class="nav-link-title">
+                      店铺管理
+                    </span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-menu-columns">
+                                    <div class="dropdown-menu-column">
+                                        <a class="dropdown-item" href="{{ url_for("sale.data") }}">
+                                            销售数据
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url_for("sale.tmData") }}">
+                                            天猫旗舰店
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url_for("sale.dyData") }}">
+                                            抖音旗舰店
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url_for("sale.ksData") }}">
+                                            快手旗舰店
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url_for("sale.pddData") }}">
+                                            拼多多
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url_for("sale.fxData") }}">
+                                            分销商
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#navbar-extra" data-bs-toggle="dropdown"
+                               data-bs-auto-close="outside" role="button" aria-expanded="false">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/star -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                           stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                           stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path
+                              d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/></svg>
+                    </span>
+                                <span class="nav-link-title">
+                      推广管理
+                    </span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-menu-columns">
+                                    <div class="dropdown-menu-column">
+                                        <a class="dropdown-item" href="{{ url_for("promotion.manage") }}">
+                                            推广管理
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url_for("pro.data") }}">
+                                            数据管理
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for("hand.order") }}">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/ghost -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                           stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                           stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path
+                              d="M5 11a7 7 0 0 1 14 0v7a1.78 1.78 0 0 1 -3.1 1.4a1.65 1.65 0 0 0 -2.6 0a1.65 1.65 0 0 1 -2.6 0a1.65 1.65 0 0 0 -2.6 0a1.78 1.78 0 0 1 -3.1 -1.4v-7"/><path
+                              d="M10 10l.01 0"/><path d="M14 10l.01 0"/><path d="M10 14a3.5 3.5 0 0 0 4 0"/></svg>
+                    </span>
+                                <span class="nav-link-title">
+                      手工订单
+                    </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/ghost -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                           stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                           stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path
+                              d="M4 4m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/><path
+                              d="M4 13m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/><path
+                              d="M14 4m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/><path
+                              d="M14 15m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/></svg>
+                    </span>
+                                <span class="nav-link-title">
+                      经营管理
+                    </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title">
+                            Account Settings
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="card">
+                    <div class="row g-0">
+                        <div class="col-3 d-none d-md-block border-end">
+                            <div class="card-body">
+                                <h4 class="subheader">后台</h4>
+                                <ul class="list-group list-group-transparent nav nav-tabs" data-bs-toggle="tabs"
+                                    role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ url_for("permission.manage") }}" class="nav-link">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24"
+                                                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M5 12l-2 0l9 -9l9 9l-2 0"></path>
+                                                <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
+                                                <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path>
+                                            </svg>
+                                            权限编辑</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ url_for("user.manage") }}" class="nav-link">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24"
+                                                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                                            </svg>
+                                            用户管理</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ url_for("store.manage") }}" class="nav-link">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-lock-square me-2" width="24"
+                                                 height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M8 11m0 1a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1z"></path>
+                                                <path d="M10 11v-2a2 2 0 1 1 4 0v2"></path>
+                                                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                            </svg>
+                                            店铺维护</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ url_for("back.spyderManage") }}" class="nav-link">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24"
+                                                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M3 12h4l3 8l4 -16l3 8h4"></path>
+                                            </svg>
+                                            爬虫维护</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ url_for("product.manage") }}" class="nav-link">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-archive me-2" width="24"
+                                                 height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                                                <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10"></path>
+                                                <path d="M10 12l4 0"></path>
+                                            </svg>
+                                            商品维护</a>
+                                        <hr class="my-2">
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a href="{{ url_for("back.basicSelect") }}" class="nav-link">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-settings me-2" width="24"
+                                                 height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
+                                                <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
+                                            </svg>
+                                            基础选项</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% block page %} {% endblock %}
+                    </div>
+                </div>
+            </div>
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center align-items-center flex-row-reverse">
+                        <div class="col-lg-auto ms-lg-auto">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="./docs/" class="link-secondary">Documentation</a>
+                                </li>
+                                <li class="list-inline-item"><a href="./license.html" class="link-secondary">License</a>
+                                </li>
+                                <li class="list-inline-item"><a href="https://github.com/tabler/tabler" target="_blank"
+                                                                class="link-secondary" rel="noopener">Source code</a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="https://github.com/sponsors/codecalm" target="_blank"
+                                       class="link-secondary"
+                                       rel="noopener">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="icon text-pink icon-filled icon-inline" width="24" height="24"
+                                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                             stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
+                                        </svg>
+                                        Sponsor
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item">
+                                    Copyright &copy; 2023
+                                    <a href="." class="link-secondary">Tabler</a>.
+                                    All rights reserved.
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="./changelog.html" class="link-secondary" rel="noopener">
+                                        v1.0.0-beta17
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+</div>
+{% block modal %}{% endblock %}
+<!-- Libs JS -->
+
+<script src="{{ url_for('static',filename='js/plugin/popper.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/plugin/jquery.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/plugin/tabler.esm.js') }}"></script>
+<script src="{{ url_for('static',filename='js/plugin/tabler.js') }}"></script>
+<script src="{{ url_for('static',filename='js/plugin/jquery-ui.min.js') }}"></script>
+
+
+<script src="{{ url_for('static',filename='js/plugin/apexcharts/apexcharts.min.js') }}" defer></script>
+<script src="{{ url_for('static',filename='js/plugin/jsvectormap/dist/js/jsvectormap.min.js') }}" defer></script>
+<script src="{{ url_for('static',filename='js/plugin/jsvectormap/dist/maps/world.js') }}" defer></script>
+<script src="{{ url_for('static',filename='js/plugin/jsvectormap/dist/maps/world-merc.js') }}" defer></script>
+
+<script src="{{ url_for('static',filename='js/plugin/litepicker/dist/litepicker.js') }}" defer></script>
+<script src="{{ url_for('static',filename='js/plugin/fslightbox/index.js') }}" defer></script>
+<script src="{{ url_for('static',filename='js/plugin/nouislider/dist/nouislider.min.js') }}" defer></script>
+<script src="{{ url_for('static',filename='js/plugin/dropZone/dropzone-min.js') }}" defer></script>
+<script src="{{ url_for('static',filename='js/plugin/datatables.min.js') }}" defer></script>
+
+<!-- Tabler Core -->
+<script src="{{ url_for('static',filename='js/plugin/tabler.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/plugin/demo.min.js') }}"></script>
+
+<script src="{{ url_for('static',filename='js/plugin/bootstrap-select.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/plugin/defaults-zh_CN.js') }}"></script>
+
+{#引入自定义JS文档#}
+<script src="{{ url_for('static',filename='js/edit/requests.js') }}"></script>
+<script src="{{ url_for('static',filename='js/edit/pluginShow.js') }}"></script>
+<script src="{{ url_for('static',filename='js/edit/Verification.js') }}"></script>
+<script src="{{ url_for('static',filename='js/edit/clickEventPost.js') }}"></script>
+<script src="{{ url_for('static',filename='js/edit/clickEventGet.js') }}"></script>
+<script src="{{ url_for('static',filename='js/edit/clickEventInteraction.js') }}"></script>
+<script src="{{ url_for('static',filename='js/edit/writeEvents.js') }}"></script>
+
+{% block js %}{% endblock %}
+</body>
+</html>

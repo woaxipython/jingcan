@@ -1,0 +1,672 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends"backBase.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="col d-flex flex-column">
+        <div class="tab-content">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
+                    role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-kdzs" class="nav-link active" data-bs-toggle="tab"
+                           aria-selected="true" role="tab">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-brand-cohost me-2" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M17 14m-3 0a3 2 0 1 0 6 0a3 2 0 1 0 -6 0"></path>
+                                <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
+                                <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
+                            </svg>
+                            快递助手登录</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-store" class="nav-link" data-bs-toggle="tab"
+                           aria-selected="false" role="tab" tabindex="-1">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-layout-navbar me-2" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                <path d="M4 9l16 0"></path>
+                            </svg>
+                            店铺信息维护</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-pro" class="nav-link" data-bs-toggle="tab"
+                           aria-selected="false" tabindex="-1" role="tab">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-device-cctv me-2" width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                 stroke="currentColor" fill="none" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M3 3m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z"></path>
+                                <path d="M12 14m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                <path d="M19 7v7a7 7 0 0 1 -14 0v-7"></path>
+                                <path d="M12 14l.01 0"></path>
+                            </svg>
+                            店铺推广方式维护</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#tabs-dis" class="nav-link" data-bs-toggle="tab"
+                           aria-selected="false" tabindex="-1" role="tab">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/activity -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="icon icon-tabler icon-tabler-a-b-2 me-2" width="24" height="24"
+                                 viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor"
+                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M16 21h3c.81 0 1.48 -.67 1.48 -1.48l.02 -.02c0 -.82 -.69 -1.5 -1.5 -1.5h-3v3z"></path>
+                                <path d="M16 15h2.5c.84 -.01 1.5 .66 1.5 1.5s-.66 1.5 -1.5 1.5h-2.5v-3z"></path>
+                                <path d="M4 9v-4c0 -1.036 .895 -2 2 -2s2 .964 2 2v4"></path>
+                                <path d="M2.99 11.98a9 9 0 0 0 9 9m9 -9a9 9 0 0 0 -9 -9"></path>
+                                <path d="M8 7h-4"></path>
+                            </svg>
+                            分销商管理</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="tabs-kdzs" role="tabpanel">
+                        <div class="card-body" style="min-height: 25rem">
+                            <div class="card-head">
+                                <form id="loginKdzsForm">
+                                    <input type="hidden" name="kdzsAccount" class="required"
+                                           value="15369140121">
+                                    <input type="hidden" name="kdzsPassword" class="required"
+                                           value="qwer1234!">
+                                    <input type="hidden" name="kdzsCaptcha" class="required">
+                                    <input type="hidden" name="kdzsPhoneCode">
+                                </form>
+                                <div class="d-flex justify-content-start align-items-center mb-3">
+                                    <div class="col-2 pe-2">
+                                        <input type="text" placeholder="账号" name="kdzsAccount"
+                                               value="15369140121"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none" data-input="kdzsAccount">不能为空</small>
+                                    </div>
+                                    <div class="col-2 pe-2">
+                                        <input type="password" placeholder="密码"
+                                               name="kdzsPassword" value="qwer1234!"
+                                               autocomplete="off"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none" data-input="kdzsPassword">不能为空</small>
+                                    </div>
+                                    <div class="pe-2 align-items-center justify-content-center"
+                                         style="width: 6rem; height: 2rem;">
+                                        <div class="mr-1 cursor-pointer" id="captcha">
+                                            <img src="../static/images/captcha.png">
+                                        </div>
+                                    </div>
+                                    <div class="col-2 pe-2">
+                                        <input type="text" placeholder="验证码" name="kdzsCaptcha"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none" data-input="kdzsCaptcha">不能为空</small>
+                                    </div>
+                                    <div class="col-2 pe-2">
+                                        <input type="text" placeholder="手机验证码"
+                                               name="kdzsPhoneCode"
+                                               class="me-2 form-control">
+                                    </div>
+                                    <div class="ms-auto pe-2">
+                                        <a href="#" class="btn btn-primary px-3" id="loginKdzsBtn">
+                                            登录账号
+                                        </a>
+                                        <button href="#" class="btn btn-primary px-3" type="button"
+                                                id="kdzsTest">
+                                            连接测试
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-store" role="tabpanel">
+                        <div class="card-body border-top-0" style="min-height: 25rem">
+                            <div class="pb-2 mb-2 border-bottom">
+                                <div class="border-bottom mb-3">
+                                    <div class="mb-0 d-flex justify-content-start align-items-center">
+                                        <hr>
+                                        <div class="col-auto ms-2">
+                                            <a class="btn btn-primary" id="kdzsStore">
+                                                同步店铺
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <form id="kdzsOrderForm">
+                                        <input type="hidden" name="kdzsStartDate">
+                                        <input type="hidden" name="kdzsEndDate">
+                                        <input type="hidden" name="kdzsStore" value="All">
+                                        <input type="hidden" name="kdzsDayLength">
+                                    </form>
+                                    <div class="col-auto">
+                                        <small class="text-muted">开始日期</small>
+                                        <div class="me-2 d-inline-block">
+                                            <input type="datetime-local" name="kdzsStartDate"
+                                                   class="form-control form-control-sm">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <small class="text-muted">结束日期</small>
+                                        <div class="me-2 d-inline-block">
+                                            <input type="datetime-local" name="kdzsEndDate"
+                                                   class="form-control form-control-sm">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto d-flex ms-auto">
+                                        <select class="form-select form-select-sm select-input"
+                                                data-select="kdzsStore">
+                                            <option value="" selected disabled>选择店铺</option>
+                                            {% for store in stores %}
+                                                <option value="{{ store.id }}">{{ store.name }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                    <div class="col-auto d-flex ms-1">
+                                        <select class="form-select form-select-sm select-input"
+                                                data-select="kdzsDayLength">
+                                            <option value="" selected disabled>根据时间段</option>
+                                            <option value="1">最近1天</option>
+                                            <option value="3">最近3天</option>
+                                            <option value="7">最近7天</option>
+                                            <option value="15">最近15天</option>
+                                            <option value="30">最近30天</option>
+                                            <option value="60">最近2个月</option>
+                                            <option value="90">最近3个月</option>
+                                        </select>
+                                    </div>
+                                    <div class="mx-1 text-muted d-flex">
+                                        <button class="btn btn-blue btn-sm me-1"
+                                                id="getStoreRefund">
+                                            同步退款订单
+                                        </button>
+                                        <button class="btn btn-blue btn-sm" id="getStoreOrder">
+                                            同步销售订单
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mt-3 mb-1 border-bottom"><small class="text-mute"><h3>
+                                    店铺明细</h3></small></div>
+                                <div style="height: 25rem"
+                                     class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                    <table class="table no-footer table-hover promotion-table">
+                                        <thead class="sticky-top">
+                                        <tr>
+                                            <th>平台</th>
+                                            <th>店铺名称</th>
+                                            <th>平台店铺名称</th>
+                                            <th>店铺id</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for store in stores %}
+                                            <tr>
+                                                <td>{{ store.plat.name }}</td>
+                                                <td>{{ store.name }}</td>
+                                                <td>{{ store.plat_store_name }}</td>
+                                                <td>{{ store.store_id }}</td>
+                                                <td>
+                                                            <span class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
+                                                                  data-bs-toggle="tooltip"
+                                                                  data-bs-placement="top"
+                                                                  title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href=""
+                                                       data-bs-toggle="tooltip"
+                                                       data-bs-placement="top"
+                                                       title="数据展示功能待开发">编辑</a>
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-pro" role="tabpanel">
+                        <div class="card-body border-top-0" style="min-height: 25rem">
+                            <div class="pb-2 mb-2 border-bottom">
+                                <div>
+                                    <div class="card-head">
+                                        <form id="newStoreProForm">
+                                            <input type="hidden" name="platName" class="required">
+                                            <input type="hidden" name="proName" class="required">
+                                            <input type="hidden" name="proFeeModel"
+                                                   class="required">
+                                        </form>
+                                        <div class="d-flex justify-content-start align-items-center mb-3">
+                                            <div class="col-2 pe-2">
+                                                <select class="form-select select-input"
+                                                        data-select="platName">
+                                                    <option value="" selected disabled>选择平台
+                                                    </option>
+                                                    {% for plat in plats %}
+                                                        <option value="{{ plat.id }}">{{ plat.name }}</option>
+                                                    {% endfor %}
+
+                                                </select>
+                                                <small class="text-danger d-none"
+                                                       data-input="platName">不能为空</small>
+                                            </div>
+                                            <div class="col-2 pe-2">
+                                                <input type="text" placeholder="推广方式"
+                                                       name="proName"
+                                                       class="me-2 form-control required">
+                                                <small class="text-danger d-none"
+                                                       data-input="proName">不能为空</small>
+                                            </div>
+                                            <div class="col-2 pe-2">
+                                                <input type="text" placeholder="扣费形式"
+                                                       name="proFeeModel"
+                                                       class="me-2 form-control required">
+                                                <small class="text-danger d-none"
+                                                       data-input="proFeeModel">不能为空</small>
+                                            </div>
+                                            <div class="ms-auto pe-2">
+                                                <a href="#" class="btn btn-primary px-3"
+                                                   id="newStorePro">
+                                                    增加
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="height: 25rem"
+                                     class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                    <table class="table no-footer table-hover promotion-table">
+                                        <thead class="sticky-top">
+                                        <tr>
+                                            <th>平台</th>
+                                            <th>推广方式</th>
+                                            <th>扣费形式</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for adMethod in adMethods %}
+                                            <tr>
+                                                <td>{{ adMethod.plat.name }}</td>
+                                                <td>{{ adMethod.name }}</td>
+                                                <td>{{ adMethod.desc }}</td>
+                                                <td>
+                                                            <span class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
+                                                                  data-bs-toggle="tooltip"
+                                                                  data-bs-placement="top"
+                                                                  title="数据展示功能待开发">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                         class="icon icon-tabler icon-tabler-antenna-bars-5"
+                                                                         width="24"
+                                                                         height="24" viewBox="0 0 24 24"
+                                                                         stroke-width="2"
+                                                                         stroke="currentColor" fill="none"
+                                                                         stroke-linecap="round"
+                                                                         stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                              fill="none"></path>
+                                                                        <path d="M6 18l0 -3"></path>
+                                                                        <path d="M10 18l0 -6"></path>
+                                                                        <path d="M14 18l0 -9"></path>
+                                                                        <path d="M18 18l0 -12"></path>
+                                                                    </svg>
+                                                                    </span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-dis" role="tabpanel">
+                        <div class="card-body border-top-0" style="min-height: 25rem">
+                            <div class="col-12 pb-3">
+                                <div class="border-bottom mb-3">
+                                    <div class="mb-0 d-flex justify-content-start align-items-center">
+                                        <hr>
+                                        <div class="col-auto ms-2">
+                                            <a href="#" class="btn btn-primary"
+                                               data-bs-target="#new-dis-report"
+                                               data-bs-toggle="modal" aria-label="new-dis-report">
+                                                新增分销商
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card border-0">
+                                    <div style="height: 25rem"
+                                         class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                        <table class="table no-footer table-hover promotion-table">
+                                            <thead class="sticky-top">
+                                            <tr>
+                                                <th>公司/店铺名称</th>
+                                                <th>负责人</th>
+                                                <th>地址</th>
+                                                <th>本公司联络人</th>
+                                                <th>创建时间</th>
+                                                <th class="d-flex align-items-center justify-content-center">
+                                                    数据
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for distribution in distributions %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="text-truncate  cursor-pointer"
+                                                             data-bs-container="body"
+                                                             data-bs-toggle="popover"
+                                                             data-bs-placement="top"
+                                                             title="{{ distribution.campany_name }}"
+                                                             data-bs-html="true"
+                                                             data-bs-content="
+                                                                                  {{ distribution.channel }}"
+                                                             style="max-width: 8rem;">
+                                                            <div>
+                                                                            <span class="text-muted">
+                                                                                {{ distribution.campany_name }}
+                                                                            </span>
+                                                            </div>
+                                                            <div>
+                                                                <small class="text-muted">
+                                                                    {{ distribution.channel }}
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            {{ distribution.name }}
+                                                            <div class="text-muted">
+                                                                <small><span>微信:</span>{{ distribution.wechat }}
+                                                                </small>
+                                                            </div>
+                                                            <div class="text-muted">
+                                                                <small><span>手机:</span>{{ distribution.phone }}
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="text-truncate  cursor-pointer"
+                                                             style="width: 10rem"
+                                                             data-bs-container="body"
+                                                             data-bs-toggle="popover"
+                                                             data-bs-placement="top"
+                                                             title="{{ distribution.city }} {{ distribution.province }}"
+                                                             data-bs-html="true"
+                                                             data-bs-content="{{ distribution.address }}">
+                                                            <div class="text-muted">
+                                                                <small><span>{{ distribution.city }} </span><span>{{ distribution.province }}</span></small>
+                                                            </div>
+                                                            <div class="text-muted">
+                                                                <small><span>{{ distribution.address }}</span></small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>赵延腾</td>
+                                                    <td>2023-05-15</td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center justify-content-center">
+                                                                            <span
+                                                                                    class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-placement="top"
+                                                                                    aria-label="数据展示功能待开发"
+                                                                                    data-bs-original-title="数据展示功能待开发">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                     class="icon icon-tabler icon-tabler-antenna-bars-5"
+                                                                                     width="24" height="24"
+                                                                                     viewBox="0 0 24 24"
+                                                                                     stroke-width="2"
+                                                                                     stroke="currentColor"
+                                                                                     fill="none" stroke-linecap="round"
+                                                                                     stroke-linejoin="round">
+                                                                                    <path stroke="none"
+                                                                                          d="M0 0h24v24H0z"
+                                                                                          fill="none"></path>
+                                                                                    <path d="M6 18l0 -3"></path>
+                                                                                    <path d="M10 18l0 -6"></path>
+                                                                                    <path d="M14 18l0 -9"></path>
+                                                                                    <path d="M18 18l0 -12"></path>
+                                                                                </svg>
+                                                                            </span>
+                                                            <a href="" data-bs-toggle="tooltip"
+                                                               data-bs-placement="top"
+                                                               aria-label="功能待开发"
+                                                               data-bs-original-title="功能待开发">编辑</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal modal-blur fade" id="new-dis-report">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">新增分销商</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form id="newDisForm">
+                            <input type="hidden" name="newDisCampany" class="required">
+                            <input type="hidden" name="newDisName" class="required">
+                            <input type="hidden" name="newDisPhone" class="required">
+                            <input type="hidden" name="newDisWechat" class="required">
+                            <input type="hidden" name="newDisCity" class="required">
+                            <input type="hidden" name="newDisProvince" class="required">
+                            <input type="hidden" name="newDisAddress" class="required">
+                            <input type="hidden" name="newDisLink">
+                            <input type="hidden" name="newDisUser" class="required">
+                        </form>
+                        <fieldset class="form-fieldset">
+                            <div class="row">
+                                <div class="mb-3 col-6">
+                                    <small class="form-label required text-muted">公司名称</small>
+                                    <input type="text" class="form-control" autocomplete="off" name="newDisCampany"
+                                           placeholder="公司名称">
+                                    <small class="text-danger d-none" data-input="newDisCampany">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">负责人</small>
+                                    <input type="text" class="form-control" autocomplete="off" name="newDisName">
+                                    <small class="text-danger d-none" data-input="newDisName">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">电话</small>
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <input type="number" class="form-control" autocomplete="off"
+                                               name="newDisPhone">
+                                        <small class="text-danger d-none" data-input="newDisPhone">不能为空</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-6">
+                                    <small class="form-label required text-muted">负责人</small>
+                                    <select class="w-100 select-input selectpicker" multiple data-live-search="true"
+                                            data-actions-box="true" id="newDisSaleChannel"
+                                            data-style="btn"
+                                            title="选择销售渠道">
+                                        <option value="线上-拼多多">线上-拼多多</option>
+                                        <option value="线上-抖音">线上-抖音</option>
+                                        <option value="线上-淘宝">线上-淘宝</option>
+                                        <option value="线上-快手">线上-快手</option>
+                                        <option value="线上-其他">线上-其他</option>
+                                        <option value="线上">线下</option>
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newDisName">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-3">
+                                    <small class="form-label required text-muted">微信号</small>
+                                    <input type="text" class="form-control" autocomplete="off" name="newDisWechat"
+                                           placeholder="微信号">
+                                    <small class="text-danger d-none" data-input="newDisWechat">不能为空</small>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <small class="form-label required text-nowrap">公司地址:</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-12 d-flex justify-content-start align-items-center">
+                                    <div class="col-2">
+                                        <select name="" class="form-select w-100 select-input city-select"
+                                                data-select="newDisCity">
+                                            <option value="" selected disabled>选择省份</option>
+                                            {% for city in citys %}
+                                                <option value="{{ city.name }}">{{ city.name }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                        <small class="text-danger d-none" data-input="newDisCity">不能为空</small>
+                                    </div>
+                                    <div class="col-2 px-2">
+                                        <select name="" class="form-select w-100 select-input area-select"
+                                                data-select="newDisProvince">
+                                            <option value="">城市</option>
+                                            <option value="13">邢台市</option>
+                                        </select>
+                                        <small class="text-danger d-none"
+                                               data-input="newDisProvince">不能为空</small>
+                                    </div>
+                                    <div class="w-100">
+                                        <input type="text" placeholder="详细地址" class="form-control"
+                                               name="newDisAddress">
+                                        <small class="text-danger d-none"
+                                               data-input="newDisAddress">不能为空</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <small class="form-label text-nowrap">店铺网址:</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-12 d-flex justify-content-start align-items-center">
+                                    <div class="w-100">
+                                        <input type="text" placeholder="店铺网址" class="form-control"
+                                               name="newDisLink">
+                                        <small class="text-danger d-none"
+                                               data-input="newDisLink">不能为空</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-4">
+                                    <small class="form-label required text-muted">本公司联络人</small>
+                                    <select name="" class="form-select select-input" data-select="newDisUser">
+                                        <option value="">选择联络人</option>
+                                        <option value="1">赵延腾</option>
+                                    </select>
+                                    <small class="text-danger d-none" data-input="newDisUser">不能为空</small>
+                                </div>
+                                <div class="mb-3 col-8">
+                                    <div>
+                                        <small class="form-label text-muted">备注</small>
+                                        <textarea class="form-control" rows="3" style="height: 2.3rem;"
+                                                  data-id="newDisText"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="modal-footer">
+                            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </a>
+                            <a href="#" class="btn btn-primary ms-auto" id="createNewDis">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M12 5l0 14"></path>
+                                    <path d="M5 12l14 0"></path>
+                                </svg>
+                                新增供应商
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function () {
+            $('.table').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+            });
+        });
+    </script>
+    <script>
+        var nav_bar = $('.list-group-transparent li>a');
+        nav_bar.removeClass('active');
+        nav_bar.eq(2).addClass('active');
+    </script>
+{% endblock %}

@@ -1,0 +1,1166 @@
+{% extends "base.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                        </div>
+                        <h2 class="page-title">
+                            抖音旗舰店经营数据
+                        </h2>
+                    </div>
+                    <!-- Page title actions -->
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                  <span class="d-none d-sm-inline">
+                  </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">销售额</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h1 mb-3"><span>￥</span><span>10000</span></div>
+                                <div class="d-flex mb-2">
+                                    <div>环比上月</div>
+                                    <div class="ms-auto">
+                                        <span class="text-green d-inline-flex align-items-center lh-1">
+                                          7% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24"
+                                               height="24"
+                                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none"
+                                                                                                    d="M0 0h24v24H0z"
+                                                                                                    fill="none"/><path
+                                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-primary" style="width: 75%" role="progressbar"
+                                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
+                                         aria-label="75% Complete">
+                                        <span class="visually-hidden">75% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">退款</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-0 me-2"><span>￥</span><span>800</span></div>
+                                    <div class="me-auto">
+                        <span class="text-green d-inline-flex align-items-center lh-1">
+                          8% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
+                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                    fill="none"/><path
+                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
+                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="chart-revenue-bg" class="chart-sm"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">站内推广</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-3 me-2"><span>￥</span><span>800</span></div>
+                                    <div class="me-auto">
+                        <span class="text-yellow d-inline-flex align-items-center lh-1">
+                          0% <!-- Download SVG icon from http://tabler-icons.io/i/minus -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
+                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                    fill="none"/><path d="M5 12l14 0"/></svg>
+                        </span>
+                                    </div>
+                                </div>
+                                <div id="chart-new-clients" class="chart-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">净销售额</div>
+                                    <div class="ms-auto lh-1">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
+                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item active" href="#">最近1天</a>
+                                                <a class="dropdown-item" href="#">最近7天</a>
+                                                <a class="dropdown-item" href="#">最近15天</a>
+                                                <a class="dropdown-item" href="#">最近1个月</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-3 me-2"><span>￥</span><span>800</span></div>
+                                    <div class="me-auto">
+                        <span class="text-green d-inline-flex align-items-center lh-1">
+                          4% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
+                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                    fill="none"/><path
+                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
+                        </span>
+                                    </div>
+                                </div>
+                                <div id="chart-active-users" class="chart-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row row-cards">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-primary text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2"/><path
+                                      d="M12 3v3m0 12v3"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>132</span><span> 订单</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small>12</small> <small> 待付款</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path
+                                      d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 17h-11v-14h-2"/><path
+                                      d="M6 5l14 1l-1 7h-13"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>132</span><span> 已发货</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small>0</small><small>未发货</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>132</span><span> 未揽收</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small>132</small><small><a href="" data-bs-toggle="tooltip"
+                                                                                data-bs-placement="right"
+                                                                                title="跳转功能待开发"> 即将超时</a>
+                                                </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-twitter text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-twitter -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c0 -.249 1.51 -2.772 1.818 -4.013z"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>132</span><span> 退款订单</span>
+                                                </div>
+                                                <div class="text-muted">
+                                                    <small>132</small><small> <a href="" data-bs-toggle="tooltip"
+                                                                                 data-bs-placement="right"
+                                                                                 title="跳转功能待开发">
+                                                    仅退款</a></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">销售数据</h3>
+                                <div id="chart-mentions" class="chart-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">下单地区</h3>
+                                <div class="ratio ratio-21x9">
+                                    <div>
+                                        <div id="map-world" class="w-100 h-100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row row-cards">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="mb-3">累计完成 <strong>12.21万 </strong>of 32万</p>
+                                        <div class="progress progress-separated mb-3">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 44%"
+                                                 aria-label="Regular"></div>
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 19%"
+                                                 aria-label="System"></div>
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 9%"
+                                                 aria-label="Shared"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-auto d-flex align-items-center pe-2">
+                                                <span class="legend me-2 bg-primary"></span>
+                                                <span>鞋胶</span>
+                                                <span class="d-none d-md-inline d-lg-none d-xxl-inline ms-2 text-muted">8.万</span>
+                                            </div>
+                                            <div class="col-auto d-flex align-items-center px-2">
+                                                <span class="legend me-2 bg-info"></span>
+                                                <span>手办胶</span>
+                                                <span class="d-none d-md-inline d-lg-none d-xxl-inline ms-2 text-muted">2.1万</span>
+                                            </div>
+                                            <div class="col-auto d-flex align-items-center px-2">
+                                                <span class="legend me-2 bg-success"></span>
+                                                <span>塑料胶</span>
+                                                <span class="d-none d-md-inline d-lg-none d-xxl-inline ms-2 text-muted">1.8万</span>
+                                            </div>
+                                            <div class="col-auto d-flex align-items-center ps-2">
+                                                <span class="legend me-2"></span>
+                                                <span>手工胶</span>
+                                                <span class="d-none d-md-inline d-lg-none d-xxl-inline ms-2 text-muted">1.5万</span>
+                                            </div>
+                                            <div class="col-auto d-flex align-items-center ps-2">
+                                                <span class="legend me-2"></span>
+                                                <span>其他</span>
+                                                <span class="d-none d-md-inline d-lg-none d-xxl-inline ms-2 text-muted">1.5万</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="card" style="height: 28rem">
+                                    <div class="card-body card-body-scrollable card-body-scrollable-shadow">
+                                        <div class="divide-y">
+                                            <div>
+                                                <div class="row">
+                                                    <div class="col-auto">
+                                                        <span class="avatar">WM</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="text-truncate d-flex justify-content-between">
+                                                            <a data-bs-toggle="tooltip"
+                                                               data-bs-placement="right"
+                                                               title="跳转功能待开发">
+                                                                <strong>1月份</strong></a>
+                                                            <strong>销售额：21.32万</strong>
+                                                        </div>
+                                                        <div class="text-truncate d-flex justify-content-end">
+                                                            <small class="text-muted jus"><span>更新时间：</span>2023/05-10</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto align-self-center">
+                                                        <div class="badge bg-primary"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header border-0">
+                                <div class="card-title">重点产品走势</div>
+                            </div>
+                            <div class="position-relative">
+                                <div class="position-absolute top-0 left-0 px-3 mt-1 w-75">
+                                    <div class="row g-2">
+                                        <div class="col-auto">
+                                            <div class="chart-sparkline chart-sparkline-square"
+                                                 id="sparkline-activity"></div>
+                                        </div>
+                                        <div class="col">
+                                            <div>新增图文21篇，其中抖音10篇，小红书3篇</div>
+                                            <div class="text-muted">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-inline text-green" width="24" height="24"
+                                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                     fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <path d="M3 17l6 -6l4 4l8 -8"/>
+                                                    <path d="M14 7l7 0l0 7"/>
+                                                </svg>
+                                                +5% more than yesterday
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="chart-development-activity"></div>
+                            </div>
+                            <div class="card-table table-responsive" style="height: 21rem">
+                                <div class="card-body-scrollable card-body-scrollable-shadow">
+                                    <table class="table table-vcenter">
+                                        <thead>
+                                        <tr>
+                                            <th>产品</th>
+                                            <th>
+                                                <div class="d-flex justify-content-center">订单量</div>
+                                            </th>
+                                            <th>
+                                                <div class="d-flex justify-content-center">销售额</div>
+                                            </th>
+                                            <th>
+                                                <div class="d-flex justify-content-center">图表展示</div>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="w-auto">
+                                                <div class="d-flex  align-items-center">
+                                                    <span class="avatar avatar-sm "
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="手工胶水"
+                                                          style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                                                    <div class="ms-2">
+                                                        <small class="">手工胶水</small>
+                                                        <small class="text-muted d-block"><span>编码：</span><span>010001</span></small>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
+                                            <td class="w-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex ">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="w-2 ">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap  ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-danger  hover-shadow hover p-1"
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-auto">
+                                                <div class="d-flex  align-items-center">
+                                                    <span class="avatar avatar-sm "
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="手工胶水"
+                                                          style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                                                    <div class="ms-2">
+                                                        <small class="">手工胶水</small>
+                                                        <small class="text-muted d-block"><span>编码：</span><span>010001</span></small>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
+                                            <td class="w-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex ">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="w-2 ">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap  ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-danger  hover-shadow hover p-1"
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-auto">
+                                                <div class="d-flex  align-items-center">
+                                                    <span class="avatar avatar-sm "
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="手工胶水"
+                                                          style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                                                    <div class="ms-2">
+                                                        <small class="">手工胶水</small>
+                                                        <small class="text-muted d-block"><span>编码：</span><span>010001</span></small>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
+                                            <td class="w-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex ">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="w-2 ">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap  ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-danger  hover-shadow hover p-1"
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-auto">
+                                                <div class="d-flex  align-items-center">
+                                                    <span class="avatar avatar-sm "
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="手工胶水"
+                                                          style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                                                    <div class="ms-2">
+                                                        <small class="">手工胶水</small>
+                                                        <small class="text-muted d-block"><span>编码：</span><span>010001</span></small>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
+                                            <td class="w-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex ">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="w-2 ">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap  ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-danger  hover-shadow hover p-1"
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-auto">
+                                                <div class="d-flex  align-items-center">
+                                                    <span class="avatar avatar-sm "
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="手工胶水"
+                                                          style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                                                    <div class="ms-2">
+                                                        <small class="">手工胶水</small>
+                                                        <small class="text-muted d-block"><span>编码：</span><span>010001</span></small>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
+                                            <td class="w-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex ">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="w-2 ">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap  ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-danger  hover-shadow hover p-1"
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-auto">
+                                                <div class="d-flex  align-items-center">
+                                                    <span class="avatar avatar-sm "
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="手工胶水"
+                                                          style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                                                    <div class="ms-2">
+                                                        <small class="">手工胶水</small>
+                                                        <small class="text-muted d-block"><span>编码：</span><span>010001</span></small>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
+                                            <td class="w-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex ">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="w-2 ">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap  ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-danger  hover-shadow hover p-1"
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-auto">
+                                                <div class="d-flex  align-items-center">
+                                                    <span class="avatar avatar-sm "
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="手工胶水"
+                                                          style="background-image: url(../static/images/avatars/000m.jpg)"></span>
+                                                    <div class="ms-2">
+                                                        <small class="">手工胶水</small>
+                                                        <small class="text-muted d-block"><span>编码：</span><span>010001</span></small>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </td>
+                                            <td class="w-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex ">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="w-2 ">
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-nowrap  ms-0 me-1" href="">
+                                                        50单
+                                                    </span>
+                                                    <span class="text-danger d-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                             class="icon icon-tabler icon-tabler-arrow-narrow-down"
+                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                               <path d="M12 5l0 14"></path>
+                                                               <path d="M16 15l-4 4"></path>
+                                                               <path d="M8 15l4 4"></path>
+                                                        </svg>
+                                                        <small class="text-muted">50%</small>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <span class="text-danger  hover-shadow hover p-1"
+                                                          data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="数据展示功能待开发">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
+                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M6 18l0 -3"></path>
+                                                        <path d="M10 18l0 -6"></path>
+                                                        <path d="M14 18l0 -9"></path>
+                                                        <path d="M18 18l0 -12"></path>
+                                                    </svg>
+                                                    </span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer footer-transparent d-print-none">
+            <div class="container-xl">
+                <div class="row text-center align-items-center flex-row-reverse">
+                    <div class="col-lg-auto ms-lg-auto">
+                        <ul class="list-inline list-inline-dots mb-0">
+                            <li class="list-inline-item"><a href="./docs/" class="link-secondary">Documentation</a></li>
+                            <li class="list-inline-item"><a href="./license.html" class="link-secondary">License</a>
+                            </li>
+                            <li class="list-inline-item"><a href="https://github.com/tabler/tabler" target="_blank"
+                                                            class="link-secondary" rel="noopener">Source code</a></li>
+                            <li class="list-inline-item">
+                                <a href="https://github.com/sponsors/codecalm" target="_blank" class="link-secondary"
+                                   rel="noopener">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="icon text-pink icon-filled icon-inline" width="24" height="24"
+                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
+                                    </svg>
+                                    Sponsor
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                        <ul class="list-inline list-inline-dots mb-0">
+                            <li class="list-inline-item">
+                                Copyright &copy; 2023
+                                <a href="templates" class="link-secondary">Tabler</a>.
+                                All rights reserved.
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="./changelog.html" class="link-secondary" rel="noopener">
+                                    v1.0.0-beta17
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="example-text-input"
+                               placeholder="Your report name">
+                    </div>
+                    <label class="form-label">Report type</label>
+                    <div class="form-selectgroup-boxes row mb-3">
+                        <div class="col-lg-6">
+                            <label class="form-selectgroup-item">
+                                <input type="radio" name="report-type" value="1" class="form-selectgroup-input" checked>
+                                <span class="form-selectgroup-label d-flex align-items-center p-3">
+                    <span class="me-3">
+                      <span class="form-selectgroup-check"></span>
+                    </span>
+                    <span class="form-selectgroup-label-content">
+                      <span class="form-selectgroup-title strong mb-1">Simple</span>
+                      <span class="d-block text-muted">Provide only basic data needed for the report</span>
+                    </span>
+                  </span>
+                            </label>
+                        </div>
+                        <div class="col-lg-6">
+                            <label class="form-selectgroup-item">
+                                <input type="radio" name="report-type" value="1" class="form-selectgroup-input">
+                                <span class="form-selectgroup-label d-flex align-items-center p-3">
+                    <span class="me-3">
+                      <span class="form-selectgroup-check"></span>
+                    </span>
+                    <span class="form-selectgroup-label-content">
+                      <span class="form-selectgroup-title strong mb-1">Advanced</span>
+                      <span class="d-block text-muted">Insert charts and additional advanced analyses to be inserted in the report</span>
+                    </span>
+                  </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="mb-3">
+                                <label class="form-label">Report url</label>
+                                <div class="input-group input-group-flat">
+                    <span class="input-group-text">
+                      https://tabler.io/reports/
+                    </span>
+                                    <input type="text" class="form-control ps-0" value="report-01" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Visibility</label>
+                                <select class="form-select">
+                                    <option value="1" selected>Private</option>
+                                    <option value="2">Public</option>
+                                    <option value="3">Hidden</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Client name</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Reporting period</label>
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div>
+                                <label class="form-label">Additional information</label>
+                                <textarea class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </a>
+                    <a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 5l0 14"/>
+                            <path d="M5 12l14 0"/>
+                        </svg>
+                        Create new report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>{% endblock %}
+<!-- Libs JS -->
+{% block script %}
+    <script>
+        var nav_bar = $('.navbar-nav li');
+        nav_bar.removeClass('active');
+        nav_bar.eq(1).addClass('active');
+        var var_a = nav_bar.eq(1).find('a')
+        var_a.removeClass('active');
+        var_a.eq(3).addClass('active');
+    </script>
+{% endblock %}

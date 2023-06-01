@@ -1,0 +1,286 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends"backBase.html" %}
+<!-- Navbar -->
+{% block page %}
+    <div class="col d-flex flex-column">
+        <div class="tab-content">
+            <div class="tab-pane active show" id="tabs-home-18">
+                <div class="card-body">
+                    <h2 class="mb-0">选项管理</h2>
+                    <hr class="mt-0">
+                    <div class="card border-0">
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1">计量单位</h6>
+                            <small class="text-muted mb-1 showSmall">
+                                <span>当前可选：</span>
+                                {% for unit in units %}
+                                    <span class="me-2"><span
+                                            class="badge bg-danger me-1"></span><code>{{ unit.name }}</code></span>
+                                {% endfor %}
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newUnitForm">
+                                        <input type="text" placeholder="输入新计量单位"
+                                               name="newUnit"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="newUnit">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newUnit">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1">商品分类</h6>
+                            <small class="text-muted mb-1 showSmall">
+                                <span>当前可选：</span>
+                                {% for atom_category in atom_categories %}
+
+                                    <span class="me-2"><span
+                                            class="badge bg-danger me-1"></span><code>{{ atom_category.name }}</code></span>
+                                {% endfor %}
+
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newAtomCategoryForm">
+                                        <input type="text" placeholder="输入新商品分类"
+                                               name="newAtomCategory"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="newAtomCategory">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newAtomCategory">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1">销售品牌</h6>
+                            <small class="text-muted mb-1 showSmall">
+                                <span>当前可选：</span>
+                                {% for brand in brands %}
+                                    <span class="me-2"><span
+                                            class="badge bg-danger me-1"></span><code>{{ brand.name }}</code></span>
+                                {% endfor %}
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newBrandForm">
+                                        <input type="text" placeholder="输入新品牌名称"
+                                               name="newBrand"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="newBrand">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newBrand">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1">产出模式</h6>
+                            <small class="text-muted mb-1 showSmall">
+                                <span>当前可选：</span>
+                                {% for output in outputs %}
+                                    <span class="me-2"><span
+                                            class="badge bg-danger me-1"></span><code>{{ output.name }}</code></span>
+                                {% endfor %}
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newOutPutModelForm">
+                                        <input type="text" placeholder="输入新产出模式"
+                                               name="newOutPutModel"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="newOutPutModel">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newOutPutModel">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1 showSmall">付费模式</h6>
+                            <small class="text-muted mb-1">
+                                <span>当前可选：</span>
+                                {% for feeModel in feeModels %}
+                                    <span class="me-2"><span
+                                            class="badge bg-danger me-1"></span><code>{{ feeModel.name }}</code></span>
+                                {% endfor %}
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newFeeModelForm">
+                                        <input type="text" placeholder="输入新付费模式"
+                                               name="newFeeModel"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none" data-input="newFeeModel">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newFeeModel">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1 showSmall">推广平台</h6>
+                            <small class="text-muted mb-1">
+                                <span>当前可选：</span>
+                                {% for plat in plats %}
+                                    <span class="me-2"><span
+                                            {% if plat.is_Promotion %}
+                                                class="badge bg-danger me-1"></span>
+                                                <code>{{ plat.name }}</code></span>
+                                            {% endif %}
+                                {% endfor %}
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newPromotionPlatForm">
+                                        <input type="text" placeholder="输入新推广平台"
+                                               name="newPromotionPlat"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="newPromotionPlat">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newPromotionPlat">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1 showSmall">推广进度</h6>
+                            <small class="text-muted mb-1">
+                                <span>当前可选：</span>
+                                {% for rate in rates %}
+                                    <span class="me-2"><span
+                                            class="badge bg-danger me-1"></span><code>{{ rate.name }}</code></span>
+                                {% endfor %}
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newPromotionRateForm">
+                                        <input type="text" placeholder="输入新推广进度"
+                                               name="newPromotionRate"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="newPromotionRate">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newPromotionRate">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1 showSmall">手工单分类</h6>
+                            <small class="text-muted mb-1">
+                                <span>当前可选：</span>
+                                {% for handsType in handsTypes %}
+                                    <span class="me-2"><span
+                                            class="badge bg-danger me-1"></span><code>{{ handsType.name }}</code></span>
+                                {% endfor %}
+                            </small>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-6 px-6">
+                                    <form id="newHandOrderForm">
+                                        <input type="text" placeholder="输入新分类"
+                                               name="newHandOrderType"
+                                               class="me-2 form-control required">
+                                        <small class="text-danger d-none"
+                                               data-input="newHandOrderType">不能为空</small>
+                                    </form>
+                                </div>
+                                <div class="col-2 px-2 ms-auto">
+                                    <button href="#" class="btn btn-primary newSelectBtn"
+                                            data-id="newHandOrderType">
+                                        增加选项
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-2 mb-2 border-bottom">
+                            <h6 class="text-muted mb-1 pb-1 ">其他按钮</h6>
+                            <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="col-auto me-2">
+                                    <a class="btn btn-primary"
+                                       id="refreshLocation">
+                                        同步地域
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-12 pb-3">
+                            <small>导入手工订单</small>
+                            <form class="dropzone form-control " action="../"
+                                  autocomplete="off" novalidate>
+                                <div class="fallback">
+                                    <input name="HandOrderFile" type="file"
+                                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                </div>
+                            </form>
+                            <div class="d-flex mt-2 justify-content-start align-items-center">
+                                <div class="col-auto px-2 ms-auto">
+                                    <a href="{{ url_for("hand.downFile") }}">下载模板</a>
+                                </div>
+                                <div class="px-2 col-2">
+                                    <button type="button" class="btn  btn-primary w-100"
+                                            id="uploadHandOrderFile">
+                                        提交
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        var nav_bar = $('.list-group-transparent li>a');
+        nav_bar.removeClass('active');
+        nav_bar.eq(5).addClass('active');
+    </script>
+{% endblock %}
