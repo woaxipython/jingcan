@@ -45,7 +45,7 @@ class writeOrderData(object):
             self.store_model = StoreModel(store_id=self.store_id, plat_store_name=self.plat_store_name,
                                           name=self.store_name)
         if self.store_name == "手工单":
-            self.hand_order_model = HandOrderModel.query.filter_by(orderID=self.orderID).first()
+            self.hand_order_model = HandParentOrderModel.query.filter_by(orderID=self.orderID).first()
         else:
             self.hand_order_model = None
 

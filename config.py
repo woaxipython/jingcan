@@ -42,7 +42,7 @@ class TestingConfig(BaseConfig):
 
 
 class ProductiongConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://jcdata:123456@127.0.0.1:3306/chatgpt?charset=utf8mb4"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://jcdata:123456@127.0.0.1:3306/jcdata?charset=utf8mb4"
     # Mail设置
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 465

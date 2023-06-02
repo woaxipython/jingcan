@@ -1,1 +1,8 @@
-https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json
+from flask import Flask
+app=Flask(__name__)
+@app.route('/')
+def index():
+    return 'hello world'
+
+if __name__ == '__main__':
+    app.run()
