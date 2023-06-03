@@ -1,6 +1,6 @@
 import os
 
-from APP.SQLAPP.addEdit.orderStore import writeHandOrder, WriteExcelOrder
+from APP.SQLAPP.addEdit.orderStore import WriteExcelOrder, WriteHandOrder
 from APP.SQLAPP.search.orderStore import getHandOrderInfo
 from APP.SQLAPP.search.product import downLoadDisFile, makeHandOrderExcel
 
@@ -43,10 +43,16 @@ def order():
 @bp.route("/new", methods=['POST'])
 def newHandOrder():
     form_dict = request.get_json()
-    print(form_dict)
     form = NewHandOrderForm(form_dict)
     if form.validate():
-        return writeHandOrder(form_dict)
+        write_hand_order = WriteHandOrder(form_dict)
+        if write_hand_order.check():
+            if write_hand_order.uploadKdzsOrder():
+                return jsonify(write_hand_order.weiteOwnData())
+            else:
+                return jsonify({"status": "failed", "message": "".join(write_hand_order.error_message)})
+        else:
+            return jsonify({"status": "failed", "message": "".join(write_hand_order.error_message)})
     else:
         print(form.messages)
         return jsonify({"status": "failed", "message": form.messages})

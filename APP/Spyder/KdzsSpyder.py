@@ -112,7 +112,6 @@ class KuaiDiZhuShouSpyder():
                 "tid": search_id,
                 "weight": 0, }
         response = self.spyder.post(self.create_url, json=json, headers=self.headers)
-        print(response.json())
         if not response.json()['success']:
             return {"status": False, "message": response.json()["errorMessage"]}
         else:

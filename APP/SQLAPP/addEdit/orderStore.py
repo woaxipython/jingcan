@@ -22,6 +22,8 @@ kdzs = KuaiDiZhuShouSpyder()
 
 # 写入订单数据
 class writeOrderData(object):
+    """写入在快递助手爬回来的订单数据"""
+
     def __init__(self, order_info):
         self.order_info = order_info
         self.store_id = self.order_info['sellerId']
@@ -40,24 +42,26 @@ class writeOrderData(object):
         self.writrOrder()
 
     def checkStore(self):
-        self.store_model = StoreModel.query.filter_by(store_id=self.store_id).first()
-        if not self.store_model:
+        self.store_model = StoreModel.query.filter_by(store_id=self.store_id).first()  # 查询店铺是否存在
+        if not self.store_model:  # 如果不存在就创建
             self.store_model = StoreModel(store_id=self.store_id, plat_store_name=self.plat_store_name,
-                                          name=self.store_name)
-        if self.store_name == "手工单":
-            self.hand_order_model = HandParentOrderModel.query.filter_by(orderID=self.orderID).first()
+                                          name=self.store_name)  # 创建店铺
+        if self.store_name == "手工单":  # 如果店铺名为手工单
+            self.hand_order_model = HandParentOrderModel.query.filter_by(search_id=self.orderID).first()  # 查询手工单是否存在
+            self.hand_order_model = self.hand_order_model if self.hand_order_model else None  # 如果不存在就置空
         else:
-            self.hand_order_model = None
+            self.hand_order_model = None  # 如果不是手工单就置空
 
     def checkParentOrder(self):
-        self.parent_order_model = ParentOrderModel.query.filter_by(orderID=self.orderID).first()
-        if not self.parent_order_model:
+        """查询父订单是否存在"""
+        self.parent_order_model = ParentOrderModel.query.filter_by(orderID=self.orderID).first()  # 查询父订单是否存在
+        if not self.parent_order_model:  # 如果不存在就创建
             self.parent_order_model = ParentOrderModel(orderID=self.orderID, province=self.province,
                                                        city=self.city,
                                                        totalPayment=self.totalPayment,
                                                        totalReceivedPayment=self.totalReceivedPayment,
-                                                       updateTime=self.updateTime)
-        else:
+                                                       updateTime=self.updateTime)  # 创建父订单
+        else:  # 如果存在就更新
             self.parent_order_model.province = self.province
             self.parent_order_model.city = self.city
             self.parent_order_model.totalPayment = self.totalPayment
@@ -67,29 +71,30 @@ class writeOrderData(object):
         self.parent_order_model.payTime = self.payTime
 
     def writrOrder(self):
-        for order in self.orders:
-            self.order_model = OrderModel.query.filter_by(orderID=order['orderID']).first()
-            if not self.order_model:
+        """写入订单"""
+        for order in self.orders:  # 遍历订单
+            self.order_model = OrderModel.query.filter_by(orderID=order['orderID']).first()  # 查询订单是否存在
+            if not self.order_model:  # 如果不存在就创建
                 self.order_model = OrderModel(orderID=order['orderID'], code=order['code'], quantity=order['quantity'],
                                               payment=order['payment'], updateTime=self.updateTime,
                                               express=order['express'], expressOrder=order['expressOrder'])
-            self.order_model.refund = order['refund']
-            self.order_model.status = order['status']
-            sale_pr_model = SaleModel.query.filter_by(code=order["code"]).first()
-            if not sale_pr_model:
-                constract_model = CodeStractModel.query.filter_by(name=order['SkuName']).first()
-                if not constract_model:
+            self.order_model.refund = order['refund']  # 更新退款
+            self.order_model.status = order['status']  # 更新订单
+            sale_pr_model = SaleModel.query.filter_by(code=order["code"]).first()  # 查询商品是否存在
+            if not sale_pr_model:  # 如果不存在就创建
+                constract_model = CodeStractModel.query.filter_by(name=order['SkuName']).first()  # 检查是否已存在于商品对照表
+                if not constract_model:  # 如果不存在就创建，同时创建商品以及商品对照表
                     constract_model = CodeStractModel(name=order['SkuName'], store=self.store_model)
                     sale_pr_model = SaleModel(sale_name=order['SkuName'])
                 else:
-                    sale_pr_model = constract_model.sale
-                constract_model.sale = sale_pr_model
+                    sale_pr_model = constract_model.sale  # 如果存在就直接将商品对照表中的商品赋值给商品
+                constract_model.sale = sale_pr_model  # 更新商品对照表
 
-            sale_pr_model.store.append(self.store_model)
-            self.parent_order_model.express = order['express']
-            self.parent_order_model.expressOrder = order['expressOrder']
-            self.parent_order_model.status = order['status']
-            if self.hand_order_model:
+            sale_pr_model.store.append(self.store_model)  # 更新商品存在的店铺
+            self.parent_order_model.express = order['express']  # 更新父订单的快递
+            self.parent_order_model.expressOrder = order['expressOrder']  # 更新父订单的快递单号
+            self.parent_order_model.status = order['status']  # 更新父订单的状态
+            if self.hand_order_model:  # 如果是手工单
                 self.hand_order_model.status = order['status']
                 self.hand_order_model.express = order['express']
                 self.hand_order_model.expressOrder = order['expressOrder']
@@ -101,72 +106,64 @@ class writeOrderData(object):
 
 
 def writeRefund(refund_result):
-    refund_model = RefundModel.query.filter_by(refund_id=refund_result['refundId']).first()
-    parent_model = ParentOrderModel.query.filter_by(orderID=refund_result['tid']).first()
-    parent_model = ParentOrderModel(orderID=refund_result['tid']) if not parent_model else parent_model
+    """写入快递助手爬回的退款信息"""
+    refund_model = RefundModel.query.filter_by(refund_id=refund_result['refundId']).first()  # 查询退款是否存在
+    parent_model = ParentOrderModel.query.filter_by(orderID=refund_result['tid']).first()  # 查询父订单是否存在
+    parent_model = ParentOrderModel(orderID=refund_result['tid']) if not parent_model else parent_model  # 如果不存在就创建
 
-    store_model = StoreModel.query.filter_by(store_id=refund_result['sellerId']).first()
-    store_model = StoreModel(store_id=refund_result['sellerId']) if not store_model else store_model
+    store_model = StoreModel.query.filter_by(store_id=refund_result['sellerId']).first()  # 查询店铺是否存在
+    store_model = StoreModel(store_id=refund_result['sellerId']) if not store_model else store_model  # 如果不存在就创建
 
     # 退款订单匹配商品
-    sale_pr_model = SaleModel.query.filter_by(code=refund_result["code"]).first()
-    if not sale_pr_model:
-        constract_model = CodeStractModel.query.filter_by(name=refund_result['SkuName']).first()
-        if not constract_model:
-            constract_model = CodeStractModel(name=refund_result['SkuName'], store=store_model)
-            sale_pr_model = SaleModel(sale_name=refund_result['SkuName'])
+    sale_pr_model = SaleModel.query.filter_by(code=refund_result["code"]).first()  # 查询商品是否存在
+    if not sale_pr_model:  # 如果不存在就创建
+        constract_model = CodeStractModel.query.filter_by(name=refund_result['SkuName']).first()  # 检查是否已存在于商品对照表
+        if not constract_model:  # 如果不存在就创建，同时创建商品以及商品对照表
+            constract_model = CodeStractModel(name=refund_result['SkuName'], store=store_model)  # 创建商品对照表
+            sale_pr_model = SaleModel(sale_name=refund_result['SkuName'])  # 创建商品
         else:
-            sale_pr_model = constract_model.sale
+            sale_pr_model = constract_model.sale  # 如果存在就直接将商品对照表中的商品赋值给商品
         constract_model.sale = sale_pr_model
     sale_pr_model.store.append(store_model)
 
-    if not refund_model:
-        refund_model = RefundModel(refund_id=refund_result["refundId"],
-                                   status=refund_result["StatusDesc"],
-                                   reason=refund_result["reason"],
-                                   amount=refund_result["Amount"],
-                                   modifiedTime=refund_result["ModifiedTime"],
-                                   updateTime=refund_result["CreatedTime"], )
-    else:
-        refund_model.status = refund_result["StatusDesc"]
-        refund_model.amount = refund_result["Amount"]
-        refund_model.modifiedTime = refund_result["ModifiedTime"]
-        refund_model.updateTime = refund_result["CreatedTime"]
-        refund_model.reason = refund_result["reason"]
-    refund_model.sale_id = sale_pr_model.id
-    refund_model.parent_order = parent_model
-    refund_model.store = store_model
+    if not refund_model:  # 如果不存在就创建退款订单
+        refund_model = RefundModel(refund_id=refund_result["refundId"])
+
+    refund_model.status = refund_result["StatusDesc"]  # 更新退款状态
+    refund_model.reason = refund_result["reason"]  # 更新退款原因
+    refund_model.amount = refund_result["Amount"]  # 更新退款金额
+    refund_model.modifiedTime = refund_result["ModifiedTime"]  # 更新退款修改时间
+    refund_model.updateTime = refund_result["CreatedTime"]  # 更新退款创建时间
+
+    refund_model.sale_id = sale_pr_model.id  # 更新退款商品
+    refund_model.parent_order = parent_model  # 更新退款父订单
+    refund_model.store = store_model  # 更新退款店铺
     db.session.add(refund_model)
     db.session.commit()
 
 
 def writeStore(store_list):
+    """写入快递助手爬回的店铺信息"""
     new_store = []
     for store in store_list:
         store_id = store['sellerId']
         store_model = StoreModel.query.filter_by(store_id=store_id).first()
-        if not store_model:
-            store_model = StoreModel(name=store['sellerAbbreviation'],
-                                     store_id=store_id,
-                                     plat_store_name=store['sellerNick'],
-                                     bindTime=store['bindTime'],
-                                     status=True if store['status'] == 1 else False,
-                                     )
-            new_store.append(store['sellerAbbreviation'])
-        else:
-            store_model.name = store['sellerAbbreviation']
-            store_model.plat_store_name = store['sellerNick']
-            store_model.bindTime = store['bindTime']
-            store_model.status = True if store['status'] == 1 else False
+        if not store_model:  # 如果不存在就创建
+            store_model = StoreModel(store_id=store_id, )  # 创建店铺
+            new_store.append(store['sellerAbbreviation'])  # 记录新店铺
+        store_model.name = store['sellerAbbreviation']  # 更新店铺名称
+        store_model.plat_store_name = store['sellerNick']  # 更新店铺昵称
+        store_model.bindTime = store['bindTime']  # 更新店铺绑定时间
+        store_model.status = True if store['status'] == 1 else False  # 更新店铺状态
 
-        plat_name = PlatNameZH(store['platform'].upper())
-        plat_model = PlatModel.query.filter_by(name=plat_name).first()
-        if not plat_model:
-            plat_model = PlatModel(name=plat_name, EH_name=store['platform'], is_Store=True)
-        store_model.plat = plat_model
-        db.session.add(store_model)
-        db.session.commit()
-    return new_store
+        plat_name = PlatNameZH(store['platform'].upper())  # 更新店铺平台
+        plat_model = PlatModel.query.filter_by(name=plat_name).first()  # 查询平台是否存在
+        plat_model = plat_model if plat_model else PlatModel(name=plat_name, EH_name=store['platform'],
+                                                             is_Store=True)  # 如果不存在就创建
+        store_model.plat = plat_model  # 更新店铺平台
+        db.session.add(store_model)  # 添加店铺
+        db.session.commit()  # 提交
+    return new_store  # 返回新店铺列表
 
 
 def PlatNameZH(EHname):
@@ -175,151 +172,189 @@ def PlatNameZH(EHname):
 
 
 def writeAdMethodModel(form_dict):
-    plat_model = PlatModel.query.get(form_dict.get("platName"))
-    if plat_model:
-        ad_method_model = AdMethodModel.query.filter_by(name=form_dict.get("proName")).first()
-        if ad_method_model:
-            return jsonify({"status": "failed", "message": "推广方式已存在"})
+    """写入推广方式表"""
+    plat_model = PlatModel.query.get(form_dict.get("platName"))  # 查询平台是否存在
+    if plat_model:  # 如果存在就创建
+        ad_method_model = AdMethodModel.query.filter_by(name=form_dict.get("proName"),
+                                                        plat_id=plat_model.id).first()  # 查询推广方式是否存在
+        if ad_method_model:  # 如果存在就返回
+            return jsonify({"status": "failed", "message": "推广方式已存在"})  # 如果不存在就创建
         else:
             ad_method_model = AdMethodModel(name=form_dict.get("proName"), plat_id=plat_model.id,
-                                            desc=form_dict.get("proFeeModel"))
-            db.session.add(ad_method_model)
-            db.session.commit()
+                                            desc=form_dict.get("proFeeModel"))  # 创建推广方式
+            db.session.add(ad_method_model)  # 添加推广方式
+            db.session.commit()  # 提交
             return jsonify({"status": "success", "message": "新增成功"})
     else:
         return jsonify({"status": "failed", "message": "平台不存在"})
 
 
 def writeNewDisModel(form_dict):
-    user_model = UserModel.query.get(form_dict.get("newDisUser"))
+    """写入新分销公司"""
+    user_model = UserModel.query.get(form_dict.get("newDisUser"))  # 查询联络人是否存在
     if not user_model:
-        return jsonify({"status": "failed", "message": "没有该联络人"})
+        return jsonify({"status": "failed", "message": "没有该联络人"})  # 如果不存在就返回
     else:
-        dis_model = DistributionModel.query.filter_by(campany_name=form_dict.get("newDisCampany")).first()
-        if dis_model:
-            return jsonify({"status": "failed", "message": "分销公司已存在"})
+        dis_model = DistributionModel.query.filter_by(campany_name=form_dict.get("newDisCampany")).first()  # 查询分销公司是否存在
+        if dis_model:  # 如果存在就返回
+            return jsonify({"status": "failed", "message": "分销公司已存在"})  # 返回已经存在
         else:
             dis_model = DistributionModel(campany_name=form_dict.get("newDisCampany"), name=form_dict.get("newDisName"),
                                           wechat=form_dict.get("newDisWechat"),
                                           channel=form_dict.get("newDisSaleChannel"),
                                           phone=form_dict.get("newDisPhone"), city=form_dict.get("newDisCity"),
                                           province=form_dict.get("newDisProvince"), link=form_dict.get("newDisLink"),
-                                          address=form_dict.get("newDisAddress"), remark=form_dict.get("newDisRemark"))
+                                          address=form_dict.get("newDisAddress"),
+                                          remark=form_dict.get("newDisRemark"))  # 创建分销公司
             dis_model.user = user_model
             db.session.add(dis_model)
             db.session.commit()
             return jsonify({"status": "success", "message": "新增成功"})
 
 
-def writeHandOrder(form_dict):
-    order_list, shipInfo, payment = kdzs.dealCreateOrder(form_dict)
-    max_id = db.session.query(func.max(HandParentOrderModel.id)).scalar() or 0
-    search_id = createOrderCode(max_id + 1)
-    create_handle_order = kdzs.createTrade(form_dict=form_dict, order_list=order_list, shipInfo=shipInfo,
-                                           search_id=search_id)
-    if not create_handle_order['status']:
-        return jsonify({"status": "success", "message": "创建订单失败"})
-    hands_type = HandOrderCategory.query.get(form_dict['handOrderModel'])
-    if not hands_type:
-        return jsonify({"status": "failed", "message": "没有该订单类型"})
-    handorder_model = HandParentOrderModel(search_id=search_id, province=form_dict['handOrderProvince'],
-                                           city=form_dict['handOrderCity'], address=form_dict['handOrderAddress'],
-                                           phone=form_dict['handOrderPhone'], name=form_dict['handOrderName'],
-                                           payment=payment,
-                                           remark=form_dict['handOrderRemark']
-                                           )
-    user_model = UserModel.query.get(form_dict['handOrderUser'])
-    order_category = HandOrderCategory.query.get(form_dict['handOrderModel'])
-    handorder_model.user = user_model
-    handorder_model.category = order_category
-    for order in order_list:
-        order_model = HandOrderModel(code=order['outerSkuId'], quantity=order['num'], payment=order['payment'])
-        sale_model = SaleModel.query.filter_by(code=order['outerSkuId']).first()
-        if not sale_model:
-            sale_model = SaleModel(name=order['skuName'], code=order['outerSkuId'])
-        order_model.sale = sale_model
-        order_model.cost = sale_model.cost
-        order_model.hand_parent_order = handorder_model
-        db.session.add(order_model)
-    db.session.add(handorder_model)
-    db.session.commit()
-    return jsonify({"status": "success", "message": "创建订单成功"})
+class WriteHandOrder(object):
+    """写入手工订单"""
+
+    def __init__(self, form_dict):
+        self.form_dict = form_dict
+        self.error_message = []
+
+    def check(self):
+        """检查数据"""
+        self.hands_type = HandOrderCategory.query.get(self.form_dict['handOrderModel'])  # 查询手工订单类型
+        if not self.hands_type:
+            self.error_message.append("没有该手工订单类型")
+            return False
+        self.user_model = UserModel.query.get(self.form_dict['user'])  # 查询用户
+        if not self.user_model:
+            self.error_message.append("没有该用户")
+            return False
+        self.order_list, self.shipInfo, self.payment = kdzs.dealCreateOrder(self.form_dict)  # 处理订单
+        for order in self.order_list:
+            sale_model = SaleModel.query.filter_by(code=order['outerSkuId']).first()  # 查询商品是否存在
+            if not sale_model:
+                self.error_message.append("没有该商品")
+                return False
+        return True
+
+    def uploadKdzsOrder(self):
+        """写入手工订单"""
+        max_id = db.session.query(func.max(HandParentOrderModel.id)).scalar() or 0  # 查询最大id
+        self.search_id = createOrderCode(max_id + 1)  # 生成订单号
+        create_handle_order = kdzs.createTrade(form_dict=self.form_dict, order_list=self.order_list,
+                                               shipInfo=self.shipInfo, search_id=self.search_id)  # 将订单回传给快递助手
+
+        if create_handle_order['status']:
+            return True
+        else:
+            self.error_message.append(create_handle_order['message'])
+            return False  # 如果成功
+
+    def weiteOwnData(self):
+        """写入自己的数据"""
+        handorder_model = HandParentOrderModel(search_id=self.search_id, province=self.form_dict['handOrderProvince'],
+                                               city=self.form_dict['handOrderCity'],
+                                               address=self.form_dict['handOrderAddress'],
+                                               phone=self.form_dict['handOrderPhone'],
+                                               name=self.form_dict['handOrderName'],
+                                               payment=self.payment,
+                                               remark=self.form_dict['handOrderRemark']
+                                               )  # 创建手工订单
+        handorder_model.user = self.user_model  # 更新联络人
+        handorder_model.category = self.hands_type  # 更新订单类型
+        for order in self.order_list:  # 遍历订单列表
+            order_model = HandOrderModel(code=order['outerSkuId'], quantity=order['num'], payment=order['payment'])
+            sale_model = SaleModel.query.filter_by(code=order['outerSkuId']).first()  # 查询商品
+            order_model.sale = sale_model
+            order_model.cost = sale_model.cost
+            order_model.hand_parent_order = handorder_model
+            db.session.add(order_model)
+        db.session.add(handorder_model)
+        db.session.commit()
+        return {"status": "success", "message": "创建订单成功"}
 
 
 class WriteExcelOrder(object):
+    """写入EXCEL手工订单"""
+
     def __init__(self, form_dict, save_path):
-        self.form_dict = form_dict
-        self.save_path = save_path
-        self.upload_path = 'static/excel/普通EXCEL模板.xls'
-        self.user = self.form_dict.get('disOrderUser')
-        self.dis = self.form_dict.get('disOrderName')
+        self.form_dict = form_dict  # 表单数据
+        self.save_path = save_path  # 保存路径
+        self.upload_path = 'static/excel/普通EXCEL模板.xls'  # 模板路径
+        self.user = self.form_dict.get('disOrderUser')  # 联络人
+        self.dis = self.form_dict.get('disOrderName')  # 分销商
 
     def check(self):
-        self.user_model = UserModel.query.get(self.user)
-        if not self.user_model:
-            return False
-        self.dis_model = DistributionModel.query.get(self.dis)
-        if not self.dis_model:
-            return False
-        return True
+        self.user_model = UserModel.query.get(self.user)  # 联络人模型
+        if not self.user_model:  # 联络人不存在
+            return False  # 返回False
+        self.dis_model = DistributionModel.query.get(self.dis)  # 分销商模型
+        if not self.dis_model:  # 分销商不存在
+            return False  # 返回False
+        return True  # 返回True
 
     def makeKdzsExcel(self):
-        workbook = load_workbook(self.save_path)
-        sheet = workbook['分销商订单模板']
-        max_id = db.session.query(func.max(HandParentOrderModel.id)).scalar() or 0
-        search_id = createOrderCode(max_id + 1)
-        self.order_lists = []
+        """生成快递助手手工订单EXCEL"""
+        workbook = load_workbook(self.save_path)  # 加载上传的EXCEL
+        sheet = workbook['分销商订单模板']  # 选择工作表
+        max_id = db.session.query(func.max(HandParentOrderModel.id)).scalar() or 0  # 查询最大id
+        search_id = createOrderCode(max_id + 1)  # 生成订单号
+        self.order_lists = []  # 订单列表
 
         columns = ["订单编号", "*收件人", "固话", "*手机", "*地址", "发货信息", "*货品规格编码", "宝贝数量", "总重量",
-                   "备注", "代收货款(是/否)", "保价服务(是/否)", "实付金额"]
-        self.order_lists.append(columns)
-        for row in sheet.rows:
-            if row[0].row == 1:
-                continue
-            order_list = []
-            name = row[0].value
-            sale_model = SaleModel.query.filter_by(name=name).first()
-            if not sale_model:
-                return {"status": "failed", "message": "没有第{}行产品，请重新填写".format(row[0].column)}
-            order_list.append(search_id)
-            order_list.append(row[3].value)
-            order_list.append("")
-            order_list.append(row[4].value)
-            order_list.append(row[5].value)
-            order_list.append(name + ':' + str(row[1].value) + "只")
-            order_list.append(sale_model.code)
-            order_list.append(row[1].value)
-            order_list.append("")
-            order_list.append("")
-            order_list.append("")
-            order_list.append("")
-            order_list.append(row[2].value)
-            self.order_lists.append(order_list)
-            search_id = "O" + str(int(search_id[1:]) + 1)
-        workbook.close()
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet('sheet1')
+                   "备注", "代收货款(是/否)", "保价服务(是/否)", "实付金额"]  # 列名
+        self.order_lists.append(columns)  # 添加列名
+        for row in sheet.rows:  # 遍历行
+            if row[0].row == 1:  # 如果是第一行
+                continue  # 跳过
+            order_list = []  # 订单列表
+            name = row[0].value  # 产品名称
+            sale_model = SaleModel.query.filter_by(name=name).first()  # 查询产品
+            if not sale_model:  # 如果没有该产品
+                return {"status": "failed", "message": "没有第{}行产品，请重新填写".format(row[0].column)}  # 返回错误信息
+            order_list.append(search_id)  # 订单号
+            order_list.append(row[3].value)  # 收件人
+            order_list.append("")  # 固话
+            order_list.append(row[4].value)  # 手机
+            order_list.append(row[5].value)  # 地址
+            order_list.append(name + ':' + str(row[1].value) + "只")  # 发货信息
+            order_list.append(sale_model.code)  # 货品规格编码
+            order_list.append(row[1].value)  # 宝贝数量
+            order_list.append("")  # 总重量
+            order_list.append("")  # 备注
+            order_list.append("")  # 代收货款
+            order_list.append("")  # 保价服务
+            order_list.append(row[2].value)  # 实付金额
+            self.order_lists.append(order_list)  # 添加到订单列表
+            search_id = "O" + str(int(search_id[1:]) + 1)  # 生成下一个订单号
+        workbook.close()  # 关闭EXCEL
+        wb = xlwt.Workbook()  # 创建EXCEL
+        ws = wb.add_sheet('sheet1')  # 创建工作表
         i = 0
-        for row in self.order_lists:
-            j = 0
-            for col in row:
-                ws.write(i, j, col)
+        for row in self.order_lists:  # 遍历订单列表
+            j = 0  # 列
+            for col in row:  # 遍历列
+                ws.write(i, j, col)  # 写入数据
                 j += 1
             i += 1
-        wb.save(self.upload_path)
+        wb.save(self.upload_path)  # 保存EXCEL
         return {"status": "success", "message": "生成成功"}
 
     def uploadExcelFile(self):
-        result = kdzs.uploadHandOrder(upload_path=self.upload_path)
+        """上传EXCEL到快递助手"""
+        result = kdzs.uploadHandOrder(upload_path=self.upload_path)  # 上传EXCEL到快递助手
         print(result)
-        if result['status'] == "failed":
-            return {"status": "failed", "message": result['message']}
+        if result['status'] == "failed":  # 如果上传失败
+            return {"status": "failed", "message": result['message']}  # 返回错误信息
         else:
-            return {"status": "success", "message": "上传成功"}
+            return {"status": "success", "message": "上传成功"}  # 返回成功信息
 
     def writeHandOrder(self):
+        """写入手工订单到数据库"""
         for order_list in self.order_lists:
+            # 查询用户
             user_model = UserModel.query.get(self.form_dict['disOrderUser'])
+            # 查询订单分类
             order_category = HandOrderCategory.query.filter_by(name="分销商订单").first()
             if not order_category:
                 order_category = HandOrderCategory(name="分销商订单")
@@ -340,6 +375,7 @@ class WriteExcelOrder(object):
 
 
 def writeStorePromotionFee(form_dict):
+    """写入店铺促销费用"""
     error_message = []
     for Ad in form_dict['AdList']:
         write_result = writeStoreFee(Ad)
@@ -349,10 +385,48 @@ def writeStorePromotionFee(form_dict):
     if error_message:
         return jsonify({"status": "failed", "message": error_message})
     else:
-        return jsonify({"status": "success", "message": "新增成功"})
+        return jsonify({"status": "success", "message": "新增广告费用成功"})
+
+
+class WriteStorePromotionFile(object):
+    def __init__(self, save_path):
+        self.save_path = save_path
+        self.error_message = []
+        self.workbook = load_workbook(save_path)
+        self.sheet = self.workbook.active
+
+    def write(self):
+        for row in self.sheet.rows:
+            if row[0].row == 1:
+                continue
+            plat_model = PlatModel.query.filter_by(name=row[0].value).first()
+            if not plat_model:
+                self.error_message.append("第" + str(row[0]) + "列的平台不存在")
+                continue
+            plat_id = plat_model.id
+            method_model = AdMethodModel.query.filter_by(plat_id=plat_id, name=row[1].value).first()
+            if not method_model:
+                self.error_message.append("第" + str(row[1].column) + "列的广告方式不存在")
+                continue
+            method_id = method_model.id
+            store_model = StoreModel.query.filter_by(name=row[2].value).first()
+            if not store_model:
+                self.error_message.append("第" + str(row[2].column) + "列的店铺不存在")
+                continue
+            store_id = store_model.id
+            group_model = GroupModel.query.filter_by(name=row[3].value).first()
+            if not group_model:
+                self.error_message.append("第" + str(row[3].column) + "列的商品组不存在")
+                continue
+            group_id = group_model.id
+            Ad = {'plat': plat_id, 'method': method_id, 'store': store_id, 'product': group_id, 'fee': row[4].value,
+                  'date': row[5].value, }
+            writeStoreFee(Ad)
+        return self.error_message
 
 
 def writeStorePromotionFile(save_path):
+    """批量写入店铺促销费用"""
     workbook = load_workbook(save_path)
     sheet = workbook.active
     error_message = []

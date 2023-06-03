@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from APP.SQLAPP.addEdit.orderStore import writeStorePromotionFee, writeStorePromotionFile
+from APP.SQLAPP.addEdit.orderStore import writeStorePromotionFee, WriteStorePromotionFile
 from APP.SQLAPP.makePandas.orderStore import makePOrderAll, makePOrderStore, makePOrderMapAll, makePOrderTimeMapAll, \
     makeTimeMapData, makeStoreFeeAllPr
 from APP.SQLAPP.search.orderStore import makeStoreProFile, getParentOrders, getParentMap, getParentTimeOrder, \
@@ -61,7 +61,12 @@ def getStoreProFile():
         file.save(save_path)
         form = StoreProFile(save_path)
         if form.validate():
-            return writeStorePromotionFile(save_path)
+            writefee = WriteStorePromotionFile(save_path)
+            writefee.write()
+            if writefee.error_message:
+                return jsonify({'status': 'failed', 'message': "".join(writefee.error_message)})
+            else:
+                return jsonify({"status": "success", 'message': "上传成功"})
         else:
             return jsonify({'status': 'failed', 'message': form.messages})
 

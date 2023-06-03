@@ -9,7 +9,7 @@ class BaseConfig:
 
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://jingcan:123456@1.14.138.236:3306/jingcan01?charset=utf8mb4"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://jingcan:123456@1.14.138.236:3306/jingcan?charset=utf8mb4"
     # Mail设置
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 465
