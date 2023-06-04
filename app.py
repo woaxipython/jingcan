@@ -129,11 +129,14 @@ def allToadyData():
 @app.route('/orderData')
 def orderData():
     payment_orders = getOrderData(status="付款订单")
-
     payment_orders = makeOrderFrameData(payment_orders, cycle="D")
+    print(payment_orders.columns)
+
     refund_orders = getOrderData(status="退款订单")
     refund_orders = makeOrderFrameData(refund_orders, cycle="D")
+    print(refund_orders.columns)
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
+    print(order_refund.columns)
     order_refund = order_refund.T.values.tolist()
     print(order_refund)
 
