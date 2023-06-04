@@ -22,6 +22,7 @@ def makeOrderFrameData(sql_list, cycle="Q", store="all"):
     order = order.reset_index()
     order['date'] = order['date'].dt.strftime('%Y-%m-%d')
     order.total = order.total.fillna(0)
+    print(order)
 
     return order
 
