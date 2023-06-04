@@ -26,7 +26,7 @@ from models.store import ParentOrderModel
 app = Flask(__name__)
 
 # config初始化
-app.config.from_object(config.ProductiongConfig)
+app.config.from_object(config.TestingConfig)
 
 # SQlAlchemy初始化
 db.init_app(app=app)
@@ -136,6 +136,7 @@ def orderData():
     refund_orders = makeOrderFrameData(refund_orders, cycle="D")
     print(refund_orders.columns)
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
+    print(order_refund)
     print(order_refund.columns)
     order_refund = order_refund.T.values.tolist()
     print(order_refund)
