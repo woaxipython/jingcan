@@ -2,6 +2,7 @@ function saleAllStoreShow(element) {
     var url = '/orderData'
     GetRequest(url)
         .then(function (result) {
+            console.log(result)
             var saleItem = lineCharts(name = "销售额", stack = "", type = "line")
             saleItem.data = result[1]
             var refundItem = lineCharts(name = "退款额", stack = "", type = "line")
