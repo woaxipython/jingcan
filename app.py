@@ -26,7 +26,8 @@ from models.store import ParentOrderModel
 app = Flask(__name__)
 
 # config初始化
-app.config.from_object(config.ProductiongConfig)
+# app.config.from_object(config.ProductiongConfig)
+app.config.from_object(config.TestingConfig)
 
 # SQlAlchemy初始化
 db.init_app(app=app)
@@ -79,7 +80,6 @@ def allToadyData():
     today_express_d = ParentOrderModel.query.filter(ParentOrderModel.express != "").count()
     today_express_w = ParentOrderModel.query.filter(and_(ParentOrderModel.express == "",
                                                          ParentOrderModel.payTime != None)).count()
-    print(today_express_w)
     today_refund = getOrderData(status="退款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=1)
     today_store_pro = getStoreProFee(end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=1)
 
@@ -129,6 +129,7 @@ def allToadyData():
 @app.route('/orderData')
 def orderData():
     payment_orders = getOrderData(status="付款订单")
+    print(payment_orders)
     payment_orders = makeOrderFrameData(payment_orders, cycle="D")
     print(payment_orders.columns)
 
