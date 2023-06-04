@@ -3,11 +3,11 @@ function saleAllStoreShow(element) {
     GetRequest(url)
         .then(function (result) {
             var saleItem = lineCharts(name = "销售额", stack = "", type = "line")
-            saleItem.data = result[2]
+            saleItem.data = result[1]
             var refundItem = lineCharts(name = "退款额", stack = "", type = "line")
-            refundItem.data = result[5]
+            refundItem.data = result[3]
             var receivItem = lineCharts(name = "收款额", stack = "", type = "line")
-            receivItem.data = result[7]
+            receivItem.data = result[5]
             var seriesItem = [saleItem, refundItem, receivItem]
             var saleOption = XOpention(xAxisData = result[0], seriesData = seriesItem,)
             element.setOption(saleOption);
@@ -22,9 +22,9 @@ function saleAllOrderShow(element) {
     GetRequest(url)
         .then(function (result) {
             var saleItem = lineCharts(name = "客单价", stack = "", type = "line")
-            saleItem.data = result[4]
+            saleItem.data = result[3]
             var refundItem = lineCharts(name = "订单量", stack = "", type = "line")
-            refundItem.data = result[3]
+            refundItem.data = result[2]
             var seriesItem = [saleItem, refundItem]
             var saleOption = XOpention(xAxisData = result[0], seriesData = seriesItem,)
             element.setOption(saleOption);

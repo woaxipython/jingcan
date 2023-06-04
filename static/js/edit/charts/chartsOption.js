@@ -85,7 +85,7 @@ function XOpention(xAxisData, seriesData, title) {
 }
 
 
-function zGMapOption(jsonUrl = "../static/json/ZG.json", mapChart = null, data = null, name = "销售额", max = 35000, min = 0) {
+function zGMapOption(jsonUrl = "../static/json/ZG.json", mapChart = null, data = null, name = "销售额", max = 60000, min = 0) {
     $.get(jsonUrl, function (geoJson) {
         echarts.registerMap('ZG', geoJson);
         option = {
@@ -262,7 +262,7 @@ function weekTimeOption(hours, days, data) {
         },
         visualMap: {
             min: 300,
-            max: 6000,
+            max: 12000,
             calculable: true,
             orient: 'vertical',
             left: 'right',

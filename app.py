@@ -26,8 +26,8 @@ from models.store import ParentOrderModel
 app = Flask(__name__)
 
 # config初始化
-app.config.from_object(config.ProductiongConfig)
-# app.config.from_object(config.TestingConfig)
+# app.config.from_object(config.ProductiongConfig)
+app.config.from_object(config.TestingConfig)
 
 # SQlAlchemy初始化
 db.init_app(app=app)
@@ -129,18 +129,11 @@ def allToadyData():
 @app.route('/orderData')
 def orderData():
     payment_orders = getOrderData(status="付款订单")
-    print(payment_orders)
     payment_orders = makeOrderFrameData(payment_orders, cycle="D")
-    print(payment_orders.columns)
-
     refund_orders = getOrderData(status="退款订单")
     refund_orders = makeOrderFrameData(refund_orders, cycle="D")
-    print(refund_orders.columns)
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
-    print(order_refund)
-    print(order_refund.columns)
     order_refund = order_refund.T.values.tolist()
-    print(order_refund)
 
     return jsonify(order_refund)
 
@@ -149,6 +142,7 @@ def orderData():
 def pOrderData():
     parent_order = getParentOrders(count=1)
     parent_order = round(makePOrderAll(parent_order, cycle="D"), 0)
+    print(parent_order.columns)
     parent_order = parent_order.T.values.tolist()
     return jsonify(parent_order)
 

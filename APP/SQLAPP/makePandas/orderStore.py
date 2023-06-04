@@ -15,13 +15,13 @@ def mergeFrame(main_info, merge_info, type='date'):
 def makeOrderFrameData(sql_list, cycle="Q", store="all"):
     order = pd.DataFrame(sql_list)
     order.columns = ['date', 'store_name', 'total', 'counts']
+    order.drop(['store_name'], axis=1, inplace=True)
     order['date'] = pd.to_datetime(order['date'])
     order = order.set_index('date')
     order = order.resample(cycle).sum()
     order = order.reset_index()
     order['date'] = order['date'].dt.strftime('%Y-%m-%d')
     order.total = order.total.fillna(0)
-    print(order.columns)
 
     return order
 
@@ -29,6 +29,7 @@ def makeOrderFrameData(sql_list, cycle="Q", store="all"):
 def makePOrderAll(sql_list, cycle="M", store="all"):
     order = pd.DataFrame(sql_list)
     order.columns = ['date', 'store_name', 'total', 'counts']
+    order.drop(['store_name'], axis=1, inplace=True)
     order['date'] = pd.to_datetime(order['date'])
     order = order.set_index('date')
     order = order.resample(cycle).sum()
