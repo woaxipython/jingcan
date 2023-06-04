@@ -135,6 +135,7 @@ def orderData():
     refund_orders = makeOrderFrameData(refund_orders, cycle="D")
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
     order_refund = order_refund.T.values.tolist()
+    print(order_refund)
 
     return jsonify(order_refund)
 
