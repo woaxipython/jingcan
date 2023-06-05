@@ -146,7 +146,7 @@ def makeCodeStractFile(save_path):
         sale_name = stract.sale.name if stract.sale else ""
         sale_code = stract.sale.code if stract.sale else ""
 
-        create_time = stract.createtime
+        create_time = stract.createTime.strftime("%Y-%m-%d %H:%M:%S")
         sale_list = [title, name, store, sale_name, sale_code, create_time]
         stract_info.append(sale_list)
     df = pd.DataFrame(stract_info, columns=column)
