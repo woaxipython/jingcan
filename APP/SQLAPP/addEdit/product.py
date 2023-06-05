@@ -151,8 +151,8 @@ def writeNewSaleModel(form_dict):
         atom_model = AtomModel.query.filter_by(code=atoms['atomCode']).first()  # 获取商品
         if not atom_model:
             return jsonify({"status": "failed", "message": "没有该商品"})  # 没有该商品
-    max_id = db.session.query(func.max(SaleModel.id)).scalar() or 0 + 1
-    code = createSaleCode(max_id)
+    max_id = db.session.query(func.max(SaleModel.id)).scalar() or 0
+    code = createSaleCode(max_id + 1)
     atom_list = []
     sale_model = SaleModel(name=form_dict['newSaleName'], sale_name=form_dict['newSaleSkuName'], code=code,
                            price=form_dict['newSalePrice'])
