@@ -7,6 +7,7 @@ from APP.SQLAPP.addEdit.product import writeNewSupplierModel, writeNewAtomModel,
 from APP.SQLAPP.search.product import searchGroupModel, makeCodeStractFile, searchAtomModel, searchSaleModel
 
 from blueprints.sale.saleManage import allExcelFile
+from exts import db
 from form.fileValidate import codeContractFileForm
 from form.formValidate import AtomForm, SupplierForm, newPurchaseForm, newSaleForm, newGroupForm
 from flask import Blueprint, request, current_app, render_template, send_file, \
@@ -14,7 +15,7 @@ from flask import Blueprint, request, current_app, render_template, send_file, \
 from werkzeug.utils import secure_filename
 
 from models.back import UnitModel, AtomCategoryModel, BrandModel, CityModel
-from models.product import SupplierModel
+from models.product import SupplierModel, SaleModel
 from models.store import CodeStractModel
 from models.user import UserModel
 
@@ -50,6 +51,24 @@ def manage():
     return render_template("html/back/productManage.html", citys=citys, users=users, suppliers=suppliers, units=units,
                            atom_categories=atom_categories, brands=brands, atoms=atoms, sales=sales, groups=groups,
                            constract_codes=constract_codes)
+
+
+@bp.route("/contract", methods=["POST"])
+def contract():
+    form_dict = request.form.to_dict()
+    print(form_dict)
+    saleId = form_dict.get("saleId", "")
+    constractCodeId = form_dict.get("constractCodeId", "")
+    constract_model = CodeStractModel.query.get(constractCodeId)
+    if not constract_model:
+        return jsonify({"status": "failed", "message": "编码对照不存在"})
+    sale_model = SaleModel.query.get(saleId)
+    if not sale_model:
+        return jsonify({"status": "failed", "message": "商品不存在"})
+    constract_model.sale = sale_model
+    db.session.add(constract_model)
+    db.session.commit()
+    return jsonify({"status": "success", "message": "映射成功"})
 
 
 @bp.route("/constractCode")

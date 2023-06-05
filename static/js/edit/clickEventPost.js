@@ -499,6 +499,25 @@ $(document).ready(function () {
                 })
         }
     })
+
+    // 创建商品编码映射
+    $('#createStract').click(function () {
+        var Form = $("#createStractFoem")
+        var inputs = Form.find("input")
+        var VerResult = Verification(...inputs)
+        if (VerResult.length === 0) {
+            var formData = new FormData(document.getElementById("createStractFoem"));
+            var url = "/product/contract"
+            FileRequest(formArray = formData, url = url)
+                .then(function (result) {
+                    alert(result['message'])
+                })
+                .catch(function (error) {
+                    alert(error)
+                })
+        }
+    })
+
     // 登录小红书
     $('#xhsLoginBtn').click(function () {
         var Form = $("#xhsLoginForm")

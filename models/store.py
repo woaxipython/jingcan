@@ -151,6 +151,7 @@ class HandParentOrderModel(db.Model):
 class CodeStractModel(db.Model):
     __tablename__ = "code_stract"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    store_title = db.Column(db.String(200))
     search_id = db.Column(db.String(100), default=uuid)
     name = db.Column(db.String(30))
     store_id = db.Column(db.Integer, db.ForeignKey("store.id"))

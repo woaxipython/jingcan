@@ -10,7 +10,7 @@ from APP.Spyder.getAddress import getAddress
 from APP.createCodeId import createOrderCode
 from exts import db
 from models.back import PlatModel, AdMethodModel
-from models.product import SaleModel, GroupModel
+from models.product import SaleModel, GroupModel, AtomSalesModel
 from models.store import StoreModel, ParentOrderModel, OrderModel, RefundModel, DistributionModel, HandOrderModel, \
     HandOrderCategory, HandParentOrderModel, AdFeeModel, CodeStractModel
 from models.user import UserModel
@@ -81,16 +81,26 @@ class writeOrderData(object):
             self.order_model.refund = order['refund']  # 更新退款
             self.order_model.status = order['status']  # 更新订单
             sale_pr_model = SaleModel.query.filter_by(code=order["code"]).first()  # 查询商品是否存在
-            if not sale_pr_model:  # 如果不存在就创建
+            if not sale_pr_model:  # 如果不存在，检查商品对照表是否存在
                 constract_model = CodeStractModel.query.filter_by(name=order['SkuName']).first()  # 检查是否已存在于商品对照表
                 if not constract_model:  # 如果不存在就创建，同时创建商品以及商品对照表
-                    constract_model = CodeStractModel(name=order['SkuName'], store=self.store_model)
-                    sale_pr_model = SaleModel(sale_name=order['SkuName'])
+                    constract_model = CodeStractModel(name=order['SkuName'], store=self.store_model,
+                                                      store_title=order['title'], )
+                    db.session.add(constract_model)
                 else:
-                    sale_pr_model = constract_model.sale  # 如果存在就直接将商品对照表中的商品赋值给商品
-                constract_model.sale = sale_pr_model  # 更新商品对照表
+                    sale_pr_model = constract_model.sale  # 如果存在就直接将商品对照表中的商品赋值给商品，并且扣减原料库存
+            if sale_pr_model:  # 再次判断商品是否存在
+                sale_pr_model.store.append(self.store_model)  # 更新商品存在的店铺
+                self.order_model.sale = sale_pr_model
+                self.order_model.cost = sale_pr_model.cost
+                for atom in sale_pr_model.atoms:  # 如果存在，则更新原材料库存
+                    # 查询原材料数量
+                    quantity_model = AtomSalesModel.query.filter_by(atomid=atom.id, saleid=sale_pr_model.id).first()
+                    if quantity_model:
+                        # 更新原材料库存
+                        atom.quantity = int(atom.quantity) - int(order['quantity']) * int(quantity_model.quantity)
+                        db.session.add(atom)
 
-            sale_pr_model.store.append(self.store_model)  # 更新商品存在的店铺
             self.parent_order_model.express = order['express']  # 更新父订单的快递
             self.parent_order_model.expressOrder = order['expressOrder']  # 更新父订单的快递单号
             self.parent_order_model.status = order['status']  # 更新父订单的状态
@@ -98,8 +108,7 @@ class writeOrderData(object):
                 self.hand_order_model.status = order['status']
                 self.hand_order_model.express = order['express']
                 self.hand_order_model.expressOrder = order['expressOrder']
-            self.order_model.sale = sale_pr_model
-            self.order_model.cost = sale_pr_model.cost
+
             self.order_model.parent_order = self.parent_order_model
             db.session.add(self.order_model)
             db.session.commit()
@@ -120,11 +129,12 @@ def writeRefund(refund_result):
         constract_model = CodeStractModel.query.filter_by(name=refund_result['SkuName']).first()  # 检查是否已存在于商品对照表
         if not constract_model:  # 如果不存在就创建，同时创建商品以及商品对照表
             constract_model = CodeStractModel(name=refund_result['SkuName'], store=store_model)  # 创建商品对照表
-            sale_pr_model = SaleModel(sale_name=refund_result['SkuName'])  # 创建商品
+            db.session.add(constract_model)
         else:
             sale_pr_model = constract_model.sale  # 如果存在就直接将商品对照表中的商品赋值给商品
-        constract_model.sale = sale_pr_model
-    sale_pr_model.store.append(store_model)
+    if sale_pr_model:  # 再次判断商品是否存在
+        sale_pr_model.store.append(store_model)
+        refund_model.sale_id = sale_pr_model.id  # 更新退款商品
 
     if not refund_model:  # 如果不存在就创建退款订单
         refund_model = RefundModel(refund_id=refund_result["refundId"])
@@ -135,7 +145,6 @@ def writeRefund(refund_result):
     refund_model.modifiedTime = refund_result["ModifiedTime"]  # 更新退款修改时间
     refund_model.updateTime = refund_result["CreatedTime"]  # 更新退款创建时间
 
-    refund_model.sale_id = sale_pr_model.id  # 更新退款商品
     refund_model.parent_order = parent_model  # 更新退款父订单
     refund_model.store = store_model  # 更新退款店铺
     db.session.add(refund_model)

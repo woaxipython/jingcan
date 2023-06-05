@@ -406,7 +406,7 @@
                                                         <path d="M18 18l0 -12"></path>
                                                     </svg>
                                                     </span></td>
-                                                        <td>{{ sale.createtime}}</td>
+                                                        <td>{{ sale.createtime }}</td>
                                                     </tr>
                                                 {% endfor %}
                                                 </tbody>
@@ -669,7 +669,7 @@
                                     <hr>
                                     <div style="height: 25rem"
                                          class="card-body-scrollable card-body-scrollable-shadow mt-2">
-                                        <table class="table no-footer table-hover promotion-table">
+                                        <table class="table no-footer table-hover promotion-table" id="codeStractTable">
                                             <thead class="sticky-top">
                                             <tr>
                                                 <th>销售名称</th>
@@ -682,13 +682,39 @@
                                             <tbody>
                                             {% for codes in constract_codes %}
                                                 <tr data-id="{{ codes.id }}">
-                                                    <td>{{ codes.name }}</td>
+                                                    <td>
+                                                        <a class="cursor-pointer"
+                                                           data-bs-container="body"
+                                                           data-bs-toggle="popover"
+                                                           data-bs-placement="top"
+                                                           title="SKU名称：{{ codes.name }}"
+                                                           data-bs-html="true"
+                                                           data-bs-content="
+                                                                      店铺:{{ codes.store.name }}
+                                                                      <br>
+                                                                     标题：{{ codes.store_title }}">
+                                                            <div class="text-truncate me-0" style="width: 10rem">
+
+                                                                <small>{{ codes.name }}</small>
+                                                                <br>
+                                                                <small class="text-muted">{{ codes.store_title }}</small>
+
+                                                            </div>
+                                                        </a>
+                                                    </td>
                                                     <td>
                                                         <div>{{ codes.store.name }}</div>
                                                     </td>
-                                                    <td>{{ codes.code }}</td>
                                                     <td>
-                                                        <a href="">编辑</a>
+                                                        <small class="text-muted">{{ codes.sale.name }}</small>
+                                                        <br>
+                                                        <small class="text-muted">{{ codes.sale.code }}</small>
+                                                    </td>
+                                                    <td>
+                                                        <a href="" class="editConstract"
+                                                           data-bs-target="#edit-constract-sale-model"
+                                                           data-bs-toggle="modal"
+                                                           aria-label="edit-constract-sale-model">编辑</a>
                                                     </td>
                                                     <td>{{ codes.createTime.strftime('%Y-%m-%d') }}</td>
                                                 </tr>
@@ -706,6 +732,35 @@
     </div>
 {% endblock %}
 {% block modal %}
+    <div class="modal modal-blur fade" id="edit-constract-sale-model"
+         role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">创建映射</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createStractFoem">
+                        <input type="hidden" name="constractCodeId">
+                        <input type="hidden" name="saleId">
+                    </form>
+                    <select class="form-select select-input" data-select="saleId">
+                        <option value="" disabled selected>选择对应商品</option>
+                        {% for sale in sales %}
+                            {% if sale.name %}
+                                <option value="{{ sale.id }}">{{ sale.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createStract">建立映射</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="new-sale-product-report"
          aria-modal="true" role="dialog">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -1429,6 +1484,15 @@
         $(function () {
             $('#supplier_table').DataTable({
                 "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+            });
+        });
+        $(function () {
+            $('#codeStractTable').DataTable({
+                "paging": true,
                 "lengthChange": false,
                 "searching": false,
                 "ordering": true,

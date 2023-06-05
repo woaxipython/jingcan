@@ -190,6 +190,7 @@ class KuaiDiZhuShouSpyder():
                         "skuPropertiesName") else order.get("title", "")[:20],
                     "quantity": order["num"],
                     "orderID": order["oid"],
+                    "title": order["title"],
                     "payment": order["payment"],
                     "refund": self.getRefundStatus(order["refundStatus"]),
                     "status": self.getStatus(order["status"]),

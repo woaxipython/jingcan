@@ -17,6 +17,11 @@ $(document).ready(function () {
 
     })
 
+    $("tbody").on('click', '.editConstract', function () {
+        var constractCode = $(this).closest("tr").data("id")
+        $('input[name="constractCodeId"]').val(constractCode)
+    })
+
     $("tbody").on('click', '.editXhs', function () {
         var tr = $(this).closest("tr")
         var token_id = tr.data('id')

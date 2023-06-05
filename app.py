@@ -26,6 +26,7 @@ from models.store import ParentOrderModel
 app = Flask(__name__)
 
 # config初始化
+# app.config.from_object(config.DevelopmentConfig)
 app.config.from_object(config.ProductiongConfig)
 # app.config.from_object(config.TestingConfig)
 

@@ -31,7 +31,7 @@ def loginKdzs():
     form = KdzsLoginForm(form_dict)
     if form.validate():
         result = kdzs.login(account=form_dict.get("kdzsAccount"), password=form_dict.get("kdzsPassword"),
-                            captcha=form_dict.get("kdzsCaptcha"),vscode=form_dict.get("kdzsPhoneCode"))
+                            captcha=form_dict.get("kdzsCaptcha"), vscode=form_dict.get("kdzsPhoneCode"))
         if result.get("status") == "success":
             return jsonify({"status": "success", "message": "登录成功"})
         else:
@@ -133,12 +133,16 @@ def newStorePro():
 
 
 def getStore(store_id):
+    stores = []
     if store_id == "All":
         stores_info = StoreModel.query.filter().all()
     else:
         stores_info = StoreModel.query.filter(StoreModel.id == store_id).all()
-    stores = [{"platform": store.plat.EH_name.lower(), "sellerId": store.store_id} for store in stores_info if
-              store.plat.EH_name]
+    for store in stores_info:
+        if store.name == "手工单":
+            pass
+        elif store.plat.EH_name:
+            stores.append({"platform": store.plat.EH_name.lower(), "sellerId": store.store_id})
     stores.append({"platform": "hand", "sellerId": "1251533"})
     return stores
 
