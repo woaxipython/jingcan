@@ -4,6 +4,7 @@ from flask import jsonify
 from APP.Spyder.DySpyder import DouYinSpyder
 from APP.Spyder.XshSpyder import GetXhsSpyder
 from models.product import AtomModel, SaleModel, GroupModel
+from models.store import CodeStractModel
 
 xhs = GetXhsSpyder()
 dy = DouYinSpyder()
@@ -130,24 +131,25 @@ def makeCodeStractFile(save_path):
     writer = pd.ExcelWriter(save_path)
 
     # 生成推广模板
-    columns2 = ["销售名称", "商品编码"]
+    columns2 = ["映射名称", "商品编码"]
     df = pd.DataFrame(columns=columns2)
     df.to_excel(writer, index=False, sheet_name="推广模板", )
 
     # 生成商品模板
-    sale_list = SaleModel.query.all()
-    column = ["销售名称", "商品简称(打单名称)", "商品编码", "售价", '店铺', "创建时间"]
-    sale_info = []
-    for sale in sale_list:
-        sale_name = sale.sale_name
-        name = sale.name
-        code = sale.code
-        price = sale.price
-        store = ".".join([store.name for store in sale.store])
-        create_time = sale.createtime
-        sale_list = [name, sale_name, code, price, store, create_time]
-        sale_info.append(sale_list)
-    df = pd.DataFrame(sale_info, columns=column)
+    stract_list = CodeStractModel.query.all()
+    column = ["标题", "SKU名称", "店铺", "商品名称", '商品编码', "createTime"]
+    stract_info = []
+    for stract in stract_list:
+        title = stract.store_title
+        name = stract.name
+        store = stract.store.name if stract.store else ""
+        sale_name = stract.sale.name if stract.sale else ""
+        sale_code = stract.sale.code if stract.sale else ""
+
+        create_time = stract.createtime
+        sale_list = [title, name, store, sale_name, sale_code, create_time]
+        stract_info.append(sale_list)
+    df = pd.DataFrame(stract_info, columns=column)
     df.to_excel(writer, index=False, sheet_name="商品模板")
 
     writer.close()
