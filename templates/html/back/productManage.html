@@ -165,7 +165,7 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div style="height: 25rem"
+                                    <div style="height: 35rem"
                                          class="card-body-scrollable card-body-scrollable-shadow mt-2">
                                         <table class="table no-footer table-hover" id="atom_table">
                                             <thead class="sticky-top">
@@ -286,7 +286,7 @@
                                                 </div>
                                             </div>
                                         </form>
-                                        <div style="height: 25rem"
+                                        <div style="height: 35rem"
                                              class="card-body-scrollable card-body-scrollable-shadow mt-2">
                                             <table class="table no-footer table-hover" id="sale_table">
                                                 <thead class="sticky-top">
@@ -316,26 +316,22 @@
                                                                      -
                                                                      {% endif %}
                                                                      销售命名：{{ sale.sale_name }}">
-                                                                <div><small class="text-muted">
-                                                                    {{ sale.code }}</small>
-                                                                </div>
                                                                 <div class="text-muted text-truncate"
                                                                      style="max-width: 15rem">
                                                                     <a href="">
                                                                         <samll>
-                                                                            {% if sale.name %}
-                                                                                商品简称：
-                                                                                {{ sale.name }}<br>
-                                                                            {% else %}
-                                                                                -
-                                                                            {% endif %}</samll>
+                                                                            {{ sale.name }}</samll>
                                                                     </a>
                                                                 </div>
+                                                                <div><small class="text-muted">
+                                                                    {{ sale.code }}</small>
+                                                                </div>
+
                                                                 <div class="text-muted text-truncate"
                                                                      style="max-width: 15rem">
                                                                     <a>
                                                                         <samll>
-                                                                            sku名称：{{ sale.sale_name }}</samll>
+                                                                            {{ sale.sale_name }}</samll>
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -450,7 +446,7 @@
                                                 </div>
                                             </div>
                                         </form>
-                                        <div style="height: 25rem"
+                                        <div style="height: 35rem"
                                              class="card-body-scrollable card-body-scrollable-shadow mt-2">
                                             <table class="table no-footer table-hover" id="group_table">
                                                 <thead class="sticky-top">
@@ -1456,7 +1452,7 @@
     <script>
         $(function () {
             $('#atom_table').DataTable({
-                "paging": false,
+                "paging": true,
                 "lengthChange": false,
                 "searching": false,
                 "ordering": true,
@@ -1465,7 +1461,7 @@
         });
         $(function () {
             $('#sale_table').DataTable({
-                "paging": false,
+                "paging": true,
                 "lengthChange": false,
                 "searching": false,
                 "ordering": true,
@@ -1474,7 +1470,7 @@
         });
         $(function () {
             $('#group_table').DataTable({
-                "paging": false,
+                "paging": true,
                 "lengthChange": false,
                 "searching": false,
                 "ordering": true,

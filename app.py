@@ -27,8 +27,8 @@ app = Flask(__name__)
 
 # config初始化
 # app.config.from_object(config.DevelopmentConfig)
-app.config.from_object(config.ProductiongConfig)
-# app.config.from_object(config.TestingConfig)
+# app.config.from_object(config.ProductiongConfig)
+app.config.from_object(config.TestingConfig)
 
 # SQlAlchemy初始化
 db.init_app(app=app)
