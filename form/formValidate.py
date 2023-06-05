@@ -38,8 +38,8 @@ class newSaleForm():
         self.schema = {
             "type": "object",
             "properties": {
-                "newSaleName": {"type": "string", "minLength": 4, "maxLength": 10},
-                "newSaleSkuName": {"type": "string", "minLength": 4, "maxLength": 30},
+                "newSaleName": {"type": "string", "minLength": 4, "maxLength": 20},
+                "newSaleSkuName": {"type": "string", "minLength": 4, "maxLength": 40},
                 "newSalePrice": {"type": "string", "pattern": "^[0-9]+(\.[0-9]+)?$"},
                 "atomlist": {
                     "type": "array",
