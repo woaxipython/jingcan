@@ -171,6 +171,7 @@ $("tbody").on('click', '.editPromotion', function () {
 })
 
 function getPromotiondata() {
+
     var url = '/promotion/data'
     GetRequest(url)
         .then(function (result) {
@@ -180,3 +181,23 @@ function getPromotiondata() {
             alert(error)
         })
 }
+
+$("#newGroupSearchSale").click(function () {
+    var input_name = $('input[name="searchSaleName"]').val()
+    if (input_name) {
+        var url = '/product/searchSale?name=' + input_name
+        GetRequest(url)
+            .then(function (result) {
+                if (result['status'] === 'success') {
+                    writeGroupSale(result['message'])
+                } else {
+                    alert(result['message'])
+                }
+            })
+            .catch(function (error) {
+                alert(error)
+            })
+
+    }
+
+})

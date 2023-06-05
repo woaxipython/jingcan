@@ -528,3 +528,23 @@ function writeImportantBlogerPro(bloger) {
         table.append(tr)
     })
 }
+
+function writeGroupSale(result) {
+    var table = $("#groupSaleTable")
+    table.find('tbody').empty()
+    $.each(result, function (index, sale) {
+        var td0 = $('<input class="form-check-input m-0 align-middle selectSaleCheck" type="checkbox" aria-label="Select invoice">')
+        var td1 = $('<small class="text-muted">' +
+            '<div>' +
+            '<div data-id=' + sale.code + ' class="orderPr">' +
+            '<span>简称:</span><span>' + sale.name + '</span></div> ' +
+            '<div class="my-1"><span>编码:</span><code>' + sale.code + '</code></div><div>' +
+            '<span>sku名称:</span><span>' + sale.sale_name + '</span></div></div></small>')
+        var tr = $("<tr>").append(
+            $("<td>").html(td0),
+            $("<td>").html(td1),
+        )
+        table.append(tr)
+    })
+
+}

@@ -900,17 +900,13 @@
                     <div class="col-6 pe-2 border-end">
                         <form id="newGroupSearchSaleForm">
                             <input type="hidden" name="searchSaleName">
-                            <input type="hidden" name="searchSaleCode">
                         </form>
                         <div class="row mb-1">
                             <div class="col-12 mb-1">
                                 <small class="text-muted">步骤1：选择商品</small>
                             </div>
-                            <div class=" col-4 pe-1">
+                            <div class=" col-8 pe-1">
                                 <input type="text" placeholder="输入简称" class="form-control" name="searchSaleName">
-                            </div>
-                            <div class=" col-4 pe-1">
-                                <input type="text" placeholder="输入编码" class="form-control" name="searchSaleCode">
                             </div>
                             <div class="col-4">
                                 <button class="btn btn-primary w-100" id="newGroupSearchSale">查询</button>
@@ -918,7 +914,7 @@
                         </div>
                         <div style="height: 18rem;"
                              class="card-body-scrollable card-body-scrollable-shadow mt-0">
-                            <table class="table no-footer table-hover promotion-table">
+                            <table class="table no-footer table-hover promotion-table" id="groupSaleTable">
                                 <thead class="sticky-top">
                                 <tr>
                                     <th></th>

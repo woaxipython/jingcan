@@ -53,6 +53,15 @@ def manage():
                            constract_codes=constract_codes)
 
 
+@bp.route("/searchSale")
+def searchSale():
+    saleNm = request.args.get("name", "")
+    saleC = 'all'
+    sales = searchSaleModel(saleNm, saleC)
+    sales = DataSale(sales)
+    return jsonify({"status": "success", "message": sales, })
+
+
 @bp.route("/contract", methods=["POST"])
 def contract():
     form_dict = request.form.to_dict()
