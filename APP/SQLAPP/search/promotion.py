@@ -263,7 +263,10 @@ class searchNotes(object):
         note_model = PVContentModel.query.filter_by(search_id=self.note_id).first()
         note_model.status = profile_result["message"]
         if self.note_link is not None:
-            note_model.content_link = self.note_link.split("?")[0]
+            try:
+                note_model.content_link = self.note_link.split("?")[0]
+            except:
+                note_model.content_link = None
         else:
             note_model.content_link = ""
         promotion_model = PromotionModel.query.get(self.promotion_id)
