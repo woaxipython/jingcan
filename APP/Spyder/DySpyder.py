@@ -66,7 +66,10 @@ class DouYinSpyder():
                 url = url
                 modal_id = ""
         else:
-            modal_id = re.search(r'video/([^&]*)/?', url).group(1)
+            try:
+                modal_id = re.search(r'video/([^&]*)/?', url).group(1)
+            except:
+                modal_id = ""
         ret = requests.get(url, headers=self.headers)
 
         if ret.status_code == 200:
