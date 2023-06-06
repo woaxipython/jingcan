@@ -262,7 +262,10 @@ class searchNotes(object):
     def errorWrite(self, profile_result):
         note_model = PVContentModel.query.filter_by(search_id=self.note_id).first()
         note_model.status = profile_result["message"]
-        note_model.content_link = self.note_link.split("?")[0] if self.note_link else ""
+        if self.note_link is not None:
+            note_model.content_link = self.note_link.split("?")[0]
+        else:
+            note_model.content_link = ""
         promotion_model = PromotionModel.query.get(self.promotion_id)
         rate_id = promotion_model.rate_id
         rate_model = RateModel.query.filter_by(name="已发稿").first()
