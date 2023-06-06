@@ -231,6 +231,7 @@ class searchNotes(object):
         account_model = AccountModel.query.filter_by(account_id=self.account_id).first()
         plat_name = account_model.plat.name
         token = xhsToken()
+        print(self.note_link)
         if self.note_link:
             if plat_name == "小红书":
                 if not token:

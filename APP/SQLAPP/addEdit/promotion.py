@@ -307,6 +307,7 @@ class WriteExcelPromotion(object):
         search_note = searchNotes(self.note_dict)
         if search_note.check():
             note_info = search_note.spyderNote()
+            print(note_info)
             if note_info['status'] == "success":
                 search_note.writeNote(create_time=create_time)
                 print("笔记写入成功")
