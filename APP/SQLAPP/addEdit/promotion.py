@@ -321,8 +321,8 @@ class WriteExcelPromotion(object):
                 return True
             elif note_info["status"] == "2":
                 return self.writrNote(row)
-            else:
-                print("笔记爬虫失败，返回错误信息")
+            elif note_info["status"] == "failed":
+                print(note_info['message'])
                 self.Spam = note_info['message']
                 return False
         else:

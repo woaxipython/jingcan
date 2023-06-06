@@ -99,7 +99,7 @@ class DouYinSpyder():
                 }
                 return {"status": "success", "message": title_result}
             except:
-                return {"status": "1", "message": "异常"}
+                return {"status": "1", "message": "抖音解析出错"}
         else:
             return {"status": "failed", "message": "获取抖音数据出错"}
 

@@ -81,7 +81,7 @@ def searchPromotionSql(startDate="", endData="", user="", rate="", promotion_id=
     if rate and rate != "0":
         filters.append(PromotionModel.rate_id == rate)
     if promotion_id:
-        filters.append(PromotionModel.search_id == promotion_id)
+        filters = [PromotionModel.search_id == promotion_id, ]
     promotion_list = PromotionModel.query.filter(*filters).all()
     if promotion_list:
         return {"status": "success", "message": promotion_list}
