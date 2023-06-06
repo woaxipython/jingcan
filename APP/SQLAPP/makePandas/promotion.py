@@ -57,7 +57,7 @@ def mainPvcontentData(pro):
 
 
 def mainBlogerData(pro):
-    bloger_data = pro.groupby('bloger', ).sum()
+    bloger_data = pro.groupby('bloger', ).agg({'liked': 'sum', 'collected': 'sum', 'commented': 'sum', 'user': 'first'})
 
     bloger_data = bloger_data.sort_values(by='liked', ascending=False)
     bloger_data = bloger_data.reset_index()
@@ -66,7 +66,6 @@ def mainBlogerData(pro):
     bloger_data = bloger_data.reset_index()
     bloger_data = bloger_data[["bloger", "liked", "collected", "commented", "user"]]
     bloger_data = bloger_data[:10]
-    bloger_data['user'] = bloger_data['user'].apply(lambda x: "".join(pd.Series(list(x)).drop_duplicates().tolist()))
     bloger_data = bloger_data
     return bloger_data.values.tolist()
 
