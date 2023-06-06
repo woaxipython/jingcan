@@ -323,6 +323,7 @@ class WriteExcelPromotion(object):
                 return self.writrNote(row)
             elif note_info["status"] == "failed":
                 print(note_info['message'])
+
                 self.Spam = note_info['message']
                 return False
         else:
