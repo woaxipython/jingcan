@@ -95,3 +95,13 @@ Thumbs.db
 migration/
 migrations/
 *.md
+*.xml
+*.properties
+*.iml
+*.ipr
+*.iws
+*.xlsx
+*.xls
+*.csv
+*.txt
+
