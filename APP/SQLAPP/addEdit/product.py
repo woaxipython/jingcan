@@ -178,8 +178,8 @@ def writeNewGroupModel(form_dict):
         return jsonify({"status": "failed", "message": "该商品组已存在，请勿重复添加"})
     else:
         sale_list = []
-        max_id = db.session.query(func.max(GroupModel.id)).scalar() or 0 + 1
-        code = createGroupCode(max_id)
+        max_id = db.session.query(func.max(GroupModel.id)).scalar() or 0
+        code = createGroupCode(max_id + 1)
         for sales in form_dict['saleList']:
             sale_model = SaleModel.query.filter_by(code=sales['saleCode']).first()
             if not sale_model:
