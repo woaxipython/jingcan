@@ -258,6 +258,7 @@ class searchNotes(object):
         else:
             profile_result = {"status": "failed", "message": "链接为空"}
             self.errorWrite(profile_result)
+            return {"status": "failed", "message": "链接为空"}
 
     def errorWrite(self, profile_result):
         note_model = PVContentModel.query.filter_by(search_id=self.note_id).first()
