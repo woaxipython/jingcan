@@ -327,5 +327,4 @@ class WriteExcelPromotion(object):
                 return False
         else:
             print("笔记检查失败，返回错误信息")
-            print(search_note.error_message)
             return False
