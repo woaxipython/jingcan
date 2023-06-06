@@ -27,8 +27,8 @@ app = Flask(__name__)
 
 # config初始化
 # app.config.from_object(config.DevelopmentConfig)
-# app.config.from_object(config.ProductiongConfig)
-app.config.from_object(config.TestingConfig)
+app.config.from_object(config.ProductiongConfig)
+# app.config.from_object(config.TestingConfig)
 
 # SQlAlchemy初始化
 db.init_app(app=app)
@@ -152,10 +152,13 @@ def pOrderData():
 @app.route('/storeProData')
 def storeProData():
     month_orders = getParentOrders(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
-                                   interval=40, store_id="0", count=1)
+                                   interval=32, store_id="0", count=1)
     month_orders = makePOrderStore(month_orders, cycle="M", )
     month_orders = month_orders.T
-    del month_orders[0]
+    if len(month_orders.columns) == 2:
+        month_orders = month_orders.drop([0], axis=1)
+    else:
+        month_orders = month_orders.drop([0, 1], axis=1)
     month_orders = month_orders.reset_index()
     month_orders.columns = ["store", "total"]
     month_orders.drop(month_orders.index[0], inplace=True)

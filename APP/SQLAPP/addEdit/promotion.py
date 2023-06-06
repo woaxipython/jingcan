@@ -225,8 +225,8 @@ class WriteExcelPromotion(object):
             if FeeModel.query.filter_by(name=row[5]).first() is None:  # 检查费用模型是否存在
                 self.error_message.append(f"第{self.checked}行的费用模板不存在")
                 continue
-            if not row[8]:  # 检查费用模型是否存在
-                self.error_message.append("第{}行的图文链接为空".format(self.checked))
+            if not row[8]:  # 图文链接是否为空，为空则跳过
+                self.error_message.append("第{}行的图文链接为空，已自动跳过".format(self.checked))
                 continue
             if row[8]:
                 content_link = row[8].split("?")[0] if row[3] == "小红书" else row[8]
