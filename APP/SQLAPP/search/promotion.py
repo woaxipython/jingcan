@@ -401,7 +401,10 @@ def makePromotionExcel(save_path):
 def xhsToken():
     token_list = db.session.query(XhsTokenModel.name).filter_by(status="正常").all()
     token_list = [token[0] for token in token_list]
-    return random.choice(token_list)
+    if not token_list:
+        return None
+    else:
+        return random.choice(token_list)
 
 
 def dyToken():
