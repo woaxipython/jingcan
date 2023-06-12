@@ -167,8 +167,11 @@ def writeStore(store_list):
 
         plat_name = PlatNameZH(store['platform'].upper())  # 更新店铺平台
         plat_model = PlatModel.query.filter_by(name=plat_name).first()  # 查询平台是否存在
-        plat_model = plat_model if plat_model else PlatModel(name=plat_name, EH_name=store['platform'],
-                                                             is_Store=True)  # 如果不存在就创建
+        if plat_model:  # 如果存在，就更新平台
+            plat_model.EH_name = store['platform']
+            plat_model.is_Store = True
+        else:  # 如果不存在，就创建平台
+            plat_model = PlatModel(name=plat_name, EH_name=store['platform'], is_Store=True)
         store_model.plat = plat_model  # 更新店铺平台
         db.session.add(store_model)  # 添加店铺
         db.session.commit()  # 提交

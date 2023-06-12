@@ -46,7 +46,7 @@ def refreshPromotion():
                     continue
             spyder_plat = content.account.plat.name
             if spyder_plat == spydered_plat:  # 如果是同一个平台，就休息一下
-                time.sleep(random.randint(2, 13)) if spyder_plat == "小红书" else time.sleep(random.randint(2, 5))
+                time.sleep(random.randint(2, 30)) if spyder_plat == "小红书" else time.sleep(random.randint(2, 5))
 
             note_dict = refresh_data.makeData()
             search_note = searchNotes(note_dict)

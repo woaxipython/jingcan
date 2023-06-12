@@ -324,7 +324,7 @@ class KuaiDiZhuShouSpyder():
             "userId": "1251533"}
         response = self.spyder.get(self.store_url, json=store_json, headers=self.headers)
 
-        print(response)
+        print(response.json())
         if response.status_code == 200 and response.json()["data"]:
             originaldata = response.json()['data']['list']
             data = [

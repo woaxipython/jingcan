@@ -178,7 +178,7 @@ class WriteExcelPromotion(object):
             spyder_plat = row[3]
             if spyder_plat == spydered_plat:  # 如果平台不同，则创建新账号
                 if spyder_plat == "小红书":
-                    time.sleep(random.randint(2, 13))
+                    time.sleep(random.randint(2, 31))
                 else:
                     time.sleep(random.randint(2, 5))
             account_result = self.writeAccount(row)  # 写入账号

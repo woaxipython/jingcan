@@ -137,7 +137,7 @@ def getStore(store_id):
     if store_id == "All":
         stores_info = StoreModel.query.filter().all()
     else:
-        stores_info = StoreModel.query.filter(StoreModel.id == store_id).all()
+        stores_info = [StoreModel.query.get(store_id)]
     for store in stores_info:
         if store.name == "手工单":
             pass

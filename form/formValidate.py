@@ -539,6 +539,8 @@ class XhsForm():
             "type": "object",
             "properties": {
                 "xhsToken": {"type": "string", "minLength": 41, "maxLength": 41},
+                "xhsWechat": {"type": "string", "minLength": 2, "maxLength": 100},
+                "xhsPhone": {"type": "string", "minLength": 2, "maxLength": 100},
             },
             "required": ["xhsToken"]
         }

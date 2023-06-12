@@ -1,5 +1,6 @@
 import hashlib
 import json
+import random
 import re
 
 import requests
@@ -10,17 +11,24 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class GetXhsSpyder():
     def __init__(self, ):
+        self.agent = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF XWEB/6939',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat']
 
         self.headers = {
             'Host': 'www.xiaohongshu.com',
-            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
+            'user-agent': random.choice(self.agent),
         }
 
         self.base_url = 'https://www.xiaohongshu.com'
         # self.test_note_url = 'https://www.xiaohongshu.com/explore/643c87440000000013035e63?app_platform=ios&app_version=7.78&share_from_user_hidden=true&type=normal&xhsshare=WeixinSession&appuid=5c015af7000000000800d647&apptime=1678243355'
         # self.test_note_url = 'https://www.xiaohongshu.com/explore/642e5c730000000013007b5d'
-        self.test_note_url = 'https://www.xiaohongshu.com/explore/638996a0000000002203bb35?app_platform=android&app_version=7.60.3&share_from_user_hidden=true&type=normal&xhsshare=CopyLink&appuid=615d54e90000000002021790&apptime=1669961585'
-        self.test_user_url = "https://www.xiaohongshu.com/user/profile/5ad9a47e11be101284cef983"
+        test_url = ['https://www.xiaohongshu.com/user/profile/623b189f00000000210213f8',
+                    'https://www.xiaohongshu.com/explore/6468845f0000000013008a91'
+                    ]
+        self.test_note_url = random.choice(test_url)
+
+        self.test_user_url = 'https://www.xiaohongshu.com/user/profile/5c015af7000000000800d647'
 
     def testCookie(self, token=""):
         result = self.getNoteInfo(token=token)

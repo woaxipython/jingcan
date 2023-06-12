@@ -137,18 +137,34 @@ def makeCodeStractFile(save_path):
 
     # 生成商品模板
     stract_list = CodeStractModel.query.all()
-    column = ["标题", "SKU名称", "店铺", "商品名称", '商品编码', "createTime"]
+    column = ["标题", "SKU名称", "店铺", "商品名称", '商品编码', "原材料", "成本明细", "创建时间", ]
     stract_info = []
     for stract in stract_list:
-        title = stract.store_title
-        name = stract.name
-        store = stract.store.name if stract.store else ""
-        sale_name = stract.sale.name if stract.sale else ""
-        sale_code = stract.sale.code if stract.sale else ""
+        if stract.sale:
+            sale = stract.sale
+            for atom in sale.atoms:
+                cost = atom.cost
+                atom_name = atom.name
+                title = stract.store_title
+                name = stract.name
+                store = stract.store.name if stract.store else ""
+                sale_name = stract.sale.name if stract.sale else ""
+                sale_code = stract.sale.code if stract.sale else ""
 
-        create_time = stract.createTime.strftime("%Y-%m-%d %H:%M:%S")
-        sale_list = [title, name, store, sale_name, sale_code, create_time]
-        stract_info.append(sale_list)
+                create_time = stract.createTime.strftime("%Y-%m-%d %H:%M:%S")
+                sale_list = [title, name, store, sale_name, sale_code, atom_name, cost, create_time]
+                stract_info.append(sale_list)
+        else:
+            title = stract.store_title
+            name = stract.name
+            store = stract.store.name if stract.store else ""
+            sale_name = stract.sale.name if stract.sale else ""
+            sale_code = stract.sale.code if stract.sale else ""
+
+            create_time = stract.createTime.strftime("%Y-%m-%d %H:%M:%S")
+            sale_list = [title, name, store, sale_name, sale_code,"未绑定映射", "未绑定映射成本", create_time]
+
+            stract_info.append(sale_list)
     df = pd.DataFrame(stract_info, columns=column)
     df.to_excel(writer, index=False, sheet_name="商品模板")
 

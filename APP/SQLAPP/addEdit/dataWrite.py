@@ -21,6 +21,7 @@ def writeXhsTokenModel(Model, name, phone, wechat):
         model = Model(name=name, phone=phone, wechat=wechat)
         db.session.add(model)
         db.session.commit()
+    return jsonify({"status": "success", "message": "新增成功"})
 
 
 def writeSimpleModelData(Model, name):
