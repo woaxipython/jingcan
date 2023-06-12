@@ -117,9 +117,9 @@ def allToadyData():
     month_orders = month_orders.iloc[1::2, :]
     month_orders["total"] = month_orders["total"].round(0)
     month_orders = month_orders.values.tolist()
-
-    month_payment = round(sum(month[2] for month in month_orders), 0)
-    month_orders_num = round(sum(month[3] for month in month_orders), 0)
+    print(month_orders)
+    month_payment = round(sum(month[1] for month in month_orders), 0)
+    month_orders_num = round(sum(month[2] for month in month_orders), 0)
     return jsonify(today_payment_orders=today_payment_orders, today_refund_payment=today_refund_payment,
                    today_store_pro=today_store_pro, today_order_count=today_order_count,
                    today_wait_orders=today_wait_orders, today_express_d=today_express_d,
