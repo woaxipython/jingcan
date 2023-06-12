@@ -85,7 +85,7 @@ def allToadyData():
     today_store_pro = getStoreProFee(end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=1)
 
     try:
-        today_refund_payment = round(today_refund[0].count, 0)
+        today_refund_payment = round(today_refund[0].total, 0)
     except:
         today_refund_payment = 0
     try:
