@@ -66,10 +66,7 @@ class DouYinSpyder():
                 url = url
                 modal_id = ""
         else:
-            try:
-                modal_id = re.search(r'video/([^&]*)/?', url).group(1)
-            except:
-                modal_id = ""
+            modal_id = re.search(r'video/([^&]*)/?', url).group(1)
         ret = requests.get(url, headers=self.headers)
 
         if ret.status_code == 200:
@@ -99,7 +96,7 @@ class DouYinSpyder():
                 }
                 return {"status": "success", "message": title_result}
             except:
-                return {"status": "1", "message": "抖音解析出错"}
+                return {"status": "1", "message": "异常"}
         else:
             return {"status": "failed", "message": "获取抖音数据出错"}
 
@@ -131,7 +128,7 @@ class DouYinSpyder():
                 "boards": None,
                 "location": soup.select('span.a83NyFJ4')[0].text if soup.select('span.a83NyFJ4') else "",
                 "collected": None,
-                "desc": soup.select('span.Nu66P_ba')[1].text if soup.select('span.Nu66P_ba') else "",
+                "desc": "".join([span.text for span in soup.select('span.Nu66P_ba')]) if soup.select('span.Nu66P_ba') else "",
                 "officialVerifyName": soup.select('div.HqxPzh_q')[0].text if soup.select('div.HqxPzh_q') else "",
                 "profile_link": url,
                 "spyder_url": url,

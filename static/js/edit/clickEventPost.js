@@ -140,6 +140,7 @@ $(document).ready(function () {
 
     // 创建新推广
     $('#createNewPromotion').click(function () {
+        $("#createNewPromotion").prop('disabled', true);
         var Form = $("#createNewPromotionForm")
         var inputs = Form.find("input")
         var VerResult = Verification(...inputs)
@@ -166,14 +167,20 @@ $(document).ready(function () {
             var url = '/promotion/new'
             JsonRequest(data, url)
                 .then(function (result) {
-                    alert(result['message'])
+                    if (result['status'] === 'success') {
+                        $(".close-combinate-btn").click()
+                    } else {
+                        alert(result['message'])
+                    }
                 })
                 .catch(function (error) {
                     alert(error)
                 })
+            $("#createNewPromotion").prop('disabled', false);
 
         } else {
             alert("请选择产品")
+            $("#createNewPromotion").prop('disabled', true);
         }
     })
 

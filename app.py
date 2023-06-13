@@ -85,7 +85,7 @@ def allToadyData():
     today_store_pro = getStoreProFee(end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=1)
 
     try:
-        today_refund_payment = round(today_refund[0].total, 0)
+        today_refund_payment = round(today_refund[0].count, 0)
     except:
         today_refund_payment = 0
     try:
@@ -117,9 +117,9 @@ def allToadyData():
     month_orders = month_orders.iloc[1::2, :]
     month_orders["total"] = month_orders["total"].round(0)
     month_orders = month_orders.values.tolist()
-    print(month_orders)
-    month_payment = round(sum(month[1] for month in month_orders), 0)
-    month_orders_num = round(sum(month[2] for month in month_orders), 0)
+
+    month_payment = round(sum(month[2] for month in month_orders), 0)
+    month_orders_num = round(sum(month[3] for month in month_orders), 0)
     return jsonify(today_payment_orders=today_payment_orders, today_refund_payment=today_refund_payment,
                    today_store_pro=today_store_pro, today_order_count=today_order_count,
                    today_wait_orders=today_wait_orders, today_express_d=today_express_d,
@@ -152,13 +152,10 @@ def pOrderData():
 @app.route('/storeProData')
 def storeProData():
     month_orders = getParentOrders(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
-                                   interval=32, store_id="0", count=1)
+                                   interval=40, store_id="0", count=1)
     month_orders = makePOrderStore(month_orders, cycle="M", )
     month_orders = month_orders.T
-    if len(month_orders.columns) == 2:
-        month_orders = month_orders.drop([0], axis=1)
-    else:
-        month_orders = month_orders.drop([0, 1], axis=1)
+    del month_orders[0]
     month_orders = month_orders.reset_index()
     month_orders.columns = ["store", "total"]
     month_orders.drop(month_orders.index[0], inplace=True)
