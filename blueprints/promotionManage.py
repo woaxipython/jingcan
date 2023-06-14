@@ -36,7 +36,9 @@ def manage():
         end_date = form_dict["end_date"]
         user = form_dict["user"]
         rate = form_dict["rate"]
-        promotions = searchPromotionSql(startDate=start_date, endData=end_date, user=user, rate=rate).get("message")
+        wechat = form_dict["wechat"]
+        promotions = searchPromotionSql(startDate=start_date, endData=end_date, user=user, rate=rate,
+                                        wechat=wechat).get("message")
     else:
         promotions = searchPromotionSql().get("message")
     return render_template("html/promotion/promotionManage.html", plats=plats, groups=groups, users=users, rates=rates,

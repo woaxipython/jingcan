@@ -354,6 +354,12 @@
                                             </div>
                                         </div>
                                         <div>
+                                            <div class="mx-2 d-inline-block">
+                                                <input type="text" class="form-control" name="wechat"
+                                                       placeholder="微信号">
+                                            </div>
+                                        </div>
+                                        <div>
                                             <div class="me-2 d-inline-block">
                                                 <select class="form-control px-2 select-input" data-select="rate">
                                                     <option value="" disabled>状态</option>
@@ -389,11 +395,14 @@
                                     <tr>
                                         <th class="w-1">No.
                                         </th>
+                                        <th>联络人</th>
                                         <th>微信号</th>
+
                                         <th>合作信息</th>
-                                        <th>图文</th>
                                         <th>合作模式</th>
                                         <th>合作进度</th>
+                                        <th>图文</th>
+
                                         <th>支付记录</th>
                                         <th>
                                             <div class="d-flex justify-content-center">数据图表</div>
@@ -410,8 +419,9 @@
                                                     <small><span
                                                             class="text-muted">{{ promotion.createtime.strftime("%Y-%m-%d") }}</span></small>
                                                 </td>
-                                                <td>{{ promotion.bloger.wechat }}
-                                                </td>
+                                                <td>{{ promotion.user.name }}</td>
+                                                <td>{{ promotion.bloger.wechat }}</td>
+
                                                 <td>
                                                     <div style="max-width: 15rem;min-width: 10rem"
                                                          class="text-truncate m-0 cursor-pointer"
@@ -435,6 +445,22 @@
                                                                 <span>{{ group.name }}</span>
                                                             {% endfor %}
                                                         </small>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div>
+                                                        <small><span
+                                                                class="text-muted">付费 </span></small><span>{{ promotion.fee }}</span><span>元</span>
+                                                    </div>
+                                                    <div>
+                                                        <small><span
+                                                                class="text-muted">佣金 </span></small><span>{{ promotion.commission*100 }}</span><span>%</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <span class="badge bg-success me-1"></span>{{ promotion.rate.name }}
                                                     </div>
                                                 </td>
                                                 <td>
@@ -468,26 +494,26 @@
                                                                     {% if PVcontent.upload_time %}
                                                                         <span>{{ PVcontent.upload_time.strftime("%Y-%m-%d") }}</span>
                                                                     {% else %}
-                                                                        <span>待更新</span>
+                                                                        <span>-</span>
                                                                     {% endif %}
                                                                 </small>
                                                                 <span>赞:</span>
                                                                 {% if PVcontent.liked %}
                                                                     <span>{{ PVcontent.liked }}</span>
                                                                 {% else %}
-                                                                    <span>待更新</span>
+                                                                    <span>0</span>
                                                                 {% endif %}
                                                                 <span>藏:</span>
                                                                 {% if PVcontent.collected %}
                                                                     <span>{{ PVcontent.collected }}</span>
                                                                 {% else %}
-                                                                    <span>待更新</span>
+                                                                    <span>0</span>
                                                                 {% endif %}
                                                                 <span>评:</span>
                                                                 {% if PVcontent.commented %}
                                                                     <span>{{ PVcontent.commented }}</span>
                                                                 {% else %}
-                                                                    <span>待更新</span>
+                                                                    <span>0</span>
                                                                 {% endif %}
                                                             </small>
                                                         </div>
@@ -495,21 +521,6 @@
                                                             <small class="text-muted"><span
                                                                     class="bg-danger badge"></span><code> {{ PVcontent.output.name }}</code></small>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div>
-                                                        <small><span
-                                                                class="text-muted">付费 </span></small><span>{{ promotion.fee }}</span><span>元</span>
-                                                    </div>
-                                                    <div>
-                                                        <small><span
-                                                                class="text-muted">佣金 </span></small><span>{{ promotion.commission*100 }}</span><span>%</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div>
-                                                        <span class="badge bg-success me-1"></span>{{ promotion.rate.name }}
                                                     </div>
                                                 </td>
                                                 <td>
