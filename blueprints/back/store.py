@@ -74,18 +74,21 @@ def getStoreOrder():
     print(form_dict)
     form = OrderForm(form_dict)
     if form.validate():
-        if form_dict.get("kdzsDayLength"):
-            startDate, endDate = dealDate(now=True, length=form_dict.get("kdzsDayLength"))
+        testResult = kdzs.TestCookie()
+        if testResult.get("status") == "success":
+            if form_dict.get("kdzsDayLength"):
+                startDate, endDate = dealDate(now=True, length=form_dict.get("kdzsDayLength"))
+            else:
+                startDate, endDate = dealDate(start_date=form_dict.get("kdzsStartDate"),
+                                              end_date=form_dict.get("kdzsEndDate"))
+            if startDate < endDate:
+                stores = getStore(form_dict.get("kdzsStore"))
+                current_app.celery.send_task("GetOrders", (stores, endDate, startDate))
+                return jsonify({"status": "success", "message": "已经开始获取订单信息,请稍后查看.."})
+            else:
+                return jsonify({"status": "failed", "message": "开始时间需要小于结束时间.."})
         else:
-            startDate, endDate = dealDate(start_date=form_dict.get("kdzsStartDate"),
-                                          end_date=form_dict.get("kdzsEndDate"))
-        print(startDate, endDate)
-        if startDate < endDate:
-            stores = getStore(form_dict.get("kdzsStore"))
-            current_app.celery.send_task("GetOrders", (stores, endDate, startDate))
-            return jsonify({"status": "success", "message": "已经开始获取订单信息,请稍后查看.."})
-        else:
-            return jsonify({"status": "failed", "message": "开始时间需要小于结束时间.."})
+            return jsonify(testResult)
     else:
         return jsonify({"status": "failed", "message": form.messages})
 

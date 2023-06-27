@@ -29,6 +29,7 @@ class writeOrderData(object):
         self.store_id = self.order_info['sellerId']
         self.plat_store_name = self.order_info['sellerNick']
         self.store_name = self.order_info['sellerNick']
+        print(self.store_name)
         self.orderID = self.order_info['orderID']
         self.province = self.order_info['receiverProvince']
         self.city = self.order_info['receiverCity']

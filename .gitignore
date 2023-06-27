@@ -130,4 +130,6 @@ migrations/
 *.ini
 *.dll
 *.exe
-
+*.json
+*.pkl
+*.png

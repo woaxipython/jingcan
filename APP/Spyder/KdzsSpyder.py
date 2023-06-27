@@ -73,7 +73,6 @@ class KuaiDiZhuShouSpyder():
         timestamp = decoded["exp"]
         if timestamp > time.time():
             response = self.spyder.get(self.test_url, headers=self.headers)
-            print(response.text)
             if response.status_code == 200:
                 return {"status": "success", "message": "验证通过，可正常登录"}
             else:
@@ -161,6 +160,7 @@ class KuaiDiZhuShouSpyder():
         response = self.spyder.post(self.search_url, json=search_json, headers=self.headers)
         if response.status_code == 200 and pageNo == 1:
             data = response.json()
+            print(data)
             return {'status': 'success', 'message': "正在获取订单", "data": data, "total": data["data"]["totalCount"]}
         elif pageNo != 1:
             data = response.json()
@@ -322,23 +322,27 @@ class KuaiDiZhuShouSpyder():
         store_json = {
             "refresh": 1,
             "userId": "1251533"}
+        print(self.headers)
         response = self.spyder.get(self.store_url, json=store_json, headers=self.headers)
 
         print(response.json())
-        if response.status_code == 200 and response.json()["data"]:
-            originaldata = response.json()['data']['list']
-            data = [
-                {
-                    "sellerId": original["sellerId"],
-                    "sellerNick": original["sellerNick"],
-                    "sellerAbbreviation": original["sellerAbbreviation"],
-                    "platform": original["platform"],
-                    "bindTime": original["bindTime"],
-                    "status": original["status"],
+        if response.status_code == 200:
+            try:
+                originaldata = response.json()['data']['list']
+                data = [
+                    {
+                        "sellerId": original["sellerId"],
+                        "sellerNick": original["sellerNick"],
+                        "sellerAbbreviation": original["sellerAbbreviation"],
+                        "platform": original["platform"],
+                        "bindTime": original["bindTime"],
+                        "status": original["status"],
 
-                }
-                for original in originaldata]
-            return {'status': 'success', 'message': "更新完毕", "data": data, }
+                    }
+                    for original in originaldata]
+                return {'status': 'success', 'message': "更新完毕", "data": data, }
+            except:
+                return {'status': 'failed', 'message': "更新失败,请检查令牌是否过期", "data": "", }
         else:
             return {'status': 'failed', 'message': "返回码：{}".format(response.status_code), "data": ""}
 
