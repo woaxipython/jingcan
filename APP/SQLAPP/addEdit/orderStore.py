@@ -183,7 +183,7 @@ def writeStore(store_list):
 
 def PlatNameZH(EHname):
     name_dict = {"PDD": "拼多多", "TB": "淘宝", "FXG": "抖音", "JD": "京东", "KSXD": "快手", "OTHER": "其它", "YHD": "一号店", "B2B": "B2B", "B2C": "B2C"
-                 , "B2B2C": "B2B2C", "B2C2B": "B2C2B","XHS":"小红书"}
+                 , "B2B2C": "B2B2C", "XHS":"小红书"}
     return name_dict.get(EHname)
 
 
