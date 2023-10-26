@@ -158,9 +158,11 @@ def writeStore(store_list):
     for store in store_list:
         store_id = store['sellerId']
         store_model = StoreModel.query.filter_by(store_id=store_id).first()
+        print(store['sellerAbbreviation'])
         if not store_model:  # 如果不存在就创建
             store_model = StoreModel(store_id=store_id, )  # 创建店铺
             new_store.append(store['sellerAbbreviation'])  # 记录新店铺
+
         store_model.name = store['sellerAbbreviation']  # 更新店铺名称
         store_model.plat_store_name = store['sellerNick']  # 更新店铺昵称
         store_model.bindTime = store['bindTime']  # 更新店铺绑定时间
@@ -180,7 +182,8 @@ def writeStore(store_list):
 
 
 def PlatNameZH(EHname):
-    name_dict = {"PDD": "拼多多", "TB": "淘宝", "FXG": "抖音", "JD": "京东", "KSXD": "快手", "OTHER": "其它"}
+    name_dict = {"PDD": "拼多多", "TB": "淘宝", "FXG": "抖音", "JD": "京东", "KSXD": "快手", "OTHER": "其它", "YHD": "一号店", "B2B": "B2B", "B2C": "B2C"
+                 , "B2B2C": "B2B2C", "B2C2B": "B2C2B","XHS":"小红书"}
     return name_dict.get(EHname)
 
 

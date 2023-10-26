@@ -13,10 +13,10 @@ class KuaiDiZhuShouSpyder():
     def __init__(self):
         # with open("static/json/data.json") as f:
         with open("static/json/data.json") as f:
-            # with open("../../static/json/data.json") as f:
+        # with open("../../static/json/data.json") as f:
             self.token = json.load(f)["Token"]
         with open('static/json/session.pkl', 'rb') as f:
-            # with open('../../static/json/session.pkl', 'rb') as f:
+        # with open('../../static/json/session.pkl', 'rb') as f:
             self.spyder = pickle.load(f)
         self.captcha_url = "https://erp.kuaidizs.cn/index/user/getCaptcha"
         self.login_url = "https://erp.kuaidizs.cn/index/user/login"
@@ -377,7 +377,8 @@ class KuaiDiZhuShouSpyder():
 
 if __name__ == '__main__':
     ZS = KuaiDiZhuShouSpyder()
-    orders = ZS.createTrade()
+    orders = ZS.gerStoreKDZS()
+    print(orders)
     # Status = ZS.TestCookie()
     # if Status["status"] == "OK":
     #     ZS.iuputOrder()

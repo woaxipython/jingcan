@@ -11,7 +11,7 @@ from models.back import PlatModel, CityModel, AdMethodModel
 from models.store import StoreModel, DistributionModel
 
 bp = Blueprint("store", __name__, url_prefix="/store")
-kdzs = KuaiDiZhuShouSpyder()
+
 
 
 @bp.route("/manage")
@@ -27,6 +27,7 @@ def manage():
 
 @bp.route("/loginKdzs", methods=['POST'])
 def loginKdzs():
+    kdzs = KuaiDiZhuShouSpyder()
     form_dict = request.form.to_dict()
     form = KdzsLoginForm(form_dict)
     if form.validate():
@@ -43,6 +44,7 @@ def loginKdzs():
 # 获取图片验证码
 @bp.route("/kdzsCaptcha")
 def kdzsCaptcha():
+    kdzs = KuaiDiZhuShouSpyder()
     testResult = kdzs.getCaptcha()
     print(testResult)
     return jsonify(testResult)
@@ -50,12 +52,14 @@ def kdzsCaptcha():
 
 @bp.route("/kdzsTest")
 def kdzsTest():
+    kdzs = KuaiDiZhuShouSpyder()
     testResult = kdzs.TestCookie()
     return jsonify(testResult)
 
 
 @bp.route("/kdzsStore")
 def kdzsStore():
+    kdzs = KuaiDiZhuShouSpyder()
     StoreResult = kdzs.gerStoreKDZS()
     if StoreResult['status'] == "success":
         store_list = StoreResult['data']
@@ -70,6 +74,7 @@ def kdzsStore():
 
 @bp.route("/getStoreOrder", methods=['POST'])
 def getStoreOrder():
+    kdzs = KuaiDiZhuShouSpyder()
     form_dict = request.form.to_dict()
     print(form_dict)
     form = OrderForm(form_dict)

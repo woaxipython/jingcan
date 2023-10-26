@@ -17,7 +17,6 @@ from bs4 import BeautifulSoup
 
 class DouYinSpyder():
     def __init__(self):
-        ts = str(time.time()).split('.')[0]
         self.user_url = "https://www.douyin.com/user/MS4wLjABAAAAfjsAJZbhlKTAhClTsxbP1b04RvyTjBRPgNWzLGnMR0c"
         # self.note_url = "https://www.douyin.com/video/7218888878109904186"
         self.note_url = "https://www.douyin.com/user/MS4wLjABAAAASZj6di2175kheLW0qkCaaJSVzm3DjJqY9gpAv3DB5X3vtdA7AjAcls94-VVa3uIv?modal_id=7234598596195142970&vid=7234582445616614716"
