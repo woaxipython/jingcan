@@ -87,8 +87,8 @@ def refreshPromotion():
     return status
 
 
-def GetOrders(stores, endDate, startDate):
-    order_JSON = kdzs.getOrder(stores, endDate=endDate, startDate=startDate)
+def GetOrders(stores, endDate, startDate, token):
+    order_JSON = kdzs.getOrder(stores, endDate=endDate, startDate=startDate, token=token)
     totalCount = order_JSON['total']
     print(totalCount)
     pageNo = math.ceil(int(totalCount) / 1000)
@@ -101,7 +101,7 @@ def GetOrders(stores, endDate, startDate):
         status["processed"] = i
         print(i)
     for page in range(2, pageNo + 1):
-        order_JSON = kdzs.getOrder(pageNo=page, stores=stores, endDate=endDate, startDate=startDate)
+        order_JSON = kdzs.getOrder(pageNo=page, stores=stores, endDate=endDate, startDate=startDate, token=token)
         dealResults = kdzs.DealOrder(order_JSON=order_JSON)
         for dealresult in dealResults:
             print(i)
@@ -112,8 +112,8 @@ def GetOrders(stores, endDate, startDate):
     return status
 
 
-def GetRefund(endDate, startDate):
-    refund_json = kdzs.getRefund(endDate=endDate, startDate=startDate)
+def GetRefund(endDate, startDate, token):
+    refund_json = kdzs.getRefund(endDate=endDate, startDate=startDate, token=token)
     pageCount = refund_json['total']
     print(pageCount)
     pageNo = math.ceil(int(pageCount) / 200)
@@ -125,7 +125,7 @@ def GetRefund(endDate, startDate):
         i += 1
         status["processed"] = i
     for page in range(2, pageNo + 1):
-        refund_json = kdzs.getRefund(endDate=endDate, startDate=startDate, pageNo=page)
+        refund_json = kdzs.getRefund(endDate=endDate, startDate=startDate, pageNo=page, token=token)
         refund_order = kdzs.dealRefund(refund_json)
         for refund in refund_order:
             writeRefund(refund)

@@ -12,12 +12,7 @@ import jwt
 class KuaiDiZhuShouSpyder():
     def __init__(self):
         # with open("static/json/data.json") as f:
-        with open("static/json/data.json") as f:
-        # with open("../../static/json/data.json") as f:
-            self.token = json.load(f)["Token"]
-        with open('static/json/session.pkl', 'rb') as f:
-        # with open('../../static/json/session.pkl', 'rb') as f:
-            self.spyder = pickle.load(f)
+        self.spyder = requests.session()
         self.captcha_url = "https://erp.kuaidizs.cn/index/user/getCaptcha"
         self.login_url = "https://erp.kuaidizs.cn/index/user/login"
         self.search_url = "https://erp.kuaidizs.cn/trade/queryTrade"
@@ -32,7 +27,6 @@ class KuaiDiZhuShouSpyder():
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
         }
-        self.headers["qnquerystring"] = self.token
 
     def getCaptcha(self):
         # 获取验证码
@@ -51,25 +45,22 @@ class KuaiDiZhuShouSpyder():
             "verifyCode": vscode
         }
         response = self.spyder.post(self.login_url, json=login_data, headers=self.headers)
-        print(response.json())
         if response.json()["success"]:
-            self.token = response.headers["qnquerystring"]
-
-            save_json = {}
-            save_json["Token"] = self.token
+            token = response.headers["qnquerystring"]
             # 触发手机验证码标头
             # "{"data":null,"errorCode":1063,"errorMessage":"当前登录需要二次验证，短信验证码已发送至（********0121）","success":false}"
-            with open("static/json/session.pkl", "wb") as f:
-                pickle.dump(self.spyder, f)
-            with open("static/json/data.json", "w") as f:
-                json.dump(save_json, f)
-            return {"status": "success", "message": json.dumps(response.json())}
+            status = response.json()["success"]
+            if status:
+                return {"status": "success", "message": token}
+            else:
+                return {"status": "failed", "message": response.json()["errorMessage"]}
         else:
             return {"status": "failed", "message": response.json()["errorMessage"]}
 
-    def TestCookie(self):
+    def TestCookie(self, token):
+        self.headers["qnquerystring"] = token
+        decoded = jwt.decode(token, options={'verify_signature': False}, algorithms=['HS256'])
 
-        decoded = jwt.decode(self.token, options={'verify_signature': False}, algorithms=['HS256'])
         timestamp = decoded["exp"]
         if timestamp > time.time():
             response = self.spyder.get(self.test_url, headers=self.headers)
@@ -116,7 +107,7 @@ class KuaiDiZhuShouSpyder():
         else:
             return {"status": True, "message": "上传订单成功"}
 
-    def getOrder(self, stores, endDate, startDate, pageNo=1):
+    def getOrder(self, stores, endDate, startDate, token, pageNo=1):
         search_json = {
             "areaJson": "",
             "bizMark": "",
@@ -157,6 +148,7 @@ class KuaiDiZhuShouSpyder():
             "tradeExpressImportLogSequence": None,
             "weightRange": "0-999999999"
         }
+        self.headers["qnquerystring"] = token
         response = self.spyder.post(self.search_url, json=search_json, headers=self.headers)
         if response.status_code == 200 and pageNo == 1:
             data = response.json()
@@ -216,7 +208,7 @@ class KuaiDiZhuShouSpyder():
         }
         return status_dict.get(status) if status_dict.get(status) else "未退款"
 
-    def getRefund(self, endDate, startDate, pageNo=1):
+    def getRefund(self, endDate, startDate, token, pageNo=1):
         refund_json = {
             "createTimeStart": startDate,
             "createTimeEnd": endDate,
@@ -224,6 +216,7 @@ class KuaiDiZhuShouSpyder():
             "pageSize": 200,
             "sysItemInclude": True
         }
+        self.headers["qnquerystring"] = token
         response = self.spyder.post(self.refund_url, json=refund_json, headers=self.headers)
         if response.status_code == 200 and pageNo == 1:
             data = response.json()
@@ -318,14 +311,12 @@ class KuaiDiZhuShouSpyder():
     def addSupply(self):
         pass
 
-    def gerStoreKDZS(self):
+    def gerStoreKDZS(self, token):
+        self.headers["qnquerystring"] = token
         store_json = {
             "refresh": 1,
             "userId": "1251533"}
-        print(self.headers)
         response = self.spyder.get(self.store_url, json=store_json, headers=self.headers)
-
-        print(response.json())
         if response.status_code == 200:
             try:
                 originaldata = response.json()['data']['list']

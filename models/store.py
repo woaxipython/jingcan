@@ -211,3 +211,10 @@ class DistributionModel(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("UserModel", backref="distributions")
+
+class kdzsTokenModel(db.Model):
+    __tablename__ = "kdzs_token"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.String(300))
+    name = db.Column(db.String(100))
+    createTime = db.Column(db.DateTime, default=datetime.now)

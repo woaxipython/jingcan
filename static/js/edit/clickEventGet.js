@@ -57,7 +57,9 @@ $("#captcha").click(function () {
 })
 
 $("#kdzsTest").click(function () {
-    var url = "/store/kdzsTest"
+    var account = $('input[name="kdzsAccount"]').val()
+    console.log(account)
+    var url = "/store/kdzsTest?account=" + account
     GetRequest(url)
         .then(function (result) {
             alert(result['message'])
@@ -68,6 +70,7 @@ $("#kdzsTest").click(function () {
 })
 
 $("#kdzsStore").click(function () {
+
     var url = "/store/kdzsStore"
     GetRequest(url)
         .then(function (result) {

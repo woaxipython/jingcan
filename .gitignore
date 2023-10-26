@@ -92,8 +92,6 @@ Thumbs.db
 ```
 # Maven
 ```
-migration/
-migrations/
 *.md
 *.xml
 *.properties

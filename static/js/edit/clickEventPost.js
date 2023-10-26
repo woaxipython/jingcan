@@ -431,12 +431,12 @@ $(document).ready(function () {
                 })
         }
     })
+    // 测试快递助手
 
     // 登录快递助手
     $('#loginKdzsBtn').click(function () {
         var Form = $("#loginKdzsForm")
         var inputs = Form.find("input")
-        console.log(inputs)
         var VerResult = Verification(...inputs)
         var url = "/store/loginKdzs"
         if (VerResult.length === 0) {
