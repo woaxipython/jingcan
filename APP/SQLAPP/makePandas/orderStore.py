@@ -22,8 +22,6 @@ def makeOrderFrameData(sql_list, cycle="Q", store="all"):
     order = order.reset_index()
     order['date'] = order['date'].dt.strftime('%Y-%m-%d')
     order.total = order.total.fillna(0)
-    print(order)
-
     return order
 
 
@@ -54,6 +52,23 @@ def makePOrderStore(sql_list, values='total', cycle="D"):
     order = order.reset_index()
 
     order['date'] = order['date'].dt.strftime('%Y-%m-%d')
+    return order
+
+
+def makeGroupProduct(sql_list, values='total', cycle="D"):
+    order = pd.DataFrame(sql_list)
+    order.columns = ['date', 'store_name', 'group', 'total', 'counts']
+    order['date'] = pd.to_datetime(order['date'])
+    order = order.set_index('date')
+    order['total'] = round(order.total, 2)
+    order['counts'] = round(order.counts)
+    order = order.reset_index()
+    order = round(
+        order.pivot_table(index=pd.Grouper(key='date', freq=cycle), columns='group', values=values,
+                          aggfunc='sum').fillna(0), 0)
+    order = order.reset_index()
+    order['date'] = order['date'].dt.strftime('%Y-%m-%d')
+
     return order
 
 

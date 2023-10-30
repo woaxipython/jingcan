@@ -5,10 +5,11 @@ import pandas as pd
 from sqlalchemy import and_, cast, Date, extract, func, text
 
 from models.back import AdMethodModel
-from models.product import GroupModel
+from models.product import GroupModel, SaleModel
 from models.store import OrderModel, ParentOrderModel, StoreModel, AdFeeModel, HandParentOrderModel
 
 
+# 获取店铺推广费数据
 def getStoreProFee(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", date=True):
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
@@ -28,6 +29,7 @@ def getStoreProFee(end_date="2049-12-12", interval=10000, store_id="all", status
     return Fees
 
 
+# 获取子订单数据
 def getOrderData(end_date="2049-12-12", interval=10000, status="付款订单", store_id="all", count=False, express=False,
                  date=True):
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
@@ -50,6 +52,32 @@ def getOrderData(end_date="2049-12-12", interval=10000, status="付款订单", s
     return orders
 
 
+# 获取商品销售数据
+def getGroupData(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", count=False, express=False,
+                 date=True):
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    start_date = end_date - timedelta(days=interval)
+
+    store_sql, group_by = confirmStoreGroup(store_id)
+    filters = [OrderModel.updateTime >= start_date, OrderModel.updateTime < end_date]
+
+    entities = [cast(OrderModel.updateTime, Date).label('date'), StoreModel.name.label('store_name'),
+                GroupModel.name.label('group_name'), func.sum(OrderModel.payment).label('total'),
+                func.count(OrderModel.updateTime).label('count')]
+
+    # 生成查询条件
+    status_sql = orderStatus(status)
+    filters.extend(store_sql)
+    filters.extend(status_sql)
+
+    orders = OrderModel.query.filter(*filters).join(OrderModel.parent_order).join(
+        ParentOrderModel.store).join(OrderModel.sale).join(SaleModel.group).with_entities(
+        *entities).group_by(
+        *group_by).all()
+    return orders
+
+
+# 获取父订单数据
 def getParentOrders(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", count=False,
                     express=False, date=True):
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
@@ -82,6 +110,7 @@ def getParentOrders(end_date="2049-12-12", interval=10000, store_id="all", statu
     return orders
 
 
+# 获取地图数据
 def getParentMap(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", city="province"):
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
@@ -117,6 +146,7 @@ def getParentMap(end_date="2049-12-12", interval=10000, store_id="all", status="
     return orders
 
 
+# 获取时间数据
 def getParentTimeOrder(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", ):
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
@@ -147,6 +177,7 @@ def getParentTimeOrder(end_date="2049-12-12", interval=10000, store_id="all", st
     return orders
 
 
+# 获取店铺推广费数据
 def getStoreFee(end_date="2049-12-12", interval=10000, store_id="all", date=True, group="all"):
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
@@ -169,6 +200,7 @@ def getStoreFee(end_date="2049-12-12", interval=10000, store_id="all", date=True
     return orders
 
 
+# 获取手工单数据
 def getHandOrderInfo(startDate="", endDate="", category="", status="", dis="", days=7):
     if startDate == "":
         startDate = datetime.now() - timedelta(days=days)
@@ -188,6 +220,7 @@ def getHandOrderInfo(startDate="", endDate="", category="", status="", dis="", d
     return orders
 
 
+# 确认店铺信息
 def confirmStore(store_id):
     if store_id == "all":
         store_sql = [StoreModel.id != 0]
@@ -201,6 +234,20 @@ def confirmStore(store_id):
     return store_sql, group_by
 
 
+def confirmStoreGroup(store_id):
+    if store_id == "all":
+        store_sql = [StoreModel.id != 0]
+        group_by = ['date', 'store_name', 'group_name']
+    elif store_id == "0":
+        store_sql = [StoreModel.id != 0]
+        group_by = ['date', 'store_name', 'group_name']
+    else:
+        store_sql = [StoreModel.id == store_id]
+        group_by = ['date', 'store_name', 'group_name']
+    return store_sql, group_by
+
+
+# 确认产品分组
 def confirmGroup(group):
     if group == "all":
         group_by = []

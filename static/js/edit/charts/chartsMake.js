@@ -2,62 +2,72 @@ function saleAllStoreShow(element) {
     var url = '/orderData'
     GetRequest(url)
         .then(function (result) {
-            console.log(result)
-            var saleItem = lineCharts(name = "销售额", stack = "", type = "line")
-            saleItem.data = result[1]
-            var refundItem = lineCharts(name = "退款额", stack = "", type = "line")
-            refundItem.data = result[3]
-            var receivItem = lineCharts(name = "收款额", stack = "", type = "line")
-            receivItem.data = result[5]
-            var seriesItem = [saleItem, refundItem, receivItem]
-            var saleOption = XOpention(xAxisData = result[0], seriesData = seriesItem,)
-            element.setOption(saleOption);
+            makeSaleAllStoreShow(element, result)
         })
         .catch(function (error) {
             alert(error)
         })
+}
+
+function makeSaleAllStoreShow(element, result) {
+    var saleItem = lineCharts(name = "销售额", stack = "", type = "line")
+    saleItem.data = result[1]
+    var refundItem = lineCharts(name = "退款额", stack = "", type = "line")
+    refundItem.data = result[3]
+    var receivItem = lineCharts(name = "收款额", stack = "", type = "line")
+    receivItem.data = result[5]
+    var seriesItem = [saleItem, refundItem, receivItem]
+    var saleOption = StackLineChart(xAxisData = result[0], seriesData = seriesItem,)
+    element.setOption(saleOption);
+
 }
 
 function saleAllOrderShow(element) {
     var url = '/pOrderData';
     GetRequest(url)
         .then(function (result) {
-            var saleItem = lineCharts(name = "客单价", stack = "", type = "line")
-            saleItem.data = result[3]
-            var refundItem = lineCharts(name = "订单量", stack = "", type = "line")
-            refundItem.data = result[2]
-            var seriesItem = [saleItem, refundItem]
-            var saleOption = XOpention(xAxisData = result[0], seriesData = seriesItem,)
-            element.setOption(saleOption);
+            makeSaleAllOrderShow(element, result)
         })
         .catch(function (error) {
             alert(error)
         })
 }
 
-function saleAllStoreBarShow(element, url = '/storeProData') {
+function makeSaleAllOrderShow(element, result) {
+    var saleItem = lineCharts(name = "客单价", stack = "", type = "line")
+    saleItem.data = result[3]
+    var refundItem = lineCharts(name = "订单量", stack = "", type = "line")
+    refundItem.data = result[2]
+    var seriesItem = [saleItem, refundItem]
+    var saleOption = StackLineChart(xAxisData = result[0], seriesData = seriesItem,)
+    element.setOption(saleOption);
+}
 
+function saleAllStoreBarShow(element, url = '/storeProData') {
     GetRequest(url)
         .then(function (result) {
-            console.log(result)
-            var seriesItem = []
-            var total = 0
-            $.each(result, function (i, v) {
-                total += parseFloat(v[1])
-            })
-            $.each(result, function (i, v) {
-                writeMonthOrdersDiv(v, total)
-                var saleItem = lineCharts(name = v[0], stack = "total", type = "bar")
-                saleItem.data = [v[1].toFixed(0)]
-                seriesItem.push(saleItem)
-            })
-            var yAxisData = [""]
-            var saleOption = YOpention(yAxisData = yAxisData, seriesData = seriesItem,)
-            element.setOption(saleOption);
+            makeSaleAllStoreBarShow(element, result)
         })
         .catch(function (error) {
             alert(error)
         })
+}
+
+function makeSaleAllStoreBarShow(element, result) {
+    var seriesItem = []
+    var total = 0
+    $.each(result, function (i, v) {
+        total += parseFloat(v[1])
+    })
+    $.each(result, function (i, v) {
+        writeMonthOrdersDiv(v, total)
+        var saleItem = lineCharts(name = v[0], stack = "total", type = "bar")
+        saleItem.data = [v[1].toFixed(0)]
+        seriesItem.push(saleItem)
+    })
+    var yAxisData = [""]
+    var saleOption = YOpention(yAxisData = yAxisData, seriesData = seriesItem,)
+    element.setOption(saleOption);
 }
 
 function saleMapShow(element) {
@@ -71,7 +81,6 @@ function saleMapShow(element) {
                     value: v[1]
                 })
             })
-            console.log(data)
             zGMapOption(jsonUrl = "../static/json/ZG.json", mapChart = element, data = data)
         })
         .catch(function (error) {
@@ -79,44 +88,76 @@ function saleMapShow(element) {
         })
 }
 
-function saleStoreData(saleElement, countElement) {
+function saleStoreData() {
     url = '/sale/storeData'
+    var saleChart = echarts.init(document.getElementById('saleData'));
+    var countChart = echarts.init(document.getElementById('countData'));
     GetRequest(url)
         .then(function (result) {
-            var seriesItem = []
-            $.each(result.total, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            var saleOption = XOpention(xAxisData = result.total.date, seriesData = seriesItem,)
-            saleElement.setOption(saleOption);
-
-            seriesItem = []
-            $.each(result.count, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            saleOption = XOpention(xAxisData = result.count.date, seriesData = seriesItem,)
-            countElement.setOption(saleOption);
+            makeSaleStoreShow(saleChart, result)
+            makeSaleStoreCountShow(countChart, result)
         })
         .catch(function (error) {
             alert(error)
         })
 }
 
+function makeSaleStoreShow(element, result) {
+    var seriesItem = []
+    $.each(result.total, function (key, value) {
+        if (key !== 'date') {
+            var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
+            saleItem.data = value
+            seriesItem.push(saleItem)
+        }
+    })
+    var saleOption = StackLineChart(xAxisData = result.total.date, seriesData = seriesItem,)
+    element.setOption(saleOption);
+}
+
+function makeSaleStoreCountShow(element, result) {
+    var seriesItem = []
+    $.each(result.count, function (key, value) {
+        if (key !== 'date') {
+            var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
+            saleItem.data = value
+            seriesItem.push(saleItem)
+        }
+    })
+    saleOption = StackLineChart(xAxisData = result.count.date, seriesData = seriesItem,)
+    element.setOption(saleOption);
+}
+
+function GroupSaleShow() {
+    var url = '/sale/tabs-pr?cycle=d&interval=30&store=all'
+    GetRequest(url)
+        .then(function (result) {
+            var element = echarts.init(document.getElementById('groupData'));
+            makeGroupSaleShow(element, result)
+        })
+        .catch(function (error) {
+            alert(error)
+        })
+}
+
+function makeGroupSaleShow(element, result) {
+    var seriesItem = []
+    $.each(result.total, function (key, value) {
+        if (key !== 'date') {
+            var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
+            saleItem.data = value
+            seriesItem.push(saleItem)
+        }
+    })
+    var saleOption = StackLineChart(xAxisData = result.total.date, seriesData = seriesItem,)
+    element.setOption(saleOption);
+}
 
 function weekTimeChartShow(element) {
 
     url = '/sale/orderTimeMap'
     GetRequest(url)
         .then(function (result) {
-            console.log(result)
             var data = result.data
             var days = result.days
             var hours = result.hours
@@ -165,7 +206,7 @@ function PromotionPlatData(countChart, ValueChart) {
                     seriesItem.push(saleItem)
                 }
             })
-            var saleOption = XOpention(xAxisData = result.plat.date, seriesData = seriesItem,)
+            var saleOption = StackLineChart(xAxisData = result.plat.date, seriesData = seriesItem,)
             countChart.setOption(saleOption);
 
             seriesItem = []
@@ -190,7 +231,7 @@ function PromotionPlatData(countChart, ValueChart) {
                     seriesItem.push(saleItem)
                 }
             })
-            saleOption = XOpention(xAxisData = result.plat_liked.date, seriesData = seriesItem,)
+            saleOption = StackLineChart(xAxisData = result.plat_liked.date, seriesData = seriesItem,)
             ValueChart.setOption(saleOption);
         })
         .catch(function (error) {
@@ -210,7 +251,7 @@ function PromotionUserData(UserSendChart) {
                     seriesItem.push(saleItem)
                 }
             })
-            var saleOption = XOpention(xAxisData = result.date, seriesData = seriesItem,)
+            var saleOption = StackLineChart(xAxisData = result.date, seriesData = seriesItem,)
             UserSendChart.setOption(saleOption);
         })
         .catch(function (error) {
@@ -222,7 +263,6 @@ function PromotionUserData2(UserFeeChart, UserTotalChart, UserROIChart) {
     var url = '/pro/chartData3'
     GetRequest(url)
         .then(function (result) {
-            console.log(result)
             var seriesItem = []
             $.each(result.fee, function (key, value) {
                 if (key !== 'date') {
@@ -231,7 +271,7 @@ function PromotionUserData2(UserFeeChart, UserTotalChart, UserROIChart) {
                     seriesItem.push(saleItem)
                 }
             })
-            var saleOption = XOpention(xAxisData = result.fee.date, seriesData = seriesItem,)
+            var saleOption = StackLineChart(xAxisData = result.fee.date, seriesData = seriesItem,)
             UserFeeChart.setOption(saleOption);
 
             seriesItem = []
@@ -242,7 +282,7 @@ function PromotionUserData2(UserFeeChart, UserTotalChart, UserROIChart) {
                     seriesItem.push(saleItem)
                 }
             })
-            saleOption = XOpention(xAxisData = result.total.date, seriesData = seriesItem,)
+            saleOption = StackLineChart(xAxisData = result.total.date, seriesData = seriesItem,)
             UserTotalChart.setOption(saleOption);
 
             seriesItem = []
@@ -253,7 +293,7 @@ function PromotionUserData2(UserFeeChart, UserTotalChart, UserROIChart) {
                     seriesItem.push(saleItem)
                 }
             })
-            saleOption = XOpention(xAxisData = result.ratio.date, seriesData = seriesItem,)
+            saleOption = StackLineChart(xAxisData = result.ratio.date, seriesData = seriesItem,)
             UserROIChart.setOption(saleOption);
         })
         .catch(function (error) {
@@ -265,7 +305,6 @@ function writeTodayInfo() {
     url = '/allToadyData'
     GetRequest(url)
         .then(function (result) {
-            console.log(result)
             $('#today_payment_orders').text(result.today_payment_orders)
             $('#today_refund_payment').text(result.today_refund_payment)
             $('#month_payment').text(result.month_payment)
@@ -278,4 +317,15 @@ function writeTodayInfo() {
         .catch(function (error) {
             alert(error)
         })
+}
+
+function InitializationCycle() {
+    var cycle_div = $("[data-div='cycle']");
+    cycle_div.addClass('d-none');
+    $('a[href="#tabs-sales"]').find('div').removeClass('d-none')
+    $('a[href="#sale_tabs-sales"]').find('div').removeClass('d-none')
+}
+
+function makePieXY() {
+
 }

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from flask_migrate import Migrate
 from sqlalchemy import and_
 
@@ -135,16 +135,13 @@ def orderData():
     refund_orders = makeOrderFrameData(refund_orders, cycle="D")
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
     order_refund = order_refund.T.values.tolist()
-    print(order_refund)
-
     return jsonify(order_refund)
 
 
 @app.route('/pOrderData')
 def pOrderData():
     parent_order = getParentOrders(count=1)
-    parent_order = round(makePOrderAll(parent_order, cycle="D"), 0)
-    print(parent_order.columns)
+    parent_order = round(makePOrderAll(parent_order, cycle="D"), 2)
     parent_order = parent_order.T.values.tolist()
     return jsonify(parent_order)
 
@@ -164,6 +161,29 @@ def storeProData():
     month_orders = month_orders.values.tolist()
 
     return jsonify(month_orders)
+
+
+@app.route('/tabs-sales')
+def tabs_sales():
+    cycle = request.args.get("cycle")
+    payment_orders = getOrderData(status="付款订单")
+    payment_orders = makeOrderFrameData(payment_orders, cycle=cycle)
+    refund_orders = getOrderData(status="退款订单")
+    refund_orders = makeOrderFrameData(refund_orders, cycle=cycle)
+    order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
+    order_refund = order_refund.T.values.tolist()
+    return jsonify(order_refund)
+    # return jsonify({'code': 200, 'msg': 'success'})
+
+
+@app.route('/tabs-orders')
+def tabs_orders():
+    cycle = request.args.get("cycle")
+    print(cycle)
+    parent_order = getParentOrders(count=1)
+    parent_order = round(makePOrderAll(parent_order, cycle=cycle), 2)
+    parent_order = parent_order.T.values.tolist()
+    return jsonify(parent_order)
 
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ function lineCharts(name = "", stack = "", type = "line", areaStyle = null) {
     };
 }
 
-function XOpention(xAxisData, seriesData, title) {
+function StackLineChart(xAxisData, seriesData, title) {
     return {
         toolbox: {
             show: true,
@@ -43,23 +43,23 @@ function XOpention(xAxisData, seriesData, title) {
             right: "center",
             bottom: "92%"
         },
-        grid: {
-            containLabel: true,
-            left: "left",
-            right: "10%",
-            height: "60%",
-        },
+        // grid: {
+        //     containLabel: true,
+        //     left: "left",
+        //     right: "10%",
+        //     height: "60%",
+        // },
         dataZoom: [
             {
-                orient: 'vertical',
+                orient: 'horizontal',
                 id: 'dataZoomX',
                 type: 'slider',
+                show: "true",
                 xAxisIndex: [0],
                 filterMode: 'filter',
-                height: "70%",
-                bottom: "center",
-                right: "2%",
-                width: 12,
+                height: "4%",
+                bottom: "14%",
+                right: 'center',
             },],
         tooltip: {
             trigger: 'axis',
@@ -286,4 +286,27 @@ function weekTimeOption(hours, days, data) {
         ]
     };
 
+}
+
+function pieNumOption(dataset, series, media_series) {
+    return  {
+        dataset: dataset,
+        label: {
+            show: true,
+            formatter(param) {
+                return param.name + ' (' + param.percent * 2 + '%)';
+            }
+        },
+
+        series: series,
+        // Optional. Only for responsive layout:
+        media: [
+            {
+                query: {minAspectRatio: 1},
+                option: {
+                    series: media_series
+                }
+            },
+        ]
+    };
 }

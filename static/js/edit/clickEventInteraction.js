@@ -106,5 +106,76 @@ $(document).ready(function () {
         }
     })
 
+    //监听数据展示框的事件
+    $('.nav-item').click(function () {
+        var close_ul = $(this).closest('ul')
+        var interval_div = close_ul.find('div[data-div="cycle"]');
+        interval_div.addClass('d-none');
+        var clicknav = $(this).find('div')
+        clicknav.removeClass('d-none')
+    })
 
+    $('select[data-select="stack"]').change(function () {
+        var stack = $(this).val()
+
+        var divID = $(this).closest('a').attr('href').replace("#", "")
+        var chartsID = $("#" + divID).find('div').attr('id')
+        var element = echarts.init(document.getElementById(chartsID));
+
+        var option = element.getOption()
+        // 获取当前x轴
+        var xAxisData = option.xAxis[0].data
+        // 获取当前Y轴的相关信息（数据、堆形等）
+        var series = option.series
+
+        // 如果是line或者是空值，就继续用折现
+        console.log(stack)
+        $.each(series, function (key, value) {
+            value.stack = stack
+        })
+        var saleOption = StackLineChart(xAxisData = xAxisData, seriesData = series,)
+        element.setOption(saleOption);
+
+    })
+    // else if (stack === 'pie') {
+    //     var dataset = []
+    //     var source = {}
+    //     var pie_series = []
+    //     dataset.push(source)
+    //     source["source"] = []
+    //     var title = ["name", "value", "date"]
+    //     source["source"].push(title)
+    //
+    //     var media_series = []
+    //     $.each(series, function (key, value) {
+    //         $.each(value.data, function (k, v) {
+    //             source["source"].push([value.name, v, xAxisData[k]])
+    //         })
+    //         var transform = {
+    //             transform: {
+    //                 type: 'filter', config: {dimension: 'date', value: xAxisData[key]}
+    //             }
+    //         }
+    //         dataset.push(transform)
+    //         pie_series.push({
+    //             type: 'pie',
+    //             radius: 50,
+    //             center: ['50%', '50%'],
+    //             datasetIndex: key + 1,
+    //         })
+    //
+    //         media_series.push(
+    //             {center: ['20%', '25%'],},
+    //             {center: ['40%', '25%'],},
+    //             {center: ['60%', '25%'],},
+    //             {center: ['80%', '25%'],},
+    //             {center: ['20%', '50%'],},
+    //             {center: ['40%', '50%'],},
+    //             {center: ['60%', '50%'],},
+    //             {center: ['80%', '50%'],},
+    //         )
+    //
+    //     }
 })
+
+

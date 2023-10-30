@@ -204,3 +204,51 @@ $("#newGroupSearchSale").click(function () {
     }
 
 })
+
+// 监听周期select点击事件,并使用get请求，获取数据
+$('select[data-select="cycle"]').change(function () {
+// $('select .cycle').change(function () {
+    var element = echarts.init(document.getElementById('saleData'));
+
+    var a = $(this).closest("a")
+    var aHref = a.attr("href")
+    var a_url = aHref.replace("#", "").replace("_", "/")
+
+    var store = a.find("select[data-store='store']").val()
+    if (!store) {
+        store = "all"
+    }
+
+    var date = a.find("select[data-interval='interval']").val()
+    if (!date) {
+        date = 30
+    }
+    var cycle = a.find("select[data-cycle='cycle']").val()
+    if (!cycle) {
+        cycle = "d"
+    }
+    var url = '/' + a_url + "?cycle=" + cycle + '&interval=' + date + '&store=' + store
+    GetRequest(url)
+        .then(function (result) {
+            if (aHref === '#tabs-sales') {
+                element = echarts.init(document.getElementById('saleData'));
+                makeSaleAllStoreShow(element, result)
+            } else if (aHref === '#tabs-orders') {
+                element = echarts.init(document.getElementById('orderData'));
+                makeSaleAllOrderShow(element, result)
+            } else if (aHref === '#sale_tabs-sales') {
+                element = echarts.init(document.getElementById('saleData'));
+                makeSaleStoreShow(element, result)
+            } else if (aHref === '#sale_tabs-orders') {
+                element = echarts.init(document.getElementById('countData'));
+                makeSaleStoreCountShow(element, result)
+            } else if (aHref === '#sale_tabs-pr') {
+                element = echarts.init(document.getElementById('groupData'));
+                makeGroupSaleShow(element, result)
+            }
+
+        })
+        .catch(function (error) {
+            alert(error)
+        })
+})

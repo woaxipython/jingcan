@@ -3,9 +3,9 @@ from datetime import datetime
 
 from APP.SQLAPP.addEdit.orderStore import writeStorePromotionFee, WriteStorePromotionFile
 from APP.SQLAPP.makePandas.orderStore import makePOrderAll, makePOrderStore, makePOrderMapAll, makePOrderTimeMapAll, \
-    makeTimeMapData, makeStoreFeeAllPr
+    makeTimeMapData, makeStoreFeeAllPr, makeGroupProduct
 from APP.SQLAPP.search.orderStore import makeStoreProFile, getParentOrders, getParentMap, getParentTimeOrder, \
-    getStoreFee
+    getStoreFee, getGroupData
 from form.fileValidate import StoreProFile
 from form.formValidate import StoreProForm
 from flask import Blueprint, request, current_app, render_template, send_file, \
@@ -52,6 +52,151 @@ def pddData():
     return render_template("html/sale/pddSalesData.html")
 
 
+@bp.route("/proFileModel")
+def proFileModel():
+    file_path = "static/excel/推广费模板.xlsx"
+    makeStoreProFile(file_path)
+    return send_file(file_path, as_attachment=True)
+
+
+# 初始化获取店铺数据以及订单数据
+@bp.route("/storeData")
+def storeData():
+    cycle = request.args.get("cycle")
+    store = request.args.get("store")
+    orders = getParentOrders(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
+                             interval=30, store_id="0", count=1)
+    totals = makePOrderStore(orders, values="total", cycle=cycle)
+    store_total_dict = {
+        "date": totals["date"].tolist()
+    }
+    for column in totals.columns:
+        if column != "date":
+            store_total_dict[column] = totals[column].tolist()
+
+    counts = makePOrderStore(orders, values="counts", cycle=cycle)
+    store_counts_dict = {
+        "date": counts["date"].tolist()
+    }
+    for column in counts.columns:
+        if column != "date":
+            store_counts_dict[column] = counts[column].tolist()
+
+    return jsonify({"total": store_total_dict, "count": store_counts_dict})
+
+
+# 根据cycle获取店铺数据
+@bp.route("/tabs-sales")
+def tabs_sales():
+    cycle = request.args.get("cycle")
+    interval = convert_to_number(request.args.get("interval"))
+    orders = getParentOrders(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
+                             interval=interval, store_id="0", count=1)
+    totals = makePOrderStore(orders, values="total", cycle=cycle)
+    store_total_dict = {
+        "date": totals["date"].tolist()
+    }
+    for column in totals.columns:
+        if column != "date":
+            store_total_dict[column] = totals[column].tolist()
+    return jsonify({"total": store_total_dict, })
+
+
+# 根据cycle获取订单数据
+@bp.route("/tabs-orders")
+def tabs_orders():
+    cycle = request.args.get("cycle")
+    interval = convert_to_number(request.args.get("interval"))
+    orders = getParentOrders(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
+                             interval=interval, store_id="0", count=1)
+    counts = makePOrderStore(orders, values="counts", cycle=cycle)
+    store_counts_dict = {
+        "date": counts["date"].tolist()
+    }
+    for column in counts.columns:
+        if column != "date":
+            store_counts_dict[column] = counts[column].tolist()
+
+    return jsonify({"count": store_counts_dict})
+
+
+# 获取商品数据
+@bp.route("/tabs-pr")
+def tabs_pr():
+    cycle = request.args.get("cycle")
+    interval = convert_to_number(request.args.get("interval"))
+    store_id = request.args.get("store")
+    groups = getGroupData(end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=interval, store_id=store_id, )
+    totals = makeGroupProduct(groups, values='total', cycle=cycle)
+    group_total_dict = {
+        "date": totals["date"].tolist()
+    }
+    for column in totals.columns:
+        if column != "date":
+            group_total_dict[column] = totals[column].tolist()
+    return jsonify({"total": group_total_dict})
+
+
+@bp.route("/orderMap")
+def orderMap():
+    store = request.args.get("store")
+    maps = getParentMap(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
+                        interval=30, store_id="all", )
+    maps_total = makePOrderMapAll(maps, total=True)
+    maps_total = round(maps_total, 0)
+    maps_total = maps_total.values.tolist()
+    return jsonify(maps_total)
+
+
+@bp.route("/orderTimeMap")
+def orderTimeMap():
+    store = request.args.get("store")
+    time_order = getParentTimeOrder(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
+                                    interval=30, store_id="all", )
+    time_orders = makePOrderTimeMapAll(time_order)
+    time_orders = makeTimeMapData(time_orders)
+
+    return jsonify(time_orders)
+
+
+@bp.route("/storeAdData")
+def storeAdData():
+    store = request.args.get("store")
+    store_fee = getStoreFee(end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=90, store_id="0", )
+    if store_fee:
+        store_fee = makeStoreFeeAllPr(store_fee)
+        columns = store_fee.columns.tolist()
+        data_dict = {}
+        for i in range(len(columns)):
+            data_dict[columns[i]] = store_fee.values.T.tolist()[i]
+        return jsonify(data_dict)
+    else:
+        return jsonify({})
+
+
+@bp.route("/proinfo")
+def proinfo():
+    data = []
+    store = StoreModel.query.all()
+    for i in store:
+        store_dict = {
+            "storeName": i.name,
+            "storeID": i.id,
+            'plat': i.plat.name if i.plat else '',
+        }
+        data.append(store_dict)
+    group = GroupModel.query.all()
+    group_data = []
+    for i in group:
+        group_dict = {
+            "name": i.name,
+            "id": i.id,
+        }
+        group_data.append(group_dict)
+    return jsonify({"status": "success", "data": data, "group": group_data})
+
+
+# 上传推广数据
 @bp.route("/getStoreProFile", methods=['POST'])
 def getStoreProFile():
     file = request.files.get('file')
@@ -83,95 +228,6 @@ def getStoreData():
         return jsonify({'status': 'failed', 'message': form.messages})
 
 
-@bp.route("/proFileModel")
-def proFileModel():
-    file_path = "static/excel/推广费模板.xlsx"
-    makeStoreProFile(file_path)
-    return send_file(file_path, as_attachment=True)
-
-
-@bp.route("/proinfo")
-def proinfo():
-    data = []
-    store = StoreModel.query.all()
-    for i in store:
-        store_dict = {
-            "storeName": i.name,
-            "storeID": i.id,
-            'plat': i.plat.name if i.plat else '',
-        }
-        data.append(store_dict)
-    group = GroupModel.query.all()
-    group_data = []
-    for i in group:
-        group_dict = {
-            "name": i.name,
-            "id": i.id,
-        }
-        group_data.append(group_dict)
-    return jsonify({"status": "success", "data": data, "group": group_data})
-
-
-@bp.route("/storeData")
-def storeData():
-    cycle = request.args.get("cycle")
-    store = request.args.get("store")
-    orders = getParentOrders(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
-                             interval=90, store_id="0", count=1)
-    totals = makePOrderStore(orders, values="total", cycle=cycle)
-    store_total_dict = {
-        "date": totals["date"].tolist()
-    }
-    for column in totals.columns:
-        if column != "date":
-            store_total_dict[column] = totals[column].tolist()
-
-    counts = makePOrderStore(orders, values="counts", cycle=cycle)
-
-    store_counts_dict = {
-        "date": counts["date"].tolist()
-    }
-    for column in counts.columns:
-        if column != "date":
-            store_counts_dict[column] = counts[column].tolist()
-
-    return jsonify({"total": store_total_dict, "count": store_counts_dict})
-
-
-@bp.route("/orderMap")
-def orderMap():
-    store = request.args.get("store")
-    maps = getParentMap(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
-                        interval=90, store_id="all", )
-    maps_total = makePOrderMapAll(maps, total=True)
-    maps_total = round(maps_total, 0)
-    maps_total = maps_total.values.tolist()
-    return jsonify(maps_total)
-
-
-@bp.route("/orderTimeMap")
-def orderTimeMap():
-    store = request.args.get("store")
-    time_order = getParentTimeOrder(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
-                                    interval=90, store_id="all", )
-    time_orders = makePOrderTimeMapAll(time_order)
-    time_orders = makeTimeMapData(time_orders)
-
-    return jsonify(time_orders)
-
-
-@bp.route("/storeAdData")
-def storeAdData():
-    store = request.args.get("store")
-    store_fee = getStoreFee(end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=90, store_id="0", )
-    store_fee = makeStoreFeeAllPr(store_fee)
-    columns = store_fee.columns.tolist()
-    data_dict = {}
-    for i in range(len(columns)):
-        data_dict[columns[i]] = store_fee.values.T.tolist()[i]
-    return jsonify(data_dict)
-
-
 def allExcelFile(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in current_app.config.get('EXCEL_ALLOWED_EXTENSIONS')
@@ -179,3 +235,10 @@ def allExcelFile(filename):
 
 def StoreProName(filename):
     return "handOrder." + filename.rsplit('.', 1)[1].lower()
+
+
+def convert_to_number(s):
+    try:
+        return int(s)
+    except ValueError:
+        return 30

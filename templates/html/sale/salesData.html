@@ -321,14 +321,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-12">
                         <div class="card">
                             <div class="tab-content h-100">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
                                         role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <a href="#tabs-sales" class="nav-link active" data-bs-toggle="tab"
+                                            <a href="#sale_tabs-sales" class="nav-link active" data-bs-toggle="tab"
                                                aria-selected="true" role="tab">
                                                 <!-- Download SVG icon from http://tabler-icons.io/i/home -->
                                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -341,10 +341,41 @@
                                                     <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
                                                     <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
                                                 </svg>
-                                                销售数据</a>
+                                                店铺数据
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="stack">
+                                                        <option value="total" disabled selected>堆积</option>
+                                                        <option value="total">堆积图</option>
+                                                        <option value="">折线图</option>
+                                                    </select>
+                                                </div>
+                                                <div class="d-flex ms-auto" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-interval="interval">
+                                                        <option value="30" disabled selected>周期</option>
+                                                        <option value="30">最近30天</option>
+                                                        <option value="90">最近90天</option>
+                                                        <option value="180">180天</option>
+                                                        <option value="365">1年</option>
+                                                        <option value="730">2年</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-cycle="cycle">
+                                                        <option value="" disabled selected>分布</option>
+                                                        <option value="d">日</option>
+                                                        <option value="w">周</option>
+                                                        <option value="m">月</option>
+                                                        <option value="q">季</option>
+                                                        <option value="y">年</option>
+                                                    </select>
+                                                </div>
+                                            </a>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <a href="#tabs-refunds" class="nav-link" data-bs-toggle="tab"
+                                            <a href="#sale_tabs-orders" class="nav-link" data-bs-toggle="tab"
                                                aria-selected="false" role="tab" tabindex="-1">
                                                 <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -356,26 +387,120 @@
                                                     <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
                                                     <path d="M4 9l16 0"></path>
                                                 </svg>
-                                                订单数据</a>
+                                                订单数据
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="stack">
+                                                        <option value="total" disabled selected>堆积</option>
+                                                        <option value="total">堆积图</option>
+                                                        <option value="">折线图</option>
+                                                    </select>
+                                                </div>
+                                                <div class="d-flex ms-auto" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-interval="interval">
+                                                        <option value="30" disabled selected>周期</option>
+                                                        <option value="30">最近30天</option>
+                                                        <option value="90">最近90天</option>
+                                                        <option value="180">180天</option>
+                                                        <option value="365">1年</option>
+                                                        <option value="730">2年</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-cycle="cycle">
+                                                        <option value="" disabled selected>分布</option>
+                                                        <option value="d">日</option>
+                                                        <option value="w">周</option>
+                                                        <option value="m">月</option>
+                                                        <option value="q">季</option>
+                                                        <option value="y">年</option>
+                                                    </select>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#sale_tabs-pr" class="nav-link" data-bs-toggle="tab"
+                                               aria-selected="false" role="tab" tabindex="-1">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-layout-navbar me-2" width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                                    <path d="M4 9l16 0"></path>
+                                                </svg>
+                                                商品数据
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="stack">
+                                                        <option value="total" disabled selected>堆积</option>
+                                                        <option value="total">堆积图</option>
+                                                        <option value="">折线图</option>
+                                                    </select>
+                                                </div>
+                                                <div class="d-flex ms-auto" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-store="store">
+                                                        <option value="" disabled selected>店铺</option>
+                                                        <option value="all">所有店铺</option>
+                                                        {% for store in stores %}
+                                                            <option value="{{ store.id }}">{{ store.name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-interval="interval">
+                                                        <option value="30" disabled selected>周期</option>
+                                                        <option value="30">最近30天</option>
+                                                        <option value="90">最近90天</option>
+                                                        <option value="180">180天</option>
+                                                        <option value="365">1年</option>
+                                                        <option value="730">2年</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-cycle="cycle">
+                                                        <option value="" disabled selected>分布</option>
+                                                        <option value="d">日</option>
+                                                        <option value="w">周</option>
+                                                        <option value="m">月</option>
+                                                        <option value="q">季</option>
+                                                        <option value="y">年</option>
+                                                    </select>
+                                                </div>
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="card-body">
                                     <div class="tab-content">
-                                        <div class="tab-pane active show row" id="tabs-sales"
+                                        <div class="tab-pane active show row" id="sale_tabs-sales"
                                              role="tabpanel">
-                                            <div id="saleData" class="card-body w-100 p-0" style="height: 15rem"></div>
+                                            <div id="saleData" class="card-body w-100 p-0" style="height: 25rem"></div>
                                         </div>
-                                        <div class="tab-pane row h-100 active show" id="tabs-refunds" role="tabpanel">
+                                        <div class="tab-pane row h-100 active show" id="sale_tabs-orders"
+                                             role="tabpanel">
                                             <div id="countData" class="card-body w-100 p-0"
-                                                 style="height: 15rem"></div>
+                                                 style="height: 25rem"></div>
+                                        </div>
+                                        <div class="tab-pane row h-100 active show" id="sale_tabs-pr"
+                                             role="tabpanel">
+                                            <div id="groupData" class="card-body w-100 p-0"
+                                                 style="height: 25rem"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-12">
                         <div class="card">
                             <div class="tab-content h-100">
                                 <div class="card-header">
@@ -395,7 +520,7 @@
                                                     <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
                                                     <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
                                                 </svg>
-                                                区域销售额数据</a>
+                                                区域销售数据</a>
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <a href="#tabs-week-time" class="nav-link" data-bs-toggle="tab"
@@ -410,7 +535,7 @@
                                                     <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
                                                     <path d="M4 9l16 0"></path>
                                                 </svg>
-                                                分时销售额数据</a>
+                                                分时销售数据</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -484,22 +609,22 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-{#                                        <tr>#}
-{#                                            <td class="w-1">#}
-{#                                            <span class="avatar avatar-sm" data-bs-toggle="tooltip"#}
-{#                                                  data-bs-placement="top"#}
-{#                                                  title="这是一个博主"#}
-{#                                                  style="background-image: url(static/images/avatars/000m.jpg)"></span>#}
-{#                                            </td>#}
-{#                                            <td>#}
-{#                                                <div style="width:300px" class="text-truncate">#}
-{#                                                    <a href="">#}
-{#                                                        论，如何正确的选择一款手办胶水垃圾收到货福利卡就收到货弗兰克加水电费阿飞#}
-{#                                                    </a>#}
-{#                                                </div>#}
-{#                                            </td>#}
-{#                                            <td class="text-nowrap text-muted">28 Nov 2019</td>#}
-{#                                        </tr>#}
+                                        {#                                        <tr>#}
+                                        {#                                            <td class="w-1">#}
+                                        {#                                            <span class="avatar avatar-sm" data-bs-toggle="tooltip"#}
+                                        {#                                                  data-bs-placement="top"#}
+                                        {#                                                  title="这是一个博主"#}
+                                        {#                                                  style="background-image: url(static/images/avatars/000m.jpg)"></span>#}
+                                        {#                                            </td>#}
+                                        {#                                            <td>#}
+                                        {#                                                <div style="width:300px" class="text-truncate">#}
+                                        {#                                                    <a href="">#}
+                                        {#                                                        论，如何正确的选择一款手办胶水垃圾收到货福利卡就收到货弗兰克加水电费阿飞#}
+                                        {#                                                    </a>#}
+                                        {#                                                </div>#}
+                                        {#                                            </td>#}
+                                        {#                                            <td class="text-nowrap text-muted">28 Nov 2019</td>#}
+                                        {#                                        </tr>#}
                                         </tbody>
                                     </table>
                                 </div>
@@ -743,13 +868,14 @@
 {% block script %}
     <script>
         getPromotiondata()
-        var saleChart = echarts.init(document.getElementById('saleData'));
-        var countChart = echarts.init(document.getElementById('countData'));
+        InitializationCycle()
         var storeSaleChart = echarts.init(document.getElementById('storeSale'));
         var mapChart = echarts.init(document.getElementById('map-sales'));
         var weekTimeChart = echarts.init(document.getElementById('week-time'));
+        var gruopChart = echarts.init(document.getElementById('groupData'));
+        saleStoreData()
+        GroupSaleShow()
 
-        saleStoreData(saleChart, countChart)
         saleAllStoreBarShow(storeSaleChart)
         saleMapShow(mapChart)
         weekTimeChartShow(weekTimeChart)
@@ -765,8 +891,9 @@
             $('.tab-pane').removeClass("show active")
             activetab.addClass("show active")
         })
+
         $('.tab-pane').removeClass("active")
-        $("#tabs-sales").addClass("show active")
+        $("#sale_tabs-sales").addClass("show active")
         $("#tabs-map-sales").addClass("show active")
     </script>
     <script>
@@ -784,7 +911,7 @@
                             seriesItem.push(saleItem)
                         }
                     })
-                    var saleOption = XOpention(xAxisData = result.date, seriesData = seriesItem,)
+                    var saleOption = StackLineChart(xAxisData = result.date, seriesData = seriesItem,)
                     weekTimeChart.setOption(saleOption);
                 })
                 .catch(function (error) {

@@ -300,18 +300,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-12">
                         <div class="card">
                             <div class="tab-content h-100">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
                                         role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <a href="#tabs-sales" class="nav-link active" data-bs-toggle="tab"
+                                            <a href="#tabs-sales" class="nav-link active d-flex" data-bs-toggle="tab"
                                                aria-selected="true" role="tab">
                                                 <!-- Download SVG icon from http://tabler-icons.io/i/home -->
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="icon icon-tabler icon-tabler-brand-cohost me-2" width="24"
+                                                     class="icon icon-tabler icon-tabler-brand-cohost me-2"
+                                                     width="24"
                                                      height="24" viewBox="0 0 24 24" stroke-width="1.25"
                                                      stroke="currentColor" fill="none" stroke-linecap="round"
                                                      stroke-linejoin="round">
@@ -320,10 +321,21 @@
                                                     <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
                                                     <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
                                                 </svg>
-                                                销售数据</a>
+                                                销售数据
+                                                <div class="d-flex ms-auto" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle">
+                                                        <option value="" disabled selected>周期</option>
+                                                        <option value="d">日</option>
+                                                        <option value="w">周</option>
+                                                        <option value="m">月</option>
+                                                        <option value="q">季</option>
+                                                        <option value="y">年</option>
+                                                    </select>
+                                                </div>
+                                            </a>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <a href="#tabs-refunds" class="nav-link" data-bs-toggle="tab"
+                                            <a href="#tabs-orders" class="nav-link d-flex" data-bs-toggle="tab"
                                                aria-selected="false" role="tab" tabindex="-1">
                                                 <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -335,7 +347,18 @@
                                                     <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
                                                     <path d="M4 9l16 0"></path>
                                                 </svg>
-                                                订单数据</a>
+                                                订单数据
+                                                <div class="d-flex ms-auto" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle">
+                                                        <option value="" disabled selected>周期</option>
+                                                        <option value="d">日</option>
+                                                        <option value="w">周</option>
+                                                        <option value="m">月</option>
+                                                        <option value="q">季</option>
+                                                        <option value="y">年</option>
+                                                    </select>
+                                                </div>
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -343,11 +366,11 @@
                                     <div class="tab-content">
                                         <div class="tab-pane active show row" id="tabs-sales"
                                              role="tabpanel">
-                                            <div id="saleData" class="card-body w-100 p-0" style="height: 15rem"></div>
+                                            <div id="saleData" class="card-body w-100 p-0" style="height: 25rem"></div>
                                         </div>
-                                        <div class="tab-pane row h-100 active show" id="tabs-refunds" role="tabpanel">
-                                            <div id="parentData" class="card-body w-100 p-0"
-                                                 style="height: 15rem"></div>
+                                        <div class="tab-pane row h-100 active show" id="tabs-orders" role="tabpanel">
+                                            <div id="orderData" class="card-body w-100 p-0"
+                                                 style="height: 25rem"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -515,18 +538,20 @@
 
     <script>
         writeTodayInfo()
+        InitializationCycle()
         var saleChart = echarts.init(document.getElementById('saleData'));
-        var parentChart = echarts.init(document.getElementById('parentData'));
+        var orderChart = echarts.init(document.getElementById('orderData'));
         var storeSaleChart = echarts.init(document.getElementById('storeSale'));
         saleAllStoreShow(saleChart)
-        saleAllOrderShow(parentChart)
+        saleAllOrderShow(orderChart)
         saleAllStoreBarShow(storeSaleChart)
 
+        {#监听窗口大小变化的事件#}
         window.addEventListener('resize', function () {
-            var activetab = $('.tab-pane.active')
+            var activetab = $('.tab-pane.active');
             $('.tab-pane').addClass("show active")
             saleChart.resize();
-            parentChart.resize();
+            orderChart.resize();
             storeSaleChart.resize();
             $('.tab-pane').removeClass("show active")
             activetab.addClass("show active")
