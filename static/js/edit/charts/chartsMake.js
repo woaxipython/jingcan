@@ -301,6 +301,13 @@ function PromotionUserData2(UserFeeChart, UserTotalChart, UserROIChart) {
         })
 }
 
+function InitializationCycle() {
+    var cycle_div = $("[data-div='cycle']");
+    cycle_div.addClass('d-none');
+    $('a[href="#tabs-sales"]').find('div').removeClass('d-none')
+    $('a[href="#sale_tabs-sales"]').find('div').removeClass('d-none')
+}
+
 function writeTodayInfo() {
     url = '/allToadyData'
     GetRequest(url)
@@ -319,9 +326,3 @@ function writeTodayInfo() {
         })
 }
 
-function InitializationCycle() {
-    var cycle_div = $("[data-div='cycle']");
-    cycle_div.addClass('d-none');
-    $('a[href="#tabs-sales"]').find('div').removeClass('d-none')
-    $('a[href="#sale_tabs-sales"]').find('div').removeClass('d-none')
-}
