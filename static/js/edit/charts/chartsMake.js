@@ -325,7 +325,3 @@ function InitializationCycle() {
     $('a[href="#tabs-sales"]').find('div').removeClass('d-none')
     $('a[href="#sale_tabs-sales"]').find('div').removeClass('d-none')
 }
-
-function makePieXY() {
-
-}

@@ -129,7 +129,6 @@ $(document).ready(function () {
         var series = option.series
 
         // 如果是line或者是空值，就继续用折现
-        console.log(stack)
         $.each(series, function (key, value) {
             value.stack = stack
         })
