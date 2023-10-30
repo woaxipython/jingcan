@@ -538,7 +538,7 @@
 
     <script>
         writeTodayInfo()
-        InitializationCycle()
+
         var saleChart = echarts.init(document.getElementById('saleData'));
         var orderChart = echarts.init(document.getElementById('orderData'));
         var storeSaleChart = echarts.init(document.getElementById('storeSale'));
@@ -558,6 +558,7 @@
         })
         $('.tab-pane').removeClass("active")
         $("#tabs-sales").addClass("show active")
+        InitializationCycle()
     </script>
     <script>
         $(function () {
