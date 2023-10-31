@@ -5,7 +5,7 @@ import random
 from flask_mail import Message
 
 from APP.SQLAPP.addEdit.dataWrite import writeLocationModel
-from APP.SQLAPP.addEdit.orderStore import writeRefund, writeOrderData
+from APP.SQLAPP.addEdit.orderStore import writeRefund, writeOrderData, WriteExcelOrder
 from APP.SQLAPP.addEdit.promotion import WriteExcelPromotion
 from APP.SQLAPP.search.promotion import RefreshData, searchNotes
 from APP.Spyder.KdzsSpyder import KuaiDiZhuShouSpyder
@@ -112,6 +112,14 @@ def GetOrders(stores, endDate, startDate, token):
     return status
 
 
+def writeHandOrder(save_path):
+    write = WriteExcelOrder(save_path)
+    dealResults = write.dealHandOrder()
+    for dealresult in dealResults:
+        print(dealresult)
+        writeOrderData(dealresult)
+
+
 def GetRefund(endDate, startDate, token):
     refund_json = kdzs.getRefund(endDate=endDate, startDate=startDate, token=token)
     pageCount = refund_json['total']
@@ -171,5 +179,6 @@ def make_celery(app):
     celery.task(name="refreshPromotion")(refreshPromotion)
     celery.task(name="GetAddress")(GetAddress)
     celery.task(name="writeFilePromotionC")(writeFilePromotionC)
+    celery.task(name="writeHandOrder")(writeHandOrder)
 
     return celery

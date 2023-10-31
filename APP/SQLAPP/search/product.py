@@ -65,30 +65,36 @@ def refreshSaleFile():
 
 
 def downLoadDisFile(save_path):
-    writer = pd.ExcelWriter(save_path)
+    from openpyxl import Workbook
+    from openpyxl.utils import get_column_letter
+    from openpyxl.worksheet.datavalidation import DataValidation
 
-    column2 = ["商品名称", "商品数量", "商品单价", "收件人", "收件人电话", "收件人地址"]
-    df2 = pd.DataFrame(columns=column2)
-    df2.to_excel(writer, index=False, sheet_name="分销商订单模板")
+    # 创建一个新的工作簿
+    wb = Workbook()
+    sheet = wb.active
 
-    sale_list = SaleModel.query.all()
-    column = ["销售名称", "商品简称(打单名称)", "商品编码", "售价", "创建时间"]
-    sale_info = []
-    for sale in sale_list:
-        if sale.name:
-            sale_name = sale.sale_name
-            name = sale.name
-            code = sale.code
-            price = sale.price
-            create_time = sale.createtime
-            sale_list = [name, sale_name, code, price, create_time]
-            sale_info.append(sale_list)
-    df = pd.DataFrame(sale_info, columns=column)
-    df.to_excel(writer, index=False, sheet_name="现有商品明细")
+    sheet.title = "手工单模板"
 
-    writer.active = 0
-    writer.close()
-    return jsonify({"status": "success", "message": "导出成功"})
+    # 指定标题行的内容
+    title_row = ["订单分类", "发货原因(分销则写分销商名称)", "商品名称", "商品数量", "商品单价", "收件人地址",
+                 "下单时间", "快递公司", "快递单号"]
+    sheet.append(title_row)
+
+    # 指定下拉框的选项
+    dropdown_values = ['手工单', '分销商']
+
+    f = f'"{",".join(dropdown_values)}"'
+    # 创建一个数据验证对象，指定下拉框选项
+    dv = DataValidation(type="list", formula1=f, )
+
+    for row in range(2, len(dropdown_values) + 10):
+        dv.add(sheet[f'A{row}'])  # 应用到第一列（除标题行外）
+
+    # 将数据验证对象添加到工作表中
+    sheet.add_data_validation(dv)
+
+    # 保存工作簿
+    wb.save(save_path)
 
 
 def makeHandOrderExcel(save_path, order_list):
@@ -162,7 +168,7 @@ def makeCodeStractFile(save_path):
             sale_code = stract.sale.code if stract.sale else ""
 
             create_time = stract.createTime.strftime("%Y-%m-%d %H:%M:%S")
-            sale_list = [title, name, store, sale_name, sale_code,"未绑定映射", "未绑定映射成本", create_time]
+            sale_list = [title, name, store, sale_name, sale_code, "未绑定映射", "未绑定映射成本", create_time]
 
             stract_info.append(sale_list)
     df = pd.DataFrame(stract_info, columns=column)

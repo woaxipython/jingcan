@@ -882,29 +882,9 @@
                         </form>
                         <div class="d-flex mt-2 justify-content-start align-items-center">
                             <form id="disOrderForm">
-                                <input type="hidden" name="disOrderName" class="required">
-                                <input type="hidden" name="disOrderUser" class="required">
                             </form>
                             <div class="col-auto px-2 ms-auto">
                                 <a href="{{ url_for("hand.downFile") }}">下载模板</a>
-                            </div>
-                            <div class="col-auto px-2">
-                                <select name="" class="form-select select-input" data-select="disOrderUser">
-                                    <option value="" selected disabled>选择发货人</option>
-                                    {% for user in users %}
-                                        <option value="{{ user.id }}">{{ user.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <small class="text-danger d-none" data-input="disOrderUser">不能为空</small>
-                            </div>
-                            <div class="col-auto px-2">
-                                <select name="" class="form-select select-input" data-select="disOrderName">
-                                    <option value="" selected disabled>选择分销商</option>
-                                    {% for dis in diss %}
-                                        <option value="{{ dis.id }}">{{ dis.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <small class="text-danger d-none" data-input="disOrderName">不能为空</small>
                             </div>
                             <div class="px-2 col-2">
                                 <button type="button" class="btn  btn-primary w-100" id="createDisOrder">

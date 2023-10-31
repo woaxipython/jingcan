@@ -166,6 +166,7 @@ def storeProData():
 @app.route('/tabs-sales')
 def tabs_sales():
     cycle = request.args.get("cycle")
+    print(cycle)
     payment_orders = getOrderData(status="付款订单")
     payment_orders = makeOrderFrameData(payment_orders, cycle=cycle)
     refund_orders = getOrderData(status="退款订单")
@@ -173,9 +174,6 @@ def tabs_sales():
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
     order_refund = order_refund.T.values.tolist()
     return jsonify(order_refund)
-    # return jsonify({'code': 200, 'msg': 'success'})
-
-
 @app.route('/tabs-orders')
 def tabs_orders():
     cycle = request.args.get("cycle")

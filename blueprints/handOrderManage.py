@@ -1,6 +1,6 @@
 import os
 
-from APP.SQLAPP.addEdit.orderStore import WriteExcelOrder, WriteHandOrder
+from APP.SQLAPP.addEdit.orderStore import WriteExcelOrder, WriteHandOrder, writeOrderData
 from APP.SQLAPP.search.orderStore import getHandOrderInfo
 from APP.SQLAPP.search.product import downLoadDisFile, makeHandOrderExcel
 
@@ -58,6 +58,7 @@ def newHandOrder():
         return jsonify({"status": "failed", "message": form.messages})
 
 
+# 上传手工单
 @bp.route("/disOrder", methods=['POST'])
 def newDisOrder():
     form_dict = request.form.to_dict()
@@ -68,19 +69,8 @@ def newDisOrder():
         file.save(save_path)
         form = HandOrderFile(save_path)
         if form.validate():
-            write = WriteExcelOrder(form_dict, save_path)
-            if write.check():
-                make_result = write.makeKdzsExcel()
-                if make_result["status"] == "success":
-                    upload_result = write.uploadExcelFile()
-                    if upload_result["status"] == "success":
-                        return jsonify(write.writeHandOrder())
-                    else:
-                        return jsonify(upload_result)
-                else:
-                    return jsonify(make_result)
-            else:
-                return jsonify({"status": "failed", "message": "请选择正确的分销商或发货人"})
+            current_app.celery.send_task("writeHandOrder", (save_path,))
+            return jsonify({"status": "success", "message": "正在上传手工订单，请稍后查询.."})
         else:
             return jsonify({'status': 'failed', 'message': form.messages})
     else:
@@ -89,7 +79,7 @@ def newDisOrder():
 
 @bp.route("/downFile")
 def downFile():
-    save_path = 'static/excel/分销商订单模板.xlsx'
+    save_path = 'static/excel/手工单模板.xlsx'
     downLoadDisFile(save_path)
     return send_file(save_path, as_attachment=True)
 

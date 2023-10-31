@@ -173,14 +173,11 @@ def newStorePro():
 def getStore(store_id):
     stores = []
     if store_id == "All":
-        stores_info = StoreModel.query.filter().all()
+        stores_info = StoreModel.query.filter(StoreModel.plat_id.isnot(None)).all()
     else:
         stores_info = [StoreModel.query.get(store_id)]
     for store in stores_info:
-        if store.name == "手工单":
-            pass
-        elif store.plat.EH_name:
-            stores.append({"platform": store.plat.EH_name.lower(), "sellerId": store.store_id})
+        stores.append({"platform": store.plat.EH_name.lower(), "sellerId": store.store_id})
     stores.append({"platform": "hand", "sellerId": "1251533"})
     return stores
 

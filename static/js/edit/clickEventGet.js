@@ -207,12 +207,12 @@ $("#newGroupSearchSale").click(function () {
 
 // 监听周期select点击事件,并使用get请求，获取数据
 $('select[data-select="cycle"]').change(function () {
-// $('select .cycle').change(function () {
     var element = echarts.init(document.getElementById('saleData'));
 
     var a = $(this).closest("a")
     var aHref = a.attr("href")
     var a_url = aHref.replace("#", "").replace("_", "/")
+    console.log(a_url)
 
     var store = a.find("select[data-store='store']").val()
     if (!store) {

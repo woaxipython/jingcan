@@ -118,45 +118,71 @@ class HandOrderFile():
     def validate_xlsx(self):
         workbook = load_workbook(filename=self.save_path)
         try:
-            sheet = workbook['分销商订单模板']
+            sheet = workbook['手工单模板']
         except:
             self.messages.append('表格名称不正确，请下载模板')
             return False
 
-        header = ["商品名称", "商品数量", "商品单价", "收件人", "收件人电话", "收件人地址"]
+        header = ["订单分类", "发货原因(分销则写分销商名称)", "商品名称", "商品数量", "商品单价", "收件人地址",
+                  "下单时间", "快递公司", "快递单号"]
+
         head_row = sheet[1]
         for cell in head_row:
             if cell.value != header[head_row.index(cell)]:
                 self.messages.append('表头错误')
                 break
-        for row in sheet.iter_rows(min_row=2):
+        for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row - 1):
             if not row[0].value or not row[1].value or not row[2].value or not row[3].value or not row[4].value or not \
-                    row[5].value:
-                self.messages.append('表格数据不能为空')
+                    row[5].value or not row[6].value:
+                if row[0].value != 0 and row[1].value != 0 and row[2].value != 0 and row[3].value != 0 and row[
+                    4].value != 0 and row[5].value != 0 and row[6].value != 0:
+                    self.messages.append('第{}行表格数据不能为空'.format(row[0].row))
+                    return False
         for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[0].value, str):
-                self.messages.append('第{}行第{}列商品名称应当是字符串'.format(row[0].row, row[0].column))
-                return False
+            if row[0].value:
+                if "手工" not in row[0].value and "分销" not in row[0].value:
+                    self.messages.append('第{}行第{}列订单分类错误'.format(row[0].row, row[0].column))
+                    return False
         for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[1].value, int):
-                self.messages.append('第{}行第{}列数量应当是整数数字'.format(row[1].row, row[1].column))
-                return False
+            if row[1].value:
+                if not isinstance(row[1].value, str):
+                    self.messages.append('第{}行第{}列发货原因应当是字符串'.format(row[0].row, row[0].column))
+                    return False
         for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[2].value, float) and not isinstance(row[2].value, int):
-                self.messages.append('第{}行第{}列单价应当是数字'.format(row[2].row, row[2].column))
-                return False
+            if row[2].value:
+                if not isinstance(row[2].value, str):
+                    self.messages.append('第{}行第{}列商品名称应当是字符串'.format(row[0].row, row[0].column))
+                    return False
         for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[3].value, str):
-                self.messages.append('第{}行第{}列收件人应当是字符串'.format(row[3].row, row[3].column))
-                return False
+            if row[3].value:
+                if not isinstance(row[3].value, int):
+                    self.messages.append('第{}行第{}列数量应当是整数数字'.format(row[1].row, row[1].column))
+                    return False
         for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[4].value, str) and not isinstance(row[4].value, int):
-                self.messages.append('第{}行第{}列收件人电话应当是字符串或数字'.format(row[4].row, row[4].column))
-                return False
+            if row[4].value or row[5].value == 0:
+                if not isinstance(row[4].value, float) and not isinstance(row[4].value, int):
+                    self.messages.append('第{}行第{}列单价应当是数字'.format(row[2].row, row[2].column))
+                    return False
         for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[5].value, str):
-                self.messages.append('第{}行第{}列收件人地址应当是字符串'.format(row[5].row, row[5].column))
-                return False
+            if row[5].value:
+                if not isinstance(row[5].value, str):
+                    self.messages.append('第{}行第{}列收件人应当是字符串'.format(row[3].row, row[3].column))
+                    return False
+        for row in sheet.iter_rows(min_row=2):
+            if row[6].value:
+                if not isinstance(row[6].value, datetime):
+                    self.messages.append('第{}行第{}列下单时间应该为时间'.format(row[3].row, row[3].column))
+                    return False
+        for row in sheet.iter_rows(min_row=2):
+            if row[7].value:
+                if not isinstance(row[7].value, str):
+                    self.messages.append('第{}行第{}列快递公司应该为字符串'.format(row[3].row, row[3].column))
+                    return False
+        for row in sheet.iter_rows(min_row=2):
+            if row[8].value:
+                if not isinstance(row[8].value, str):
+                    self.messages.append('第{}行第{}列快递单号应该为字符串'.format(row[3].row, row[3].column))
+                    return False
 
     def validate(self):
         if self.messages:

@@ -250,28 +250,3 @@ def getCityArea():
         {"name": area.name} for area in sql_areas
     ]
     return jsonify({"status": "failed", "message": areas})
-
-
-@bp.route("/handOrder")
-def handOrder():
-    form_dict = request.form.to_dict()
-    file = request.files.get("file")
-    if file and allExcelFile(file.filename):
-        filename = handOrderName(filename=file.filename)
-        save_path = os.path.join(current_app.config['UPLOADED_FILES_DEST'], filename)
-        file.save(save_path)
-        form = HandOrderFile(save_path)
-        if form.validate():
-            write = WriteExcelOrder(form_dict, save_path)
-            if write.check():
-                make_result = write.makeKdzsExcel()
-                if make_result["status"] == "success":
-                    return jsonify(write.writeHandOrder())
-                else:
-                    return jsonify(make_result)
-            else:
-                return jsonify({"status": "failed", "message": "请选择正确的分销商或发货人"})
-        else:
-            return jsonify({'status': 'failed', 'message': form.messages})
-    else:
-        return jsonify({"status": "failed", "message": "请上传正确的文件"})

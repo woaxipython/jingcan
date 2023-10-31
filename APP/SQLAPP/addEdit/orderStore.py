@@ -1,3 +1,4 @@
+import hashlib
 import os
 from datetime import datetime, timedelta
 import xlwt
@@ -9,7 +10,7 @@ from APP.Spyder.KdzsSpyder import KuaiDiZhuShouSpyder
 from APP.Spyder.getAddress import getAddress
 from APP.createCodeId import createOrderCode
 from exts import db
-from models.back import PlatModel, AdMethodModel
+from models.back import PlatModel, AdMethodModel, ProvinceModel, CityModel, CountyModel
 from models.product import SaleModel, GroupModel, AtomSalesModel
 from models.store import StoreModel, ParentOrderModel, OrderModel, RefundModel, DistributionModel, HandOrderModel, \
     HandOrderCategory, HandParentOrderModel, AdFeeModel, CodeStractModel
@@ -29,7 +30,6 @@ class writeOrderData(object):
         self.store_id = self.order_info['sellerId']
         self.plat_store_name = self.order_info['sellerNick']
         self.store_name = self.order_info['sellerNick']
-        print(self.store_name)
         self.orderID = self.order_info['orderID']
         self.province = self.order_info['receiverProvince']
         self.city = self.order_info['receiverCity']
@@ -47,11 +47,6 @@ class writeOrderData(object):
         if not self.store_model:  # 如果不存在就创建
             self.store_model = StoreModel(store_id=self.store_id, plat_store_name=self.plat_store_name,
                                           name=self.store_name)  # 创建店铺
-        if self.store_name == "手工单":  # 如果店铺名为手工单
-            self.hand_order_model = HandParentOrderModel.query.filter_by(search_id=self.orderID).first()  # 查询手工单是否存在
-            self.hand_order_model = self.hand_order_model if self.hand_order_model else None  # 如果不存在就置空
-        else:
-            self.hand_order_model = None  # 如果不是手工单就置空
 
     def checkParentOrder(self):
         """查询父订单是否存在"""
@@ -76,12 +71,13 @@ class writeOrderData(object):
         for order in self.orders:  # 遍历订单
             self.order_model = OrderModel.query.filter_by(orderID=order['orderID']).first()  # 查询订单是否存在
             if not self.order_model:  # 如果不存在就创建
-                self.order_model = OrderModel(orderID=order['orderID'], code=order['code'], quantity=order['quantity'],
+                self.order_model = OrderModel(orderID=order['orderID'], code=order['SkuName'], quantity=order['quantity'],
                                               payment=order['payment'], updateTime=self.updateTime,
                                               express=order['express'], expressOrder=order['expressOrder'])
             self.order_model.refund = order['refund']  # 更新退款
             self.order_model.status = order['status']  # 更新订单
-            sale_pr_model = SaleModel.query.filter_by(code=order["code"]).first()  # 查询商品是否存在
+            self.order_model.code = order['SkuName']  # 更新订单
+            sale_pr_model = SaleModel.query.filter_by(sale_name=order["SkuName"]).first()  # 查询商品是否存在
             if not sale_pr_model:  # 如果不存在，检查商品对照表是否存在
                 constract_model = CodeStractModel.query.filter_by(name=order['SkuName']).first()  # 检查是否已存在于商品对照表
                 if not constract_model:  # 如果不存在就创建，同时创建商品以及商品对照表
@@ -105,10 +101,6 @@ class writeOrderData(object):
             self.parent_order_model.express = order['express']  # 更新父订单的快递
             self.parent_order_model.expressOrder = order['expressOrder']  # 更新父订单的快递单号
             self.parent_order_model.status = order['status']  # 更新父订单的状态
-            if self.hand_order_model:  # 如果是手工单
-                self.hand_order_model.status = order['status']
-                self.hand_order_model.express = order['express']
-                self.hand_order_model.expressOrder = order['expressOrder']
 
             self.order_model.parent_order = self.parent_order_model
             db.session.add(self.order_model)
@@ -182,8 +174,9 @@ def writeStore(store_list):
 
 
 def PlatNameZH(EHname):
-    name_dict = {"PDD": "拼多多", "TB": "淘宝", "FXG": "抖音", "JD": "京东", "KSXD": "快手", "OTHER": "其它", "YHD": "一号店", "B2B": "B2B", "B2C": "B2C"
-                 , "B2B2C": "B2B2C", "XHS":"小红书"}
+    name_dict = {"PDD": "拼多多", "TB": "淘宝", "FXG": "抖音", "JD": "京东", "KSXD": "快手", "OTHER": "其它",
+                 "YHD": "一号店", "B2B": "B2B", "B2C": "B2C"
+        , "B2B2C": "B2B2C", "XHS": "小红书"}
     return name_dict.get(EHname)
 
 
@@ -293,21 +286,72 @@ class WriteHandOrder(object):
 class WriteExcelOrder(object):
     """写入EXCEL手工订单"""
 
-    def __init__(self, form_dict, save_path):
-        self.form_dict = form_dict  # 表单数据
+    def __init__(self, save_path):
         self.save_path = save_path  # 保存路径
-        self.upload_path = 'static/excel/普通EXCEL模板.xls'  # 模板路径
-        self.user = self.form_dict.get('disOrderUser')  # 联络人
-        self.dis = self.form_dict.get('disOrderName')  # 分销商
 
-    def check(self):
-        self.user_model = UserModel.query.get(self.user)  # 联络人模型
-        if not self.user_model:  # 联络人不存在
-            return False  # 返回False
-        self.dis_model = DistributionModel.query.get(self.dis)  # 分销商模型
-        if not self.dis_model:  # 分销商不存在
-            return False  # 返回False
-        return True  # 返回True
+    def dealHandOrder(self):
+        """处理手工订单,生成可以直接写入到数据库的JSON样式"""
+        workbook = load_workbook(self.save_path)  # 加载上传的EXCEL
+        sheet = workbook['手工单模板']  # 选择工作表
+        for index,row in enumerate(sheet.rows):  # 遍历行
+            if row[0].value and index!=0:
+                sellerId = self.makeHandOrderStore_id(row[0].value)
+                OrderId = self.makeHandOrderId(str(row[1].value) + str(row[2].value) + str(row[3].value) + str(
+                        row[5].value) + str(row[6].value)+ str(row[8].value))
+
+                city = self.makeHandOrderCity(row[5].value)
+                province = self.makeHandOrderProvince(row[5].value)
+
+                parent_order = {
+                    "sellerId": sellerId,
+                    "sellerNick": row[0].value,
+                    "platform": "线下订单",
+                    "orderID": OrderId,
+                    "receiverProvince": province if province else "",
+                    "receiverCity": city if city else "",
+                    "totalPayment": row[4].value,
+                    "totalReceivedPayment": row[4].value,
+                    "updateTime": row[6].value,
+                    "payTime": row[6].value,
+                    'orders': []
+                }
+                order_dict = {
+                    "code": row[2].value,
+                    "SkuName": row[2].value,
+                    "quantity": row[3].value,
+                    "orderID": OrderId,
+                    "title": row[2].value,
+                    "payment": row[4].value,
+                    "refund": "未退款",
+                    "status": "交易成功",
+                    "express": row[7].value,
+                    "expressOrder": row[8].value, }
+                parent_order["orders"].append(order_dict)
+                yield parent_order
+
+    def makeHandOrderProvince(self, info):
+        province_list = [row.name for row in ProvinceModel.query.all()]
+        for province in province_list:
+            if province.replace("城区", "市") in info:
+                return province
+
+    def makeHandOrderCity(self, info):
+        city_list = [row.name for row in CityModel.query.all()]
+        for city in city_list:
+            if city in info:
+                return city
+
+    def makeHandOrderStore_id(self, info):
+        if "手工" in info:
+            return "1251533"
+        elif "分销" in info:
+            return "168188696251881"
+        else:
+            return ""
+
+    def makeHandOrderId(self, info):
+        encoded_text = hashlib.sha1(info.encode()).hexdigest()
+        return encoded_text[:20]
 
     def makeKdzsExcel(self):
         """生成快递助手手工订单EXCEL"""
