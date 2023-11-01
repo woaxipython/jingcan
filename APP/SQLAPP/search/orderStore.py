@@ -52,6 +52,39 @@ def getOrderData(end_date="2049-12-12", interval=10000, status="付款订单", s
     return orders
 
 
+def getParentOrders(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", count=False,
+                    express=False, date=True):
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    start_date = end_date - timedelta(days=interval)
+
+    store_sql, group_by = confirmStore(store_id)
+
+    filters = [ParentOrderModel.updateTime >= start_date, ParentOrderModel.updateTime < end_date]
+
+    entities = [cast(ParentOrderModel.updateTime, Date).label('date'),
+                StoreModel.name.label('store_name'),
+                func.sum(ParentOrderModel.totalPayment).label('total'),
+                func.count(ParentOrderModel.orderID).label('count')]
+
+    if status == "未付款":
+        status = ParentOrderModel.payTime == None
+    else:
+        status = ParentOrderModel.payTime != None
+    filters.append(status)
+
+    if express == "已发货":
+        entities.append(func.count(ParentOrderModel.express).label('express'))
+        filters.append(ParentOrderModel.express != "")
+    elif express == "待发货":
+        entities.append(func.count(ParentOrderModel.express).label('express'))
+        filters.append(ParentOrderModel.express == "")
+    filters.extend(store_sql)
+
+    orders = ParentOrderModel.query.filter(*filters).join(ParentOrderModel.store).with_entities(*entities).group_by(
+        *group_by).all()
+    return orders
+
+
 # 获取商品销售数据
 def getGroupData(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", count=False, express=False,
                  date=True):
@@ -78,36 +111,6 @@ def getGroupData(end_date="2049-12-12", interval=10000, store_id="all", status="
 
 
 # 获取父订单数据
-def getParentOrders(end_date="2049-12-12", interval=10000, store_id="all", status="付款订单", count=False,
-                    express=False, date=True):
-    end_date = datetime.strptime(end_date, "%Y-%m-%d")
-    start_date = end_date - timedelta(days=interval)
-    filters = [ParentOrderModel.updateTime >= start_date, ParentOrderModel.updateTime < end_date, ]
-
-    entities = [cast(ParentOrderModel.updateTime, Date).label('date'),
-                StoreModel.name.label('store_name'),
-                func.sum(ParentOrderModel.totalPayment).label('total'),
-                func.count(ParentOrderModel.orderID).label('count')]
-
-    store_sql, group_by = confirmStore(store_id)
-
-    if status == "未付款":
-        status = ParentOrderModel.payTime == None
-    else:
-        status = ParentOrderModel.payTime != None
-    filters.append(status)
-
-    if express == "已发货":
-        entities.append(func.count(ParentOrderModel.express).label('express'))
-        filters.append(ParentOrderModel.express != "")
-    elif express == "待发货":
-        entities.append(func.count(ParentOrderModel.express).label('express'))
-        filters.append(ParentOrderModel.express == "")
-    filters.extend(store_sql)
-
-    orders = ParentOrderModel.query.filter(*filters).join(ParentOrderModel.store).with_entities(*entities).group_by(
-        *group_by).all()
-    return orders
 
 
 # 获取地图数据

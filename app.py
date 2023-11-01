@@ -12,7 +12,7 @@ from APP.SQLAPP.search.orderStore import getOrderData, getStoreProFee, getParent
 from exts import db, mail, cache
 from bbs_celery import make_celery
 from flask_wtf import CSRFProtect
-from blueprints.sale.saleManage import bp as sale_bp
+from blueprints.sale.saleManage import bp as sale_bp, convert_to_number
 from blueprints.promotionManage import bp as prm_bp
 from blueprints.promotionData import bp as prd_bp
 from blueprints.handOrderManage import bp as hd_bp
@@ -129,9 +129,9 @@ def allToadyData():
 
 @app.route('/orderData')
 def orderData():
-    payment_orders = getOrderData(status="付款订单")
+    payment_orders = getOrderData(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=30)
     payment_orders = makeOrderFrameData(payment_orders, cycle="D")
-    refund_orders = getOrderData(status="退款订单")
+    refund_orders = getOrderData(status="退款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=30)
     refund_orders = makeOrderFrameData(refund_orders, cycle="D")
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
     order_refund = order_refund.T.values.tolist()
@@ -140,7 +140,7 @@ def orderData():
 
 @app.route('/pOrderData')
 def pOrderData():
-    parent_order = getParentOrders(count=1)
+    parent_order = getParentOrders(count=1, end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=30)
     parent_order = round(makePOrderAll(parent_order, cycle="D"), 2)
     parent_order = parent_order.T.values.tolist()
     return jsonify(parent_order)
@@ -166,19 +166,23 @@ def storeProData():
 @app.route('/tabs-sales')
 def tabs_sales():
     cycle = request.args.get("cycle")
-    print(cycle)
-    payment_orders = getOrderData(status="付款订单")
+    interval = convert_to_number(request.args.get("interval"))
+    payment_orders = getOrderData(status="付款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
+                                  interval=interval)
     payment_orders = makeOrderFrameData(payment_orders, cycle=cycle)
-    refund_orders = getOrderData(status="退款订单")
+    refund_orders = getOrderData(status="退款订单", end_date=datetime.now().date().strftime("%Y-%m-%d"),
+                                 interval=interval)
     refund_orders = makeOrderFrameData(refund_orders, cycle=cycle)
     order_refund = round(mergeFrame(payment_orders, refund_orders, type='date'), 0)
     order_refund = order_refund.T.values.tolist()
     return jsonify(order_refund)
+
+
 @app.route('/tabs-orders')
 def tabs_orders():
     cycle = request.args.get("cycle")
-    print(cycle)
-    parent_order = getParentOrders(count=1)
+    interval = convert_to_number(request.args.get("interval"))
+    parent_order = getParentOrders(count=1, end_date=datetime.now().date().strftime("%Y-%m-%d"), interval=interval)
     parent_order = round(makePOrderAll(parent_order, cycle=cycle), 2)
     parent_order = parent_order.T.values.tolist()
     return jsonify(parent_order)

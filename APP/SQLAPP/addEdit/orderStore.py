@@ -38,15 +38,8 @@ class writeOrderData(object):
         self.updateTime = self.order_info['updateTime']
         self.payTime = self.order_info['payTime']
         self.orders = self.order_info['orders']
-        self.checkStore()
         self.checkParentOrder()
         self.writrOrder()
-
-    def checkStore(self):
-        self.store_model = StoreModel.query.filter_by(store_id=self.store_id).first()  # 查询店铺是否存在
-        if not self.store_model:  # 如果不存在就创建
-            self.store_model = StoreModel(store_id=self.store_id, plat_store_name=self.plat_store_name,
-                                          name=self.store_name)  # 创建店铺
 
     def checkParentOrder(self):
         """查询父订单是否存在"""
@@ -71,7 +64,8 @@ class writeOrderData(object):
         for order in self.orders:  # 遍历订单
             self.order_model = OrderModel.query.filter_by(orderID=order['orderID']).first()  # 查询订单是否存在
             if not self.order_model:  # 如果不存在就创建
-                self.order_model = OrderModel(orderID=order['orderID'], code=order['SkuName'], quantity=order['quantity'],
+                self.order_model = OrderModel(orderID=order['orderID'], code=order['SkuName'],
+                                              quantity=order['quantity'],
                                               payment=order['payment'], updateTime=self.updateTime,
                                               express=order['express'], expressOrder=order['expressOrder'])
             self.order_model.refund = order['refund']  # 更新退款
@@ -293,11 +287,11 @@ class WriteExcelOrder(object):
         """处理手工订单,生成可以直接写入到数据库的JSON样式"""
         workbook = load_workbook(self.save_path)  # 加载上传的EXCEL
         sheet = workbook['手工单模板']  # 选择工作表
-        for index,row in enumerate(sheet.rows):  # 遍历行
-            if row[0].value and index!=0:
+        for index, row in enumerate(sheet.rows):  # 遍历行
+            if row[0].value and index != 0:
                 sellerId = self.makeHandOrderStore_id(row[0].value)
                 OrderId = self.makeHandOrderId(str(row[1].value) + str(row[2].value) + str(row[3].value) + str(
-                        row[5].value) + str(row[6].value)+ str(row[8].value))
+                    row[5].value) + str(row[6].value) + str(row[8].value))
 
                 city = self.makeHandOrderCity(row[5].value)
                 province = self.makeHandOrderProvince(row[5].value)
