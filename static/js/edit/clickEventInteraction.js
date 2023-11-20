@@ -136,45 +136,6 @@ $(document).ready(function () {
         element.setOption(saleOption);
 
     })
-    // else if (stack === 'pie') {
-    //     var dataset = []
-    //     var source = {}
-    //     var pie_series = []
-    //     dataset.push(source)
-    //     source["source"] = []
-    //     var title = ["name", "value", "date"]
-    //     source["source"].push(title)
-    //
-    //     var media_series = []
-    //     $.each(series, function (key, value) {
-    //         $.each(value.data, function (k, v) {
-    //             source["source"].push([value.name, v, xAxisData[k]])
-    //         })
-    //         var transform = {
-    //             transform: {
-    //                 type: 'filter', config: {dimension: 'date', value: xAxisData[key]}
-    //             }
-    //         }
-    //         dataset.push(transform)
-    //         pie_series.push({
-    //             type: 'pie',
-    //             radius: 50,
-    //             center: ['50%', '50%'],
-    //             datasetIndex: key + 1,
-    //         })
-    //
-    //         media_series.push(
-    //             {center: ['20%', '25%'],},
-    //             {center: ['40%', '25%'],},
-    //             {center: ['60%', '25%'],},
-    //             {center: ['80%', '25%'],},
-    //             {center: ['20%', '50%'],},
-    //             {center: ['40%', '50%'],},
-    //             {center: ['60%', '50%'],},
-    //             {center: ['80%', '50%'],},
-    //         )
-    //
-    //     }
 })
 
 

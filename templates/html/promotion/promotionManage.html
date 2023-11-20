@@ -7,9 +7,9 @@
 * Copyright 2018-2023 codecalm.net Paweł Kuna
 * Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
 -->
-{% extends "base.html" %}
+{% extends "PromotionBase.html" %}
 <!-- Navbar -->
-{% block page %}
+{% block promotion %}
     <div class="page-wrapper">
         <!-- Page header -->
         <div class="page-header d-print-none">
@@ -20,7 +20,7 @@
                         <div class="page-pretitle">
                         </div>
                         <h2 class="page-title">
-                            站外推广管理
+                            站外数据总览
                         </h2>
                     </div>
                     <!-- Page title actions -->
@@ -36,7 +36,7 @@
                                     <path d="M12 5l0 14"></path>
                                     <path d="M5 12l14 0"></path>
                                 </svg>
-                                新建推广
+                                导入推广记录
                             </a>
                             <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal"
                                data-bs-target="#create-promotion-report" aria-label="Create new report">
@@ -62,43 +62,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
-                                    <div class="subheader">新增图文</div>
-                                    <div class="ms-auto lh-1">
-                                        <div class="dropdown">
-                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item active" href="#">最近1天</a>
-                                                <a class="dropdown-item" href="#">最近7天</a>
-                                                <a class="dropdown-item" href="#">最近15天</a>
-                                                <a class="dropdown-item" href="#">最近1个月</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="subheader">累计图文数量</div>
                                 </div>
                                 <div class="h1 mb-3"><span>10000</span></div>
-                                <div class="d-flex mb-2">
-                                    <div>环比上月</div>
-                                    <div class="ms-auto">
-                                        <span class="text-green d-inline-flex align-items-center lh-1">
-                                          7% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
-                                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24"
-                                               height="24"
-                                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none"
-                                                                                                    d="M0 0h24v24H0z"
-                                                                                                    fill="none"/><path
-                                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-primary" style="width: 75%" role="progressbar"
-                                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
-                                         aria-label="75% Complete">
-                                        <span class="visually-hidden">75% Complete</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -106,68 +72,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
-                                    <div class="subheader">新增点赞</div>
-                                    <div class="ms-auto lh-1">
-                                        <div class="dropdown">
-                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item active" href="#">最近1天</a>
-                                                <a class="dropdown-item" href="#">最近7天</a>
-                                                <a class="dropdown-item" href="#">最近15天</a>
-                                                <a class="dropdown-item" href="#">最近1个月</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="subheader">累计视频数量</div>
                                 </div>
-                                <div class="d-flex align-items-baseline">
-                                    <div class="h1 mb-0 me-2"><span>800</span></div>
-                                    <div class="me-auto">
-                        <span class="text-green d-inline-flex align-items-center lh-1">
-                          8% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
-                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
-                                                                                    fill="none"/><path
-                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
-                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="chart-revenue-bg" class="chart-sm"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="subheader">新增赞藏</div>
-                                    <div class="ms-auto lh-1">
-                                        <div class="dropdown">
-                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item active" href="#">最近1天</a>
-                                                <a class="dropdown-item" href="#">最近7天</a>
-                                                <a class="dropdown-item" href="#">最近15天</a>
-                                                <a class="dropdown-item" href="#">最近1个月</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-baseline">
-                                    <div class="h1 mb-3 me-2"><span>800</span></div>
-                                    <div class="me-auto">
-                        <span class="text-yellow d-inline-flex align-items-center lh-1">
-                          0% <!-- Download SVG icon from http://tabler-icons.io/i/minus -->
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
-                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
-                                                                                    fill="none"/><path d="M5 12l14 0"/></svg>
-                        </span>
-                                    </div>
-                                </div>
-                                <div id="chart-new-clients" class="chart-sm"></div>
+                                <div class="h1 mb-3"><span>10000</span></div>
                             </div>
                         </div>
                     </div>
@@ -175,391 +82,19 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
-                                    <div class="subheader">新增转发</div>
-                                    <div class="ms-auto lh-1">
-                                        <div class="dropdown">
-                                            <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false">最近1天</a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item active" href="#">最近1天</a>
-                                                <a class="dropdown-item" href="#">最近7天</a>
-                                                <a class="dropdown-item" href="#">最近15天</a>
-                                                <a class="dropdown-item" href="#">最近1个月</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="subheader">累计点赞数量</div>
                                 </div>
-                                <div class="d-flex align-items-baseline">
-                                    <div class="h1 mb-3 me-2"><span>800</span></div>
-                                    <div class="me-auto">
-                        <span class="text-green d-inline-flex align-items-center lh-1">
-                          4% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
-                               viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                               stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
-                                                                                    fill="none"/><path
-                                  d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>
-                        </span>
-                                    </div>
-                                </div>
-                                <div id="chart-active-users" class="chart-sm"></div>
+                                <div class="h1 mb-3"><span>10000</span></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
-                        <div class="row row-cards">
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="card card-sm">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                            <span class="bg-primary text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
-                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
-                                                                                        fill="none"/><path
-                                      d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2"/><path
-                                      d="M12 3v3m0 12v3"/></svg>
-                            </span>
-                                            </div>
-                                            <div class="col">
-                                                <div class="font-weight-medium">
-                                                    <span id="have_send">132</span><span> 已发</span>
-                                                </div>
-                                                <div class="text-muted">
-                                                    <small id="wait_send">132</small><small><a href=""
-                                                                                               data-bs-toggle="modal"
-                                                                                               data-bs-target="#wait_send_modal">
-                                                    待发</a></small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="card card-sm">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                            <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
-                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
-                                                                                        fill="none"/><path
-                                      d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path
-                                      d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 17h-11v-14h-2"/><path
-                                      d="M6 5l14 1l-1 7h-13"/></svg>
-                            </span>
-                                            </div>
-                                            <div class="col">
-                                                <div class="font-weight-medium">
-                                                    <span id="normal">132</span><span> 正常</span>
-                                                </div>
-                                                <div class="text-muted">
-                                                    <small id="abnormal">132</small><small><a href=""
-                                                                                              data-bs-toggle="modal"
-                                                                                              data-bs-target="#abnormal_modal">
-                                                    异常</a></small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="card card-sm">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                            <span class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
-                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
-                                                                                        fill="none"/><path
-                                      d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"/></svg>
-                            </span>
-                                            </div>
-                                            <div class="col">
-                                                <div class="font-weight-medium">
-                                                    <span id="all_bloger">132</span><span> 累计博主</span>
-                                                </div>
-                                                <div class="text-muted">
-                                                    <small id="important_bloger">132</small><small><a href=""
-                                                                                                      data-bs-toggle="modal"
-                                                                                                      data-bs-target="#important_bloger_modal">
-                                                    重点博主</a>
-                                                </small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="card card-sm">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                            <span class="bg-twitter text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-twitter -->
-                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
-                                                                                        fill="none"/><path
-                                      d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c0 -.249 1.51 -2.772 1.818 -4.013z"/></svg>
-                            </span>
-                                            </div>
-                                            <div class="col">
-                                                <div class="font-weight-medium">
-                                                    <span id="all_pvcontent">132</span><span> 累计图文</span>
-                                                </div>
-                                                <div class="text-muted">
-                                                    <small id="important_pvcontent">132</small><small> <a href=""
-                                                                                                          data-bs-toggle="modal"
-                                                                                                          data-bs-target="#important_pv_modal">
-                                                    重点图文</a></small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-12">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">推广列表</h3>
-                            </div>
-                            <div class="card-body border-bottom py-3">
-                                <form action="{{ url_for("promotion.manage") }}" method="post">
-                                    <input type="hidden" name="csrf_token"
-                                           value="{{ csrf_token() }}">
-                                    <input type="hidden" name="rate" value="0">
-                                    <input type="hidden" name="user" value="0">
-                                    <div class="d-flex">
-                                        <div class="">
-                                            <small class="text-muted">开始日期</small>
-                                            <div class="mx-2 d-inline-block">
-                                                <input type="date" class="form-control" name="start_date"
-                                                       data-bs-target="datepicker">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <small class="text-muted">结束日期</small>
-                                            <div class="mx-2 d-inline-block">
-                                                <input type="date" class="form-control" name="end_date"
-                                                       data-bs-target="datepicker">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="mx-2 d-inline-block">
-                                                <input type="text" class="form-control" name="wechat"
-                                                       placeholder="微信号">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="me-2 d-inline-block">
-                                                <select class="form-control px-2 select-input" data-select="rate">
-                                                    <option value="" disabled>状态</option>
-                                                    <option value="0" selected>所有状态</option>
-                                                    {% for rate in rates %}
-                                                        <option value={{ rate.id }}>{{ rate.name }}</option>
-                                                    {% endfor %}
-
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="me-2 d-inline-block">
-                                                <select class="form-control px-2 select-input" data-select="user">
-                                                    <option value="" disabled>联络人</option>
-                                                    <option value="0" selected>所有人</option>
-                                                    {% for user in users %}
-                                                        <option value={{ user.id }}>{{ user.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="ms-auto text-muted">
-                                            <button class="btn btn-blue  px-3">查找</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table card-table table-vcenter text-nowrap datatable"
-                                       id="promotionManageTable">
-                                    <thead class="sticky-top">
-                                    <tr>
-                                        <th class="w-1">No.
-                                        </th>
-                                        <th>联络人</th>
-                                        <th>微信号</th>
-
-                                        <th>合作信息</th>
-                                        <th>合作模式</th>
-                                        <th>合作进度</th>
-                                        <th>图文</th>
-
-                                        <th>支付记录</th>
-                                        <th>
-                                            <div class="d-flex justify-content-center">数据图表</div>
-                                        </th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for promotion in promotions %}
-                                        {% for PVcontent in promotion.pvcontents %}
-                                            <tr data-id="{{ promotion.search_id }}">
-                                                <td>
-                                                    <span class="text-muted">{{ promotion.search_id }}</span><br>
-                                                    <small><span
-                                                            class="text-muted">{{ promotion.createtime.strftime("%Y-%m-%d") }}</span></small>
-                                                </td>
-                                                <td>{{ promotion.user.name }}</td>
-                                                <td>{{ promotion.bloger.wechat }}</td>
-
-                                                <td>
-                                                    <div style="max-width: 15rem;min-width: 10rem"
-                                                         class="text-truncate m-0 cursor-pointer"
-                                                         data-bs-container="body"
-                                                         data-bs-toggle="popover"
-                                                         data-bs-placement="top"
-                                                         title="{{ PVcontent.account.nickname }}"
-                                                         data-bs-html="true"
-                                                         data-bs-content='{% for group in promotion.group %}
-                                                     <span class="badge bg-danger me-1"></span>{{ group.name }}<br>
-                                                     {% endfor %}'>
-                                                        <div>
-                                                            <small class="text-muted">{{ PVcontent.account.plat.name }}</small>
-                                                        </div>
-                                                        <a href="{{ PVcontent.account.profile_link }}"
-                                                           class="">{{ PVcontent.account.nickname }}</a><br>
-                                                        <small class="text-muted">
-                                                            <span>合作产品：</span>
-                                                            {% for group in promotion.group %}
-                                                                <span class="badge bg-danger"></span>
-                                                                <span>{{ group.name }}</span>
-                                                            {% endfor %}
-                                                        </small>
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <div>
-                                                        <small><span
-                                                                class="text-muted">付费 </span></small><span>{{ promotion.fee }}</span><span>元</span>
-                                                    </div>
-                                                    <div>
-                                                        <small><span
-                                                                class="text-muted">佣金 </span></small><span>{{ promotion.commission*100 }}</span><span>%</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div>
-                                                        <span class="badge bg-success me-1"></span>{{ promotion.rate.name }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-truncate"
-                                                         style="min-width: 15rem; max-width: 20rem">
-                                                        <div class="cursor-pointer">
-                                                            <a {% if PVcontent.content_link %}
-                                                                href="{{ PVcontent.content_link }}"
-                                                            {% else %}
-                                                                href="javascript:void(0)"
-                                                                data-bs-toggle="tooltip"
-                                                                data-bs-placement="top"
-                                                                title="链接尚未更新"
-                                                            {% endif %} >
-                                                                {% if PVcontent.title %}
-                                                                    {{ PVcontent.title }}
-                                                                {% else %}
-                                                                    {{ "待更新" }}
-                                                                {% endif %}
-                                                            </a>
-                                                        </div>
-                                                        <div class="cursor-pointer"
-                                                             data-bs-container="body"
-                                                             data-bs-toggle="popover"
-                                                             data-bs-placement="top"
-                                                             title="{{ PVcontent.account.nickname }}"
-                                                             data-bs-html="true"
-                                                             data-bs-content='{{ PVcontent.liked }}/{{ PVcontent.collected }}/{{ PVcontent.commented }}'>
-                                                            <small class="text-muted">
-                                                                <small class="me-1"><span>发布时间：</span>
-                                                                    {% if PVcontent.upload_time %}
-                                                                        <span>{{ PVcontent.upload_time.strftime("%Y-%m-%d") }}</span>
-                                                                    {% else %}
-                                                                        <span>-</span>
-                                                                    {% endif %}
-                                                                </small>
-                                                                <span>赞:</span>
-                                                                {% if PVcontent.liked %}
-                                                                    <span>{{ PVcontent.liked }}</span>
-                                                                {% else %}
-                                                                    <span>0</span>
-                                                                {% endif %}
-                                                                <span>藏:</span>
-                                                                {% if PVcontent.collected %}
-                                                                    <span>{{ PVcontent.collected }}</span>
-                                                                {% else %}
-                                                                    <span>0</span>
-                                                                {% endif %}
-                                                                <span>评:</span>
-                                                                {% if PVcontent.commented %}
-                                                                    <span>{{ PVcontent.commented }}</span>
-                                                                {% else %}
-                                                                    <span>0</span>
-                                                                {% endif %}
-                                                            </small>
-                                                        </div>
-                                                        <div class="text-truncate cursor-pointer">
-                                                            <small class="text-muted"><span
-                                                                    class="bg-danger badge"></span><code> {{ PVcontent.output.name }}</code></small>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div>
-                                                        <a data-fslightbox="gallery"
-                                                           href="../static/upload/images/{{ promotion.feeImgLink }}">
-                                                            <!-- Photo -->
-                                                            <div class="img-responsive img-responsive-16x9 rounded-3 border"
-                                                                 style="background-image: url(../static/upload/images/{{ PVcontent.promotion.feeImgLink }})"></div>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                            <span class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
-                                                  data-bs-toggle="tooltip"
-                                                  data-bs-placement="top"
-                                                  title="数据展示功能待开发">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                         class="icon icon-tabler icon-tabler-antenna-bars-5" width="24"
-                                                         height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                         stroke="currentColor" fill="none" stroke-linecap="round"
-                                                         stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                        <path d="M6 18l0 -3"></path>
-                                                        <path d="M10 18l0 -6"></path>
-                                                        <path d="M14 18l0 -9"></path>
-                                                        <path d="M18 18l0 -12"></path>
-                                                    </svg>
-                                                    </span></td>
-                                                <td class="text-center">
-                                                    <a href="" data-bs-toggle="modal" class="editPromotion"
-                                                       data-bs-target="#edit-promotion-report"
-                                                       aria-label="Create new report">编辑</a>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">累计评论数量</div>
+                                </div>
+                                <div class="h1 mb-3"><span>10000</span></div>
                             </div>
                         </div>
                     </div>
@@ -571,11 +106,6 @@
                 <div class="row text-center align-items-center flex-row-reverse">
                     <div class="col-lg-auto ms-lg-auto">
                         <ul class="list-inline list-inline-dots mb-0">
-                            <li class="list-inline-item"><a href="./docs/" class="link-secondary">Documentation</a></li>
-                            <li class="list-inline-item"><a href="./license.html" class="link-secondary">License</a>
-                            </li>
-                            <li class="list-inline-item"><a href="https://github.com/tabler/tabler" target="_blank"
-                                                            class="link-secondary" rel="noopener">Source code</a></li>
                             <li class="list-inline-item">
                                 <a href="https://github.com/sponsors/codecalm" target="_blank" class="link-secondary"
                                    rel="noopener">
@@ -587,21 +117,7 @@
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
                                     </svg>
-                                    Sponsor
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                        <ul class="list-inline list-inline-dots mb-0">
-                            <li class="list-inline-item">
-                                Copyright &copy; 2023
-                                <a href=".." class="link-secondary">Tabler</a>.
-                                All rights reserved.
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="./changelog.html" class="link-secondary" rel="noopener">
-                                    v1.0.0-beta17
+                                    Actions and thoughts are equally important.
                                 </a>
                             </li>
                         </ul>
@@ -614,431 +130,28 @@
 {% block modal %}
     <div class="modal modal-blur fade" id="create-promotion-report">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form id="createNewPromotionForm">
-                    <input type="hidden" name="promotionWechat" value="" class="required">
-                    <input type="hidden" name="promotionUser" value="" class="required">
-                    <input type="hidden" name="promotionRate" value="" class="required">
-                    <input type="hidden" name="promotionFeeModel" value="" class="required">
-                    <input type="hidden" name="promotionFee" value="" class="required">
-                    <input type="hidden" name="promotionCommission" value="" class="required">
-                    <input type="hidden" name="PromotionCheck" value="0" class="required">
-                    <input type="hidden" name="promotionOrder" value="">
-                </form>
-                <div class="modal-header m-3 mb-0">
-                    <div class="modal-title d-block">
-                        <h4><strong>新增推广记录</strong></h4>
-                    </div>
-                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
-                        <i class="text-dark cursor-pointer">—</i>
-                    </div>
-                </div>
-                <div class="modal-body justify-content-start align-content-center mb-0 pb-0">
-                    <div class="col-12 border-bottom pb-3 d-flex">
-                        <div class="align-items-center col-2 mx-2">
-                            <div>
-                                <input type="text" class="form-control" placeholder="微信号"
-                                       name="promotionWechat">
-                                <small class="text-danger d-none" data-input="promotionWechat">不能为空</small>
-                            </div>
-                        </div>
-                        <div class="align-items-center col-auto  mx-2">
-                            <div>
-                                <select class="form-control px-2 select-input"
-                                        data-select="promotionUser">
-                                    <option value="0" selected disabled>选择联络人</option>
-                                    {% for user in users %}
-                                        <option value="{{ user.id }}">{{ user.name }}</option>
-                                    {% endfor %}
-
-                                </select>
-                                <small class="text-danger d-none" data-input="promotionUser">不能为空</small>
-                            </div>
-                        </div>
-                        <div class="align-items-center col-auto mx-2">
-                            <div>
-                                <select class="form-control px-2 select-input"
-                                        data-select="promotionRate">
-                                    <option value="0" selected disabled>合作进度</option>
-                                    {% for rate in rates %}
-                                        <option value="{{ rate.id }}">{{ rate.name }}</option>
-                                    {% endfor %}
-
-                                </select>
-                                <small class="text-danger d-none" data-input="promotionRate">不能为空</small>
-                            </div>
-                        </div>
-                        <div class="align-items-center col-auto mx-2">
-                            <div>
-                                <select class="form-control px-2 select-input"
-                                        data-select="promotionFeeModel">
-                                    <option value="0" selected disabled>付费模式</option>
-                                    {% for feeModel in feeModels %}
-                                        <option value="{{ feeModel.id }}">{{ feeModel.name }}</option>
-                                    {% endfor %}
-
-                                </select>
-                                <small class="text-danger d-none" data-input="promotionFeeModel">不能为空</small>
-                            </div>
-                        </div>
-                        <div class="align-items-center col-2 mx-2">
-                            <div>
-                                <input type="number" class="form-control" placeholder="费用"
-                                       name="promotionFee" min="0">
-                                <small class="text-danger d-none" data-input="promotionFee">不能为空</small>
-                            </div>
-                        </div>
-                        <div class="align-items-center col-2 mx-2">
-                            <div>
-                                <input type="number" step="0.01" max="1" min="0" class="form-control" placeholder="佣金"
-                                       name="promotionCommission">
-                                <small class="text-danger d-none" data-input="promotionCommission">不能为空</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 border-bottom pb-3 pt-3 d-flex">
-                        <div class="align-items-center col-4 pe-2">
-                            <div>
-                                <label class="form-check d-flex align-items-center">
-                                    <input class="form-check-input me-1" type="checkbox"
-                                           name="PromotionCheck">
-                                    <input type="text" class="form-control" placeholder="订单号" disabled
-                                           name="promotionOrder">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="align-items-center col-8 px-2">
-                            <select class="w-100 select-input selectpicker" multiple data-live-search="true"
-                                    data-actions-box="true" id="newPromotionPrSlect"
-                                    data-style="btn"
-                                    title="请选择推广产品">
-                                {% for group in groups %}
-                                    <option value="{{ group.id }}">{{ group.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12 border-bottom pb-3 pt-3 d-flex">
-                        <div class="align-items-center col-2 mx-2">
-                            <form id="chosePromotionAccountForm">
-                                <input type="hidden" name="chosePlat" class="required">
-                                <input type="hidden" name="profileLink" class="required">
-                                <input type="hidden" name="choseOutPutModel" class="required">
+            <div class="modal-content card">
+                <div class="tab-pane active show" id="tabs-pro" role="tabpanel">
+                    <div class="card-body border-top-0" >
+                        <div class="col-12 pb-3">
+                            <small>批量上传推广记录</small>
+                            <form class="dropzone form-control " action="../" autocomplete="off" novalidate="">
+                                <div class="fallback">
+                                    <input name="promotionFile" type="file"
+                                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                </div>
                             </form>
-                            <select class="form-select select-input" data-select="chosePlat">
-                                <option value="" selected disabled>推广平台</option>
-                                {% for plat in plats %}
-                                    {% if plat.is_Promotion %}
-                                        <option value="{{ plat.id }}">{{ plat.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
-
-                            </select>
-                            <small class="text-danger d-none" data-input="chosePlat">不能为空</small>
-                        </div>
-                        <div class="align-items-center col-6 mx-2">
-                            <input type="text" placeholder="输入主页链接" class="w-100 form-control" name="profileLink">
-                            <small class="text-danger d-none" data-input="profileLink">不能为空</small>
-                        </div>
-                        <div class="align-items-center col-2 mx-2">
-                            <select class="form-select select-input" data-select="choseOutPutModel">
-                                <option value="" selected disabled>产出模式</option>
-                                {% for output in outputs %}
-                                    <option value="{{ output.id }}">{{ output.name }}</option>
-                                {% endfor %}
-
-                            </select>
-                            <small class="text-danger d-none" data-input="choseOutPutModel">不能为空</small>
-                        </div>
-                        <div class="align-items-center col-2 mx-2">
-                            <button class="btn  btn-primary" id="addPromotionAccount">添加</button>
-                        </div>
-                    </div>
-                    <div style="height: 28rem" class="card-body-scrollable card-body-scrollable-shadow">
-                        <table class="table no-footer" id="promotionAccountTable">
-                            <thead>
-                            <tr>
-                                <td>合作平台</td>
-                                <td>基本数据</td>
-                                <td>简介</td>
-                                <td></td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link link-secondary me-auto close-combinate-btn mr-auto"
-                            data-bs-dismiss="modal">取消
-                    </button>
-                    <button class="btn btn-danger ms-auto" id="createNewPromotion">
-                        <i class="mdi mdi-upload btn-icon-prepend"></i>
-                        创建合作
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="wait_send_modal">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header m-3 mb-0">
-                    <div class="modal-title d-block">
-                        <h4><strong>待发稿明细</strong></h4>
-                    </div>
-                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
-                        <i class="text-dark cursor-pointer">—</i>
-                    </div>
-                </div>
-                <div class="modal-body justify-content-start align-content-center">
-                    <div style="height: 28rem" class="card-body-scrollable card-body-scrollable-shadow">
-                        <table class="table card-table table-vcenter text-nowrap datatable" id="waitSendProTable">
-                            <thead class="sticky-top bg-blue text-white">
-                            <tr>
-                                <td>微信</td>
-                                <td>平台</td>
-                                <td>账号</td>
-                                <td>状态</td>
-                                <td>费用</td>
-                                <td>合作日期</td>
-                                <td>负责人</td>
-                                <td>产品名称</td>
-                                <td>产出模式</td>
-                                <td>进度</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="abnormal_modal">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header m-3 mb-0">
-                    <div class="modal-title d-block">
-                        <h4><strong>异常图文明细</strong></h4>
-                    </div>
-                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
-                        <i class="text-dark cursor-pointer">—</i>
-                    </div>
-                </div>
-                <div class="modal-body justify-content-start align-content-center">
-                    <div style="height: 28rem" class="card-body-scrollable card-body-scrollable-shadow">
-                        <table class="table card-table table-vcenter text-nowrap datatable" id="abnormalProTable">
-                            <thead class="sticky-top bg-blue text-white">
-                            <tr>
-                                <td>微信</td>
-                                <td>平台</td>
-                                <td>账号</td>
-                                <td>状态</td>
-                                <td>费用</td>
-                                <td>日期</td>
-                                <td>负责人</td>
-                                <td>产品</td>
-                                <td>产出模式</td>
-                                <td>进度</td>
-                                <td>标题</td>
-                                <td>点赞</td>
-                                <td>收藏</td>
-                                <td>转发</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="important_pv_modal">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header m-3 mb-0">
-                    <div class="modal-title d-block">
-                        <h4><strong>重点图文明细</strong></h4>
-                    </div>
-                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
-                        <i class="text-dark cursor-pointer">—</i>
-                    </div>
-                </div>
-                <div class="modal-body justify-content-start align-content-center">
-                    <div style="height: 28rem" class="card-body-scrollable card-body-scrollable-shadow">
-                        <table class="table card-table table-vcenter text-nowrap datatable" id="importantProTable">
-                            <thead class="sticky-top bg-blue text-white">
-                            <tr>
-                                <td>微信</td>
-                                <td>平台</td>
-                                <td>账号</td>
-                                <td>状态</td>
-                                <td>费用</td>
-                                <td>日期</td>
-                                <td>负责人</td>
-                                <td>产品</td>
-                                <td>产出模式</td>
-                                <td>进度</td>
-                                <td>标题</td>
-                                <td>点赞</td>
-                                <td>收藏</td>
-                                <td>转发</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="important_bloger_modal">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header m-3 mb-0">
-                    <div class="modal-title d-block">
-                        <h4><strong>重点博主明细</strong></h4>
-                    </div>
-                    <div class="close-form close-combinate-btn" data-bs-dismiss="modal">
-                        <i class="text-dark cursor-pointer">—</i>
-                    </div>
-                </div>
-                <div class="modal-body justify-content-start align-content-center">
-                    <div style="height: 28rem" class="card-body-scrollable card-body-scrollable-shadow">
-                        <table class="table card-table table-vcenter text-nowrap datatable" id="importBlogerTable">
-                            <thead class="sticky-top bg-blue text-white">
-                            <tr>
-                                <td>微信</td>
-                                <td>累计点赞</td>
-                                <td>累计收藏</td>
-                                <td>累计转发</td>
-                                <td>联络人</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="edit-promotion-report"
-         aria-modal="true" role="dialog">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header m-3">
-                    <h5 class="modal-title d-block"><strong>编辑推广记录</strong></h5>
-                    <div class="cursor-pointer" data-bs-dismiss="modal"><i class="text-dark">—</i>
-                    </div>
-                </div>
-                <div class="modal-body justify-content-start align-content-center mb-0 px-3 pt-0 border-bottom">
-                    <div class="col-12 mb-1 pb-3 border-bottom d-flex">
-                        <div class="d-flex align-items-center col-2 text-truncate"
-                             style="min-width: 5rem;max-width: 7rem">
-                            <small class="text-nowrap text-muted">微信号：</small>
-                            <span class="" id="editPromotionWechat">sda sda sd asd </span>
-                        </div>
-                        <div class="d-flex align-items-center col-2 text-truncate"
-                             style="min-width: 5rem;max-width: 7rem">
-                            <small class="text-nowrap text-muted">费用：</small>
-                            <span
-                                    id="editPromotionFeeModel">sda sda sd asddfg sdfg sdfg sdfg sdfg  </span>
-                        </div>
-                        <div class="d-flex align-items-center col-2 text-truncate"
-                             style="min-width: 5rem;max-width: 7rem">
-                            <small class="text-nowrap text-muted">负责人：</small>
-                            <span id="editPromotionUser">sda sda sd asd </span>
-                        </div>
-                        <div class="d-flex align-items-center col-6 text-truncate"
-                             style="min-width: 5rem;max-width: 15rem">
-                            <small class="text-nowrap text-muted">合作产品：</small>
-                            <span id="editPromotionPr">sda sda sd asd </span>
-                        </div>
-                    </div>
-                    <div class="col-12 pb-3">
-                        <small>上传付款记录</small>
-                        <form class="dropzone form-control form-control-sm" id="uploadFeeImgFile" action="../.."
-                              autocomplete="off"
-                              novalidate>
-                            <div class="fallback">
-                                <input name="FeeImgFile" type="file" accept="image/*">
-                            </div>
-                        </form>
-                        <form id="editPromotionForm">
-                            <input type="hidden" name="editPromotionOrderId">
-                            <input type="hidden" name="editPromotionCheck" value="0">
-                            <input type="hidden" name="editPromotionId">
-                        </form>
-                        <div class="d-flex mt-2">
-                            <div class="col-5 px-2 d-flex justify-content-start align-items-center ms-auto">
-                                <input class="form-check-input me-1" type="checkbox"
-                                       name="editPromotionCheck">
-                                <input type="text" class="form-control" name="editPromotionOrderId" disabled
-                                       placeholder="订单号">
-                            </div>
-                            <div class="px-2 col-2">
-                                <button type="button" class="btn  btn-primary w-100" id="editPromotionUploadBtn">
-                                    提交
-                                </button>
+                            <div class="d-flex mt-2 justify-content-start align-items-center">
+                                <div class="col-auto px-2 ms-auto">
+                                    <a href="/promotion/downFile">下载模板</a>
+                                </div>
+                                <div class="px-2 col-2">
+                                    <button type="button" class="btn  btn-primary w-100 uploadPromotionFile">
+                                        提交
+                                    </button>
+                                </div>
                             </div>
                         </div>
-
-                    </div>
-                    <div style="height: 20rem" class="card-body-scrollable card-body-scrollable-shadow">
-                        <form id="getVideoTitleForm">
-                            <input type="hidden" name="videoLink" value="">
-                        </form>
-                        <table class="table no-footer table-hover" id="editPromotionTable">
-                            <thead class="">
-                            <tr>
-                                <th>平台</th>
-                                <th>链接</th>
-                                <th>标题</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <div class="text-truncate" style="width: 6rem;">
-                                        <div><small class="text-nowrap">小红书</small></div>
-                                        <div><small class="text-nowrap"><a
-                                                href="">小红书巴拉巴拉巴拉巴拉巴拉啦啦啦啦</a></small></div>
-                                    </div>
-                                </td>
-                                <td class="w-25">
-                                    <div class="div">
-                                        <input type="text" class="form-control" name="videoLink">
-                                        <small class="form-text text-danger d-none videoImgLink-error">请输入正确带有href的链接地址</small>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="text-truncate cursor-pointer" style="width: 230px">
-                                        <a href="">
-                                            87956621 65406540654065406540人我让我让为qwerqwer千万人qwer千万人
-                                        </a>
-                                    </div>
-                                    <div class="text-truncate" style="width: 280px">
-                                        <small class="text-muted">
-                                            <small class="me-1"><span>发布时间：</span><span>2023-05-11</span></small>
-                                            <span>赞:</span><span>5000</span>
-                                            <span>藏:</span><span>5000</span>
-                                            <span>评:</span><span>5000</span>
-                                        </small>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="btn  btn-primary">同步</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>

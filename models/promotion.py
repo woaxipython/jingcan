@@ -39,6 +39,7 @@ class PromotionModel(db.Model):
     orderstatus = db.Column(db.Integer)
     createtime = db.Column(db.DateTime, default=datetime.now)
 
+
     # 合作与博主之间的多对多关系，一个合作有一个博主，一个博主多个合作
     bloger_id = db.Column(db.Integer, db.ForeignKey('bloger.id'))
     bloger = db.relationship('BlogerModel', backref='promotions')
@@ -83,6 +84,7 @@ class AccountModel(db.Model):
     __tablename__ = 'account'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     search_id = db.Column(db.String(100), default=uuid)
+    self = db.Column(db.String(10))
     nickname = db.Column(db.String(50))
     fans = db.Column(db.Integer)
     follow = db.Column(db.Integer)

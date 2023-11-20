@@ -10,7 +10,7 @@ from APP.Spyder.XshSpyder import GetXhsSpyder
 from exts import db
 from flask import jsonify
 
-from models.back import PlatModel, XhsTokenModel, DyTokenModel, RateModel, FeeModel, OutputModel
+from models.back import PlatModel, XhsTokenModel, DyTokenModel, RateModel, FeeModel, OutputModel, PrtypeModel
 from models.product import GroupModel
 from models.promotion import AccountModel, PromotionModel, BlogerModel, PromotionGroupsModel
 from models.promotiondata import PVContentModel, PVDataModel
@@ -70,25 +70,58 @@ class GetPromotionModel():
         return orders
 
 
-def searchPromotionSql(startDate="", endData="", user="", rate="", promotion_id="", wechat="", days=30, ):
-    if startDate == "":
-        startDate = datetime.now() - timedelta(days=days)
-    if endData == "":
-        endData = datetime.now()
-    filters = [PromotionModel.createtime >= startDate, PromotionModel.createtime < endData, ]
-    if user and user != "0":
-        filters.append(PromotionModel.user_id == user)
-    if wechat:
-        filters.append(BlogerModel.wechat == wechat)
-    if rate and rate != "0":
-        filters.append(PromotionModel.rate_id == rate)
-    if promotion_id:
-        filters = [PromotionModel.search_id == promotion_id, ]
-    promotion_list = PromotionModel.query.filter(*filters).join(PromotionModel.bloger).all()
-    if promotion_list:
-        return {"status": "success", "message": promotion_list}
-    else:
-        return {"status": "failed", "message": "未找到符合条件的推广"}
+def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", rate="", promotion_id="", wechat="",
+                       interval=365, plat="",
+                       prtype="", group="", group_=""):
+    group_by = ["link"]
+    interval = 365 if interval == 171 else interval
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    start_date = end_date - timedelta(days=interval)
+    filters = [PVContentModel.create_time >= start_date, PVContentModel.create_time < end_date,
+               PVContentModel.content_link != None,]
+
+    filters.append(AccountModel.self == self) if self and self != "0" else filters
+    filters.append(GroupModel.id == group) if group and group != "0" else filters
+    filters.append(PrtypeModel.name == prtype) if prtype and prtype != "0" else filters
+    filters.append(BlogerModel.wechat == wechat) if wechat else filters
+    filters.append(PlatModel.name == plat) if plat else filters
+    filters.append(PromotionModel.rate_id == rate) if rate and rate != "0" else filters
+    filters = [PromotionModel.search_id == promotion_id] if promotion_id else filters
+    group_by.extend(group_.split(",")) if group_ else group_by
+    entities = [cast(PVContentModel.create_time, Date).label('date'),
+                GroupModel.name.label('group'),
+                AccountModel.nickname.label('account'),
+                AccountModel.profile_link.label('profile_link'),
+                AccountModel.self.label('self'),
+                PVContentModel.title.label('title'),
+                PVContentModel.search_id.label('id'),
+                PVContentModel.content_link.label('link'),
+                PVContentModel.liked.label('liked'),
+                PVContentModel.commented.label('commented'),
+                PVContentModel.forwarded.label('forwarded'),
+                PVContentModel.collected.label('collected'),
+                PVContentModel.video_link.label('video'),
+                PlatModel.name.label('plat')]
+    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
+        AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities).group_by(
+        *group_by).all()
+    return pvcontent_list
+
+
+def searchPVContentSql2(plat="", self="", group=""):
+    group_by = []
+    group_by.extend(group.split(",")) if group else group_by
+    filters = [PVContentModel.content_link != None]
+    filters.append(AccountModel.self == self) if self and self != "0" else filters
+    filters.append(PlatModel.name == plat) if plat else filters
+    entities = [
+        AccountModel.profile_link.label('profile_link'),
+        PVContentModel.content_link.label('link'),
+        PlatModel.name.label('plat')]
+    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
+        AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities).group_by(
+        "link").all()
+    return pvcontent_list
 
 
 def dictPromotionORM(promotion_ORM):
@@ -190,175 +223,64 @@ class searchAccount(object):
 
 
 class searchNotes(object):
-    def __init__(self, form_dict):
+    def __init__(self):
         """ 初始化 """
         """
-        account_id: 账号id str
-        noteLink: 笔记链接 str
-        promotion_id: 推广id  int
-        note_id: 笔记id str, =search_id: 搜索id (必填) str
         """
-        self.form_dict = form_dict
-        self.error_message = []
-        self.note_result = {}
-        self.account_id = self.form_dict["account_id"]
-        self.note_link = self.form_dict["noteLink"]
-        self.promotion_id = self.form_dict["promotion_id"]
-        self.note_id = self.form_dict["note_id"]
 
-    def checkExist(self):
-        note_model = PVContentModel.query.filter_by(content_link=self.note_link).first()
-        if note_model:
-            return True
-        else:
-            return False
-
-    def check(self):
-        promotion_model = PromotionModel.query.get(self.promotion_id)
-        if not promotion_model:
-            self.error_message.append("推广不存在，请确认")
-            return False
-        account_model = AccountModel.query.filter_by(account_id=self.account_id).first()
-        if not account_model:
-            self.error_message.append("账号不存在，请确认")
-            return False
-        note_model = PVContentModel.query.filter_by(search_id=self.note_id).first()
-        if not note_model:
-            self.error_message.append("内容不存在，请确认")
-            return False
-        return True
-
-    def spyderNote(self):
-
-        account_model = AccountModel.query.filter_by(account_id=self.account_id).first()
-        plat_name = account_model.plat.name
+    def spyderXHSNote(self, note_link):
         token = xhsToken()
-        print(self.note_link)
-        if self.note_link:
-            if plat_name == "小红书":
-                if not token:
-                    return {"status": "failed", "message": "正常小红书账号已用完，请联系管理员"}
-                profile_result = xhs.getNoteInfo(token=token, url=self.note_link)
-            elif plat_name == "抖音":
-                profile_result = dy.getNoteInfo(token=dyToken(), url=self.note_link)
+        if not token:
+            return {"status": "4", "message": "正常小红书账号已用完，请联系管理员"}
+        profile_result = xhs.getNoteInfo(token=token, url=note_link)
+        if profile_result["status"] == "0":
+            # 链接错误
+            return {"status": "0", "message": profile_result["message"]}
+        elif profile_result["status"] == "3":
+            return {"status": "3", "message": profile_result["message"]}
+        elif profile_result["status"] == "2":
+            token_model = XhsTokenModel.query.filter_by(name=token).first()
+            if profile_result["message"] == "Spam":
+                token_model.status = "触发验证"
+                db.session.add(token_model)
+                db.session.commit()
+                return {"status": "2", "message": "token过期"}
+            elif profile_result["message"] == "登录已过期":
+                token_model.status = "登录已过期"
+                db.session.add(token_model)
+                db.session.commit()
+                return {"status": "2", "message": "登录已过期"}
             else:
-                return {"status": "failed", "message": "暂时无法获取该平台账号数据，请手动录入，或联系管理员录入"}
-            if profile_result["status"] == "failed":
-                return {"status": "failed", "message": profile_result["message"]}
-            elif profile_result["status"] == "1":
-                if profile_result["message"] == "Spam":
-                    token_model = XhsTokenModel.query.filter_by(name=token).first()
-                    token_model.status = "触发验证"
-                    db.session.add(token_model)
-                    return {"status": "2", "message": "触发小红书验证"}
-                else:
-                    self.errorWrite(profile_result)
-                    return {"status": "1", "message": profile_result["message"]}
-
-            else:
-                self.profile_result = profile_result["message"]
-                return {"status": "success", "message": "数据获取成功"}
+                return {"status": "2", "message": profile_result["message"]}
         else:
-            profile_result = {"status": "failed", "message": "链接为空"}
-            self.errorWrite(profile_result)
-            return {"status": "failed", "message": "链接为空"}
+            return {"status": "1", "message": profile_result["message"]}
 
-    def errorWrite(self, profile_result):
-        note_model = PVContentModel.query.filter_by(search_id=self.note_id).first()
-        note_model.status = profile_result["message"]
-        if self.note_link is not None:
-            try:
-                note_model.content_link = self.note_link.split("?")[0]
-            except:
-                note_model.content_link = None
+    def spyderDYNote(self, note_link):
+        token = dyToken()
+        if not token:
+            return {"status": "4", "message": "正常抖音cookie已用完，请联系管理员"}
+        profile_result = dy.getNoteInfo(token=token, url=note_link)
+
+        if profile_result["status"] == "0":
+            # 链接错误
+            return {"status": "0", "message": profile_result["message"]}
+        elif profile_result["status"] == "3":
+            return {"status": "3", "message": profile_result["message"]}
+        elif profile_result["status"] == "2":
+            token_model = DyTokenModel.query.filter_by(name=token).first()
+            token_model.status = "登录已过期"
+            db.session.add(token_model)
+            db.session.commit()
+            return {"status": "2", "message": "登录已过期"}
         else:
-            note_model.content_link = ""
-        promotion_model = PromotionModel.query.get(self.promotion_id)
-        rate_id = promotion_model.rate_id
-        rate_model = RateModel.query.filter_by(name="已发稿").first()
-        if not rate_model:
-            rate_model = RateModel(name="已发稿")
-            promotion_model.rate = rate_model
-        elif rate_model.id > rate_id:
-            promotion_model.rate = rate_model
-        db.session.add(note_model)
-        db.session.add(promotion_model)
-        db.session.commit()
-
-    def writeNote(self, create_time=None):
-
-        promotion_model = PromotionModel.query.get(self.promotion_id)
-        rate_id = promotion_model.rate_id
-        account_model = AccountModel.query.filter_by(account_id=self.account_id).first()
-
-        note_model = PVContentModel.query.filter_by(search_id=self.note_id).first()
-
-        note_model.title = self.profile_result["title"]
-        note_model.content_link = self.profile_result["content_link"]
-        note_model.liked = self.profile_result["liked"]
-        note_model.collected = self.profile_result["collected"]
-        note_model.commented = self.profile_result["commented"]
-        note_model.spyder_url = self.profile_result["spyder_url"]
-        note_model.content_link = self.profile_result["content_link"]
-        note_model.video_link = self.profile_result["video_link"]
-        note_model.upload_time = self.profile_result["upload_time"]
-        if create_time:
-            note_model.create_time = create_time
-
-        rate_model = RateModel.query.filter_by(name="已发稿").first()
-        if not rate_model:
-            rate_model = RateModel(name="已发稿")
-            promotion_model.rate = rate_model
-        elif rate_model.id > rate_id:
-            promotion_model.rate = rate_model
-        note_model.account = account_model
-        note_model.promotion = promotion_model
-
-        db.session.add(note_model)
-        db.session.commit()
-        return {"status": "success", "message": self.profile_result}
-
-
-class RefreshData(object):
-    def __init__(self, content):
-        self.content = content
-        self.search_id = datetime.now().strftime("%Y%m%d") + str(self.content.id)
-
-    def check(self):
-
-        PVdata_model = PVDataModel.query.filter_by(search_id=self.search_id).first()
-        if PVdata_model:
-            return False
-        if not self.content.account.plat.name or not self.content.content_link:
-            return False
-        else:
-            return True
-
-    def makeData(self):
-        data_dict = {
-            "plat_name": self.content.account.plat.name,
-            "noteLink": self.content.content_link,
-            "account_id": self.content.account.account_id,
-            "note_id": self.content.search_id,
-            "promotion_id": self.content.promotion.id
-        }
-        return data_dict
-
-    def writeData(self, notes_Info):
-        PVdata_model = PVDataModel(search_id=self.search_id, liked=notes_Info["liked"],
-                                   collected=notes_Info["collected"],
-                                   commented=notes_Info["commented"], forwarded=notes_Info["forwarded"], )
-        PVdata_model.pvcontent = self.content
-        db.session.add(PVdata_model)
-        db.session.commit()
-        return {"status": "success", "message": "数据写入成功"}
+            return {"status": "1", "message": profile_result["message"]}
 
 
 def makePromotionExcel(save_path):
     writer = pd.ExcelWriter(save_path)
 
-    columns = ["推广人", "博主微信", "账号主页链接", "平台", "推广产品，多个产品,隔开", "付费形式", "费用", "佣金",
-               "图文链接", "产出形式", "合作时间"]
+    columns = ["推广人", "博主微信", "账号主页链接", "平台", "推广产品，多个产品,隔开", "付费形式", "费用",
+               "佣金", "图文链接", "产出形式", "合作时间", "账号自营"]
     df2 = pd.DataFrame(columns=columns)
     df2.to_excel(writer, sheet_name="推广模板", index=False)
 
@@ -410,4 +332,9 @@ def xhsToken():
 
 
 def dyToken():
-    return DyTokenModel.query.order_by(DyTokenModel.id.desc()).first().name
+    token_list = db.session.query(DyTokenModel.name).filter_by(status="正常").all()
+    token_list = [token[0] for token in token_list]
+    if not token_list:
+        return None
+    else:
+        return random.choice(token_list)

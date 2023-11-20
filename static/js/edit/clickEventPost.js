@@ -269,7 +269,7 @@ $(document).ready(function () {
                 })
         }
     })
-    $('#uploadPromotionFile').click(function () {
+    $('.uploadPromotionFile').click(function () {
         var formData = new FormData();
         var file = $('input[name="promotionFile"]')[0].files[0];
         formData.append('file', file);
@@ -529,9 +529,8 @@ $(document).ready(function () {
     $('#xhsLoginBtn').click(function () {
         var Form = $("#xhsLoginForm")
         var inputs = Form.find("input")
-        console.log(inputs)
         var VerResult = Verification(...inputs)
-        var url = "/back/loginXhs"
+        var url = "/spyder/loginXhs"
         if (VerResult.length === 0) {
             var formData = new FormData(document.getElementById("xhsLoginForm"));
             FileRequest(formArray = formData, url = url)
@@ -546,16 +545,24 @@ $(document).ready(function () {
 
     // 登录小红书
     $('#dyLoginBtn').click(function () {
-        var url = "/back/loginDy"
-        var formData = new FormData(document.getElementById("dyTestForm"));
-        formData.append("name", $('textarea[data-id="dyToken"]').val())
-        FileRequest(formArray = formData, url = url)
-            .then(function (result) {
-                alert(result['message'])
-            })
-            .catch(function (error) {
-                alert(error)
-            })
+        var Form = $("#dyLoginForm")
+        var inputs = Form.find("input")
+
+        var VerResult = Verification(...inputs)
+        console.log(VerResult)
+        var url = "/spyder/loginDy"
+        if (VerResult.length === 0) {
+            var formData = new FormData(document.getElementById("dyLoginForm"));
+            formData.append("name", $('textarea[data-id="dyToken"]').val())
+            FileRequest(formArray = formData, url = url)
+
+                .then(function (result) {
+                    alert(result['message'])
+                })
+                .catch(function (error) {
+                    alert(error)
+                })
+        }
     })
 
     // 登录快手
@@ -563,7 +570,7 @@ $(document).ready(function () {
         var Form = $("#ksLoginForm")
         var inputs = Form.find("input")
         var VerResult = Verification(...inputs)
-        var url = "/back/loginKs"
+        var url = "/spyder/loginKs"
         if (VerResult.length === 0) {
             var formData = new FormData(document.getElementById("ksLoginForm"));
             FileRequest(formArray = formData, url = url)

@@ -1,7 +1,7 @@
 from APP.SQLAPP.addEdit.permissionUser import writeNewUser
 
 
-from blueprints.promotionManage import allowImageFile
+from blueprints.promotion.promotionManage import allowImageFile
 from form.formValidate import UserForm
 from flask import Blueprint, request, render_template, jsonify
 

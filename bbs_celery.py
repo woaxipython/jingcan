@@ -1,18 +1,20 @@
+import hashlib
 import math
 import time
 import random
+from datetime import datetime
 
 from flask_mail import Message
 
 from APP.SQLAPP.addEdit.dataWrite import writeLocationModel
 from APP.SQLAPP.addEdit.orderStore import writeRefund, writeOrderData, WriteExcelOrder
-from APP.SQLAPP.addEdit.promotion import WriteExcelPromotion
-from APP.SQLAPP.search.promotion import RefreshData, searchNotes
+from APP.SQLAPP.addEdit.promotion import WriteExcelPromotion, WriteSQLData
+from APP.SQLAPP.search.promotion import searchNotes, searchPVContentSql2
 from APP.Spyder.KdzsSpyder import KuaiDiZhuShouSpyder
 from exts import mail
 from celery import Celery
 
-from models.promotiondata import PVContentModel
+from models.promotiondata import PVContentModel, PVDataModel
 
 kdzs = KuaiDiZhuShouSpyder()
 
@@ -28,69 +30,119 @@ def GetAddress():
     print("发送成功")
 
 
-def refreshPromotion():
-    content_list = PVContentModel.query.all()
-    totalCount = len(content_list)
-    i = 0
-    h = 0
-    status = {"total": totalCount, "processed": i, "failed": h}
-    Spam = ""
-    spydered_plat = ""
-    for content in content_list:
-        refresh_data = RefreshData(content)
-        if refresh_data.check():
-            print(content.title, "开始更新")
-            if Spam == "正常小红书账号已用完，请联系管理员":
-                print("正常小红书账号已用完，请联系管理员")
-                if content.plat.name == "小红书":
-                    continue
-            spyder_plat = content.account.plat.name
-            if spyder_plat == spydered_plat:  # 如果是同一个平台，就休息一下
-                time.sleep(random.randint(2, 30)) if spyder_plat == "小红书" else time.sleep(random.randint(2, 5))
-
-            note_dict = refresh_data.makeData()
-            search_note = searchNotes(note_dict)
-            if search_note.check():
-                note_info = search_note.spyderNote()
-                spydered_plat = content.account.plat.name
-                if note_info['status'] == "success":
-                    write_result = refresh_data.writeData(search_note.profile_result)
-                    i += 1
-                    status["processed"] = i
-                    print(search_note.profile_result['title'])
-                    print(write_result)
-                elif note_info["status"] == "1":
-                    notes_Info = {
-                        "liked": 0,
-                        "collected": 0,
-                        "commented": 0,
-                        "forwarded": 0
-                    }
-                    refresh_data.writeData(notes_Info)
-                    i += 1
-                    status["processed"] = i
-                    print("录入异常数据")
-                elif note_info["status"] == "2":
-                    print("正常小红书账号已用完，请联系管理员")
-                    Spam = "正常小红书账号已用完，请联系管理员"
-                    continue
-            else:
-                print(search_note.error_message)
+def GetXHSNote(self, plat):
+    contents = searchPVContentSql2(self=self, plat=plat)
+    i = 1
+    for content in contents:
+        note_link = content.link
+        date_today = datetime.now().strftime("%Y-%m-%d")
+        info = note_link + date_today
+        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
+        if pvcontent_today_model:
+            if pvcontent_today_model.liked:
+                i += 1
+                print("共计{}条小红书待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
                 continue
-        else:
-            h += 1
-            print(content.title, "已更新")
+        token_status = GetXHSNote2(note_link)
+        if token_status == "4":
+            print("token已经全部失效")
+            break
+        elif token_status == "0":
+            print("链接错误")
             continue
-        status["processed"] = i
-        print(status)
-        print("............................................")
-    return status
+        i += 1
+        print("共计{}条小红书待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
+        time.sleep(random.randint(30, 50))
+
+
+def GetXHSNote2(note_link):
+    notes = searchNotes()
+    result = notes.spyderXHSNote(note_link=note_link)
+    write = WriteSQLData()
+    print(note_link)
+    if result['status'] == "1":
+        # 等于1时返回了正确数据，写入到数据库
+        write.WriteSqlPVcontentData(note_link, result['message'])
+        return "1"
+    elif result['status'] == "2":
+        # 等于2时是token过期，重新获取token，然后重新爬取
+        if result['message'] == "token过期" or result['message'] == "登录已过期":
+            token_status = notes.spyderXHSNote(note_link=note_link)
+            return token_status
+        else:
+            write.changeSQLNoteStatus(note_link, result['message'])
+            return "1"
+    elif result['status'] == "3":
+        write.changeSQLNoteStatus(note_link, result['message'])
+    elif result['status'] == "4":
+        # 全部token失效
+        return "4"
+    elif result['status'] == "0":
+        # 链接错误
+        return "0"
+
+
+def GetDYNote(self, plat):
+    contents = searchPVContentSql2(self=self, plat=plat)
+    i = 1
+    for content in contents:
+        note_link = content.link
+        date_today = datetime.now().strftime("%Y-%m-%d")
+        info = note_link + date_today
+        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
+        if pvcontent_today_model:
+            if pvcontent_today_model.liked:
+                i += 1
+                print("共计{}条抖音待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
+                continue
+        token_status = GetDYNote2(note_link)
+        if token_status == "4":
+            print("token已经全部失效")
+            break
+        elif token_status == "0":
+            i += 1
+            print("链接错误")
+            print("共计{}条抖音待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
+            continue
+        i += 1
+        print("共计{}条抖音待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
+        time.sleep(random.randint(5, 8))
+
+
+def GetDYNote2(note_link):
+    notes = searchNotes()
+    result = notes.spyderDYNote(note_link=note_link)
+    print(note_link)
+    write = WriteSQLData()
+    if result['status'] == "1":
+        # 等于1时返回了正确数据，写入到数据库
+        write.WriteSqlPVcontentData(note_link, result['message'])
+        return "1"
+
+    elif result['status'] == "2":
+        # 等于2时是token过期，重新获取token，然后重新爬取
+        if result['message'] == "token过期" or result['message'] == "登录已过期":
+            token_status = notes.spyderXHSNote(note_link=note_link)
+            return token_status
+        else:
+            write.changeSQLNoteStatus(note_link, result['message'])
+            return "1"
+    elif result['status'] == "3":
+        write.changeSQLNoteStatus(note_link, result['message'])
+        return "1"
+    elif result['status'] == "4":
+        # 全部token失效
+        return "4"
+    elif result['status'] == "0":
+        # 链接错误
+        return "0"
 
 
 def GetOrders(stores, endDate, startDate, token):
     order_JSON = kdzs.getOrder(stores, endDate=endDate, startDate=startDate, token=token)
     totalCount = order_JSON['total']
-    print(totalCount)
     pageNo = math.ceil(int(totalCount) / 1000)
     dealResults = kdzs.DealOrder(order_JSON=order_JSON)
     i = 1
@@ -123,7 +175,6 @@ def writeHandOrder(save_path):
 def GetRefund(endDate, startDate, token):
     refund_json = kdzs.getRefund(endDate=endDate, startDate=startDate, token=token)
     pageCount = refund_json['total']
-    print(pageCount)
     pageNo = math.ceil(int(pageCount) / 200)
     refund_order = kdzs.dealRefund(refund_json)
     i = 0
@@ -148,11 +199,9 @@ def GetRefund(endDate, startDate, token):
 
 
 def writeFilePromotionC(save_path):
-    print("开始写入")
     write = WriteExcelPromotion(save_path)
     write.readPromotionExcel()
     write.check()
-    print(write.error_message)
     write.write()
 
 
@@ -176,7 +225,8 @@ def make_celery(app):
     celery.task(name="send_mail")(send_mail)
     celery.task(name="GetOrders")(GetOrders)
     celery.task(name="GetRefund")(GetRefund)
-    celery.task(name="refreshPromotion")(refreshPromotion)
+    celery.task(name="GetXHSNote")(GetXHSNote)
+    celery.task(name="GetDYNote")(GetDYNote)
     celery.task(name="GetAddress")(GetAddress)
     celery.task(name="writeFilePromotionC")(writeFilePromotionC)
     celery.task(name="writeHandOrder")(writeHandOrder)

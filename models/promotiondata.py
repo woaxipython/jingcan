@@ -11,18 +11,25 @@ class PVContentModel(db.Model):
     search_id = db.Column(db.String(100), default=uuid)
 
     title = db.Column(db.String(100))
-    content_id = db.Column(db.Integer)
+    content_id = db.Column(db.String(100))
     desc = db.Column(db.String(500))
     liked = db.Column(db.Integer)
     collected = db.Column(db.Integer)
+    content_type = db.Column(db.String(20), default='图文')
     commented = db.Column(db.Integer)
     forwarded = db.Column(db.Integer)
     content_link = db.Column(db.String(200))
     video_link = db.Column(db.String(200))
+    contenttype = db.Column(db.String(20))
     spyder_url = db.Column(db.String(200))
     status = db.Column(db.String(20), default='正常')
     upload_time = db.Column(db.DateTime, )
+    upgrade_time = db.Column(db.DateTime, )
     create_time = db.Column(db.DateTime, default=datetime.now)
+
+    # 广告方式，有自营、素人、达人等多种方式，后期可能会增加。一个形式，多个推广
+    prtype_id = db.Column(db.Integer, db.ForeignKey('prtype.id'))
+    prtype = db.relationship("PrtypeModel", backref='promotions')
 
     # 对应账号，一次合作多个图文
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))

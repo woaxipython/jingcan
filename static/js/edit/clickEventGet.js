@@ -10,7 +10,10 @@ $("#refreshLocation").click(function () {
 })
 
 $("#getPVContentData").click(function () {
-    var url = '/promotion/refreshPromotionData'
+    var div = $(this).closest("div")
+    var plat = div.find("select[data-promotion='plat']").val()
+    var self = div.find("select[data-promotion='self']").val()
+    var url = '/spyder/getPVcontentData?plat=' + plat + '&self=' + self
     GetRequest(url = url)
         .then(function (result) {
             alert(result['message'])
@@ -98,7 +101,7 @@ function mobielCodeTimer(time_length, timerId, btnid) {
 }
 
 $('#getPhoneCodeKs').click(function () {
-    var url = "/back/getPhoneCodeKs"
+    var url = "/spyder/getPhoneCodeKs"
     GetRequest(url)
         .then(function (result) {
             alert(result['message'] + " 请注意查收短信," + "120秒后可重新获取")
@@ -110,7 +113,7 @@ $('#getPhoneCodeKs').click(function () {
 })
 
 $('#testKsSpyder').click(function () {
-    var url = "/back/testKs"
+    var url = "/spyder/testKs"
     GetRequest(url)
         .then(function (result) {
             alert(result['message'])
@@ -123,7 +126,12 @@ $('#testKsSpyder').click(function () {
 $('tbody').on('click', '.testXhs', function () {
     var tr = $(this).closest('tr')
     var token_id = tr.data('id')
-    var url = "/back/testXhs?token_id=" + token_id
+    var tbody = tr.closest('tbody').data('id')
+    if (tbody === 'xhs') {
+        var url = "/spyder/testXhs?token_id=" + token_id
+    } else if (tbody === 'dy') {
+        var url = "/spyder/testDy?token_id=" + token_id
+    }
     GetRequest(url)
         .then(function (result) {
             alert(result['message'])
@@ -134,7 +142,7 @@ $('tbody').on('click', '.testXhs', function () {
 })
 
 $('#testSpyderXhs').click(function () {
-    var url = "/back/testXhs"
+    var url = "/spyder/testXhs"
     GetRequest(url)
         .then(function (result) {
             alert(result['message'])
@@ -145,7 +153,7 @@ $('#testSpyderXhs').click(function () {
 })
 
 $('#testSpyderDy').click(function () {
-    var url = "/back/testDy"
+    var url = "/spyder/testDy"
     GetRequest(url)
         .then(function (result) {
             alert(result['message'])

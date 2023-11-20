@@ -32,8 +32,8 @@ class GetXhsSpyder():
 
     def testCookie(self, token=""):
         result = self.getNoteInfo(token=token)
-        if result.get("status") == "success":
-            return {'status': 'success',
+        if result.get("status") == "1":
+            return {'status': '1',
                     'message': "小红书测试成功，成功获取 {} 信息".format(result['message']["title"])}
         else:
             return result
@@ -90,6 +90,8 @@ class GetXhsSpyder():
             uid = uid[0] if uid[0] else uid[1]
         elif "profile" in url:
             uid = re.search(r'[0-9a-zA-Z]+$', url).group() if re.search(r'[0-9a-zA-Z]+$', url) else ""
+        elif "discover" in url:
+            uid = re.search(r'[0-9a-zA-Z]+$', url).group() if re.search(r'[0-9a-zA-Z]+$', url) else ""
         if uid:
             real_note_url = f'/fe_api/burdock/weixin/v2/note/{uid}/single_feed'
             xsign = 'X' + self.m_md5(real_note_url + "WSUDD")
@@ -114,17 +116,18 @@ class GetXhsSpyder():
                     "spyder_url": spyder_url,
                     "upload_time": data['time'],
                     "content_link": url.split("?")[0],
+                    "status":"正常",
                 }
-                return {"status": "success", "message": title_result}
+                return {"status": "1", "message": title_result}
 
             else:
                 try:
                     response_json = response.json()
-                    return {'status': '1', 'message': response_json['msg']}
+                    return {'status': '2', 'message': response_json['msg']}
                 except:
-                    return {'status': '1', 'message': "笔记状态异常，请检查笔记是否存在"}
+                    return {'status': '3', 'message': "笔记不存在"}
         else:
-            return {'status': 'failed', 'message': "获取uid失败，请填写正确的小红书图文地址"}
+            return {'status': '0', 'message': "获取uid失败"}
 
 
 if __name__ == '__main__':

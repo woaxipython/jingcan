@@ -94,8 +94,10 @@ def getGroupData(end_date="2049-12-12", interval=10000, store_id="all", status="
     store_sql, group_by = confirmStoreGroup(store_id)
     filters = [OrderModel.updateTime >= start_date, OrderModel.updateTime < end_date]
 
-    entities = [cast(OrderModel.updateTime, Date).label('date'), StoreModel.name.label('store_name'),
-                GroupModel.name.label('group_name'), func.sum(OrderModel.payment).label('total'),
+    entities = [cast(OrderModel.updateTime, Date).label('date'),
+                StoreModel.name.label('store_name'),
+                GroupModel.name.label('group_name'),
+                func.sum(OrderModel.payment).label('total'),
                 func.count(OrderModel.updateTime).label('count')]
 
     # 生成查询条件

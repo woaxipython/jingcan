@@ -14,6 +14,13 @@ class BrandModel(db.Model):
     createtime = db.Column(db.DateTime, default=datetime.now)
 
 
+class PrtypeModel(db.Model):
+    __tablename__ = "prtype"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    createTime = db.Column(db.DateTime, default=datetime.now)
+
+
 # 平台
 class PlatModel(db.Model):
     __tablename__ = 'plat'
@@ -116,5 +123,8 @@ class XhsTokenModel(db.Model):
 class DyTokenModel(db.Model):
     __tablename__ = "dyToken"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    wechat = db.Column(db.String(30), nullable=False, unique=True)
     name = db.Column(db.Text, nullable=False)
+    phone = db.Column(db.String(30), nullable=False, unique=True)
+    status = db.Column(db.String(30), default="正常")
     createTime = db.Column(db.DateTime, default=datetime.now)

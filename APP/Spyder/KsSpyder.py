@@ -21,7 +21,7 @@ class KuaiShouSpyder(object):
         self.note_url = "https://www.kuaishou.com/short-video/3xhcefi3qdctgew"
         self.note_base_url = "https://www.kuaishou.com/short-video/"
         with open('static/json/KuaiShouoSession.pkl', 'rb') as f:
-        # with open('../../static/json/KuaiShouoSession.pkl', 'rb') as f:
+            # with open('../../static/json/KuaiShouoSession.pkl', 'rb') as f:
             self.spyder = pickle.load(f)
 
     def getMobileCode(self, phone="", url=""):
@@ -115,7 +115,7 @@ class KuaiShouSpyder(object):
                         "desc": data['profile']['user_text'],
                         "officialVerifyName": data['profile']['user_name'],
                         "red_id": "",
-                        "url":url
+                        "url": url
                     }
                     return {"status": "success", "message": Account_result}
                 else:
@@ -143,18 +143,20 @@ class KuaiShouSpyder(object):
                     if feed["photo"]["id"] == "3xcbmjy7ajs3yzy":
                         title_result = {
                             "title": feed["photo"]['caption'] if feed["photo"] else "",
-                            "likes": feed["photo"]['caption'] if feed["photo"] else "",
+                            "content_id": "",
+                            "liked": feed["photo"]['caption'] if feed["photo"] else "",
                             "desc": feed["photo"]['originCaption'] if feed["photo"] else "",
-                            "collects": "",
-                            "shareCount": "",
-                            "comments": "",
+                            "collected": "",
+                            "forwarded": "",
+                            "commented": "",
                             "imageList": [],
                             "commentList": "",
                             "hashTags": [],
-                            "video": feed["photo"]['animatedCoverUrl'] if feed["photo"] else "",
+                            "video_link": feed["photo"]['animatedCoverUrl'] if feed["photo"] else "",
                             "spyder_url": url,
-                            "time": "",
-                            "url": url
+                            "upload_time": "",
+                            "content_link": url,
+                            "status": "正常",
                         }
                         return {"status": "success", "message": title_result}
                     else:
@@ -163,7 +165,6 @@ class KuaiShouSpyder(object):
                 return {"status": "failed", "message": "连接失败，请查看博主是否存在"}
         else:
             return {"status": "failed", "message": "相应失败，请登陆账号后重试"}
-
 
 
 if __name__ == '__main__':

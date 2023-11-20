@@ -78,7 +78,7 @@
                                 <path d="M12 11v-7"></path>
                                 <path d="M9 7l3 -3l3 3"></path>
                             </svg>
-                            推广管理</a>
+                            更新内容数据</a>
                     </li>
                 </ul>
             </div>
@@ -92,12 +92,14 @@
                                     <form id="xhsLoginForm">
                                         <div class="row">
                                             <div class="col-6">
-                                                <input type="text" placeholder="微信号" class="form-control" name="xhsWechat">
+                                                <input type="text" placeholder="微信号" class="form-control"
+                                                       name="xhsWechat">
                                                 <small class="text-danger d-none"
                                                        data-input="xhsWechat">不能为空</small>
                                             </div>
                                             <div class="col-6">
-                                                <input type="text" placeholder="小红书绑定手机号" class="form-control" name="xhsPhone">
+                                                <input type="text" placeholder="小红书绑定手机号" class="form-control"
+                                                       name="xhsPhone">
                                                 <small class="text-danger d-none"
                                                        data-input="xhsPhone">不能为空</small>
                                             </div>
@@ -127,7 +129,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div style="height: 20rem"
@@ -143,7 +144,7 @@
                                         <th>编辑</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody data-id="xhs">
                                     {% for xhs_token in xhs_tokens %}
                                         <tr data-id="{{ xhs_token.id }}">
                                             <td>{{ xhs_token.wechat }}</td>
@@ -169,23 +170,74 @@
                         <div class="card-body border-top-0" style="min-height: 25rem">
                             <div class="pb-2 mb-2 border-bottom">
                                 <small class="text-muted mb-1">抖音令牌管理</small>
-                                <div class="d-flex justify-content-start align-items-center mb-3">
+                                <div class="justify-content-start align-items-center mb-3">
                                     <div class="col-6 px-6">
-                                        <form id="dyTestForm">
-
+                                        <form id="dyLoginForm">
                                         <textarea class="form-control" data-id="dyToken"
                                                   style="height: 15rem;"></textarea>
-
+                                            <div class="row my-2">
+                                                <div class="col-6">
+                                                    <input type="text" placeholder="抖音昵称"
+                                                           class="form-control required"
+                                                           name="dyName">
+                                                    <small class="text-danger d-none"
+                                                           data-input="dyName">不能为空</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="text" placeholder="抖音手机号"
+                                                           class="form-control required"
+                                                           name="dyPhone">
+                                                    <small class="text-danger d-none"
+                                                           data-input="dyPhone">不能为空</small>
+                                                </div>
+                                            </div>
                                         </form>
+                                        <div class="row">
+                                            <div class="d-flex col-12">
+                                                <div class="col-6  pe-2">
+                                                    <button href="#" class="btn btn-primary w-100" id="dyLoginBtn">
+                                                        更新令牌
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button href="#" class="btn btn-primary w-100" id="testSpyderDy">
+                                                        批量测试
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-3 px-2 ms-auto">
-                                        <button href="#" class="btn btn-primary" id="dyLoginBtn">
-                                            更新令牌
-                                        </button>
-                                        <button href="#" class="btn btn-primary" id="testSpyderDy">
-                                            连接测试
-                                        </button>
-                                    </div>
+                                </div>
+                                <div style="height: 20rem"
+                                     class="card-body-scrollable card-body-scrollable-shadow mt-2">
+                                    <table class="table no-footer table-hover" id="atom_table">
+                                        <thead class="sticky-top">
+                                        <tr>
+                                            <th>账号名称</th>
+                                            <th>手机号</th>
+                                            <th>状态</th>
+                                            <th>测试</th>
+                                            <th>编辑</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody data-id="dy">
+                                        {% for dy_token in dy_tokens %}
+                                            <tr data-id="{{ dy_token.id }}">
+                                                <td>{{ dy_token.wechat }}</td>
+                                                <td>{{ dy_token.phone }}</td>
+                                                <td>{{ dy_token.status }}</td>
+                                                <td class="testXhs"><a class="cursor-pointer text-blue">测试</a></td>
+                                                <td class="editXhs"><a class="cursor-pointer text-danger"
+                                                                       href="#"
+                                                                       data-bs-target="#edit-dyToken-report"
+                                                                       data-bs-toggle="modal"
+                                                                       aria-label="edit-dyToken-report">编辑</a></td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+
                                 </div>
                             </div>
                         </div>
@@ -239,33 +291,33 @@
                     </div>
                     <div class="tab-pane" id="tabs-pro" role="tabpanel">
                         <div class="card-body border-top-0" style="min-height: 25rem">
-                            <div class="col-auto">
-                                <a class="btn btn-primary" id="getPVContentData">
-                                    同步推广数据
-                                </a>
+                            <div class="col-auto d-flex ">
+                                <div class="me-2 d-inline-block">
+                                    <select class="form-control px-4" data-promotion="plat">
+                                        <option value="" disabled selected>选择平台</option>
+                                        {% for content_plat in content_plats %}
+                                            <option value="{{ content_plat.name }}">{{ content_plat.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="me-2 d-inline-block">
+                                    <select class="form-control px-4" data-promotion="self">
+                                        <option value="all" disabled selected>选择内容</option>
+                                        <option value="all">所有内容</option>
+                                        {% for self in selfs %}
+                                            {% if self.name==None %}
+                                                <option value="缺省值">空值</option>
+                                            {% else %}
+                                                <option value="{{ self.name }}">{{ self.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary ms-auto" id="getPVContentData">
+                                    同步内容数据
+                                </button>
                             </div>
                             <hr>
-                            <div class="col-12 pb-3">
-                                <small>批量上传推广记录</small>
-                                <form class="dropzone form-control " action="../"
-                                      autocomplete="off" novalidate>
-                                    <div class="fallback">
-                                        <input name="promotionFile" type="file"
-                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                                    </div>
-                                </form>
-                                <div class="d-flex mt-2 justify-content-start align-items-center">
-                                    <div class="col-auto px-2 ms-auto">
-                                        <a href="{{ url_for("promotion.downFile") }}">下载模板</a>
-                                    </div>
-                                    <div class="px-2 col-2">
-                                        <button type="button" class="btn  btn-primary w-100"
-                                                id="uploadPromotionFile">
-                                            提交
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -279,7 +331,29 @@
          role="dialog">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form action="{{ url_for('back.editXhsToken') }}" method="post">
+                <form action="{{ url_for('spyder.editXhsToken') }}" method="post">
+                    <div class="modal-body">
+                        <div class="modal-title">填入新Token值</div>
+                        <input type="hidden" name="csrf_token"
+                               value="{{ csrf_token() }}">
+                        <input type="text" class="form-control" name="xhsToken">
+                        <input type="hidden" class="form-control" name="token_id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel
+                        </button>
+                        <button class="btn btn-danger" data-bs-dismiss="modal">ok
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur" id="edit-dyToken-report"
+         role="dialog">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="{{ url_for('spyder.editdyToken') }}" method="post">
                     <div class="modal-body">
                         <div class="modal-title">填入新Token值</div>
                         <input type="hidden" name="csrf_token"

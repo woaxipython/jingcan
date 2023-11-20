@@ -1,6 +1,10 @@
+import hashlib
+import re
 import time
 import random
+from datetime import datetime
 
+import requests
 from flask import jsonify
 from openpyxl.reader.excel import load_workbook
 from sqlalchemy import func, or_
@@ -11,7 +15,7 @@ from exts import db
 from models.back import RateModel, PlatModel, FeeModel, OutputModel
 from models.product import GroupModel
 from models.promotion import PromotionModel, BlogerModel, AccountModel
-from models.promotiondata import PVContentModel
+from models.promotiondata import PVContentModel, PVDataModel
 from models.store import OrderModel, ParentOrderModel
 from models.user import UserModel
 
@@ -150,15 +154,13 @@ class WriteExcelPromotion(object):
     def __init__(self, save_path):
         """初始化"""
         """ header = 
-        ["推广人", "博主微信", "账号主页链接", "平台", "推广产品，多个产品,隔开", "付费形式", "费用", "佣金", "图文链接", "产出形式","合作时间"]
+        ["推广人", "博主微信", "账号主页链接", "平台", "推广产品，多个产品,隔开", "付费形式", "费用","佣金", "图文链接", "产出形式", "合作时间", "账号自营"]
         """
-        print("初始化")
         self.save_path = save_path
         self.workbook = load_workbook(save_path)
         self.sheet = self.workbook.active
         self.data_list = []
         self.error_message = []
-        self.Spam = ""
 
         self.account_dict = {}
         self.account_form = {}
@@ -168,30 +170,15 @@ class WriteExcelPromotion(object):
     def write(self):
         """写入文件"""
         i = 0
-        print("真正开始写入")
-        spydered_plat = ""
         for row in self.data_list:
-            if self.Spam == "正常小红书账号已用完，请联系管理员":
-                print("正常小红书账号已用完，请联系管理员")
-                if row[3] == "小红书":
-                    continue
-            spyder_plat = row[3]
-            if spyder_plat == spydered_plat:  # 如果平台不同，则创建新账号
-                if spyder_plat == "小红书":
-                    time.sleep(random.randint(2, 31))
-                else:
-                    time.sleep(random.randint(2, 5))
-            account_result = self.writeAccount(row)  # 写入账号
-            if account_result:  # 如果账号写入成功，则创建新推广，并将账号信息添加到推广中
+            self.writrNote(row)  # 写入推广内容
+            self.writeAccount(row)  # 写入账号
+            if row[-1] != "自营":
                 self.writePromotion(row)  # 写入推广
-                time.sleep(random.randint(2, 13)) if spyder_plat == "小红书" else time.sleep(random.randint(2, 5))
-                self.writrNote(row)  # 写入推广内容
-                spydered_plat = row[3]
-
-            print(f'共计：{len(self.data_list)}行数据,目前已经进行至{i}行')
-            print(row)
-            print(self.error_message)
             i += 1
+            print(self.error_message)
+            print("------------")
+            print("已经写入：{}行；图文链接：{}".format(i, row[8]))
 
     def readPromotionExcel(self):  # 读取推广表格
         workbook = load_workbook(self.save_path)  # 打开excel文件
@@ -204,131 +191,196 @@ class WriteExcelPromotion(object):
             self.data_list.append(row_list)  # 读取每行的数据
             self.total += 1
 
+    def short_to_long(self, url):
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        }
+        try:
+            response = requests.get(url, headers=headers)
+            return response.url
+        except:
+            return False
+
     def check(self):
         """检查数据"""
         new_data_list = []
-        print("开始检查数据")
         self.checked = 1  # 因为已经跳过第一行，所以计数从2开始
         for row in self.data_list:
-            if PlatModel.query.filter_by(name=row[3]).first() is None:  # 检查平台是否存在
-                self.error_message.append(f"第{self.checked}行的平台不存在")
-                continue
-            if OutputModel.query.filter_by(name=row[9]).first() is None:  # 检查产出形式是否存在
-                self.error_message.append(f"第{self.checked}行的输出模板不存在")
-                continue
-            if GroupModel.query.filter_by(name=row[4]).first() is None:  # 检查商品组是否存在
-                self.error_message.append(f"第{self.checked}行的商品组不存在")
-                continue
-            if UserModel.query.filter_by(name=row[0]).first() is None:  # 检查推广人是否存在
-                self.error_message.append(f"第{self.checked}行的联络人不存在")
-                continue
-            if FeeModel.query.filter_by(name=row[5]).first() is None:  # 检查费用模型是否存在
-                self.error_message.append(f"第{self.checked}行的费用模板不存在")
-                continue
+            print("正在检查第{}行".format(self.checked))
+            self.checked += 1
+            if row[3]:
+                if PlatModel.query.filter_by(name=row[3]).first() is None:  # 检查平台是否存在
+                    self.error_message.append(f"第{self.checked}行的平台不存在")
+                    continue
+            if row[9]:
+                if OutputModel.query.filter_by(name=row[9]).first() is None:  # 检查产出形式是否存在
+                    self.error_message.append(f"第{self.checked}行的输出模板不存在")
+                    continue
+            if "," in row[4]:
+                for group_name in row[4].split(","):
+                    if GroupModel.query.filter_by(name=group_name).first() is None:  # 检查商品组是否存在
+                        self.error_message.append(f"第{self.checked}行的商品组不存在")
+                        continue
+            else:
+                if GroupModel.query.filter_by(name=row[4]).first() is None:  # 检查商品组是否存在
+                    self.error_message.append(f"第{self.checked}行的商品组不存在")
+                    continue
+            if row[5]:
+                if FeeModel.query.filter_by(name=row[5]).first() is None:  # 检查费用模型是否存在
+                    self.error_message.append(f"第{self.checked}行的费用模板不存在")
+                    continue
             if not row[8]:  # 图文链接是否为空，为空则跳过
                 self.error_message.append("第{}行的图文链接为空，已自动跳过".format(self.checked))
                 continue
-            if row[8]:
-                content_link = row[8].split("?")[0] if row[3] == "小红书" else row[8]
-                if PVContentModel.query.filter_by(content_link=content_link).first() is not None:
+            if len(row[8]) < 40:  # 图文链接长度少于30，那么为短连接，需转换为长连接
+                long_url = self.short_to_long(row[8])
+                time.sleep(0.1)
+                if long_url:
+                    row[8] = long_url
+                else:
+                    self.error_message.append(f"第{self.checked}行的图文链接转换失败")
                     continue
+            if len(row[2]) < 40:  # 图文链接长度少于40，那么为短连接，需转换为长连接
+                long_url = self.short_to_long(row[8])
+                time.sleep(0.1)
+                if long_url:
+                    row[2] = long_url
+                else:
+                    self.error_message.append(f"第{self.checked}行的主页链接转换失败")
+                    continue
+            if "modal_id" in row[8] and "douyin" in row[8]:
+                video_url = self.change_dyurl_usertomodid(row[2])
+                if video_url:
+                    row[8] = video_url
+                else:
+                    self.error_message.append(f"第{self.checked}行的抖音链接转换失败")
+                    continue
+
             new_data_list.append(row)  # 将检查通过的数据添加到新列表中
 
-            print("通过检查：{}/{}".format(self.checked, self.total))
-            self.checked += 1
         self.data_list = new_data_list  # 将检查通过的数据赋值给原来的列表
 
-    def writeAccount(self, row):
-        self.account_form['platId'] = PlatModel.query.filter_by(name=row[3]).first().id  # 获取平台id
-        self.account_form['profileLink'] = row[2]  # 获取账号主页链接
-        account = searchAccount(self.account_form)  # 搜索账号
-        if account.check():
-            print("通过初次检查，检查账号是否存在")
-            if not account.checkExist():  # 检查账号是否存在，不存在则继续爬取并且写入数据库
-                print("账号不存在，开始爬取")
-                account_info = account.sypderAccount()  # 爬取账号
-                if account_info['status'] == "success":  # 检查爬取是否成功
-                    print("爬取成功，开始写入数据库")
-                    account_info = account.writeAccount()  # 写入数据库
-                    self.account_dict["account"] = account_info['message']['account_id']
-                    return True
-                elif account_info['status'] == "2":
-                    print("触发反爬虫，回弹重试")
-                    return self.writeAccount(row)
-                else:
-                    print(account_info['message'])
-                    print("爬取账号失败")
-                    self.Spam = account_info['message']
-                    return False
-            else:  # 如果账号存在，则获取账号id
-                print("账号已经存在，不需要爬取")
-                self.account_dict["account"] = AccountModel.query.filter_by(
-                    profile_link=row[2]).first().account_id  # 获取账号id
-                return True
-        else:
-            print("账号不存在，返回False")
-            return False
-
-    def writePromotion(self, row):
-        self.account_dict['outputModel'] = OutputModel.query.filter_by(name=row[9]).first().id  # 获取产出形式id
-        self.promotion_form['promotionPr'] = row[4].split(",")  # 获取推广产品
-        self.promotion_form['promotionUser'] = UserModel.query.filter_by(name=row[0]).first().id  # 获取推广人id
-        self.promotion_form['promotionRate'] = RateModel.query.filter_by(name="已约稿").first().id  # 获取进度模型id
-        self.promotion_form['promotionFeeModel'] = FeeModel.query.filter_by(name=row[5]).first().id  # 获取费用模型id
-        self.promotion_form['promotionFee'] = row[6]  # 获取费用
-        self.promotion_form['promotionCommission'] = row[7]  # 获取佣金
-        self.promotion_form['promotionWechat'] = row[1]  # 获取微信号
-        self.promotion_form['PromotionCheck'] = "0"  # 获取是否拍单
-        self.promotion_form['AccountList'] = [self.account_dict]  # 获取账号列表
-        create_time = row[10]  # 获取创建时间
-        write = writeNewPromotionModel(self.promotion_form)  # 初始化写入推广模型
-        if write.check():  # 检查数据
-            print("数据检查通过，开始写入推广")
-            self.new_promotion_result = write.write(create_time=create_time)  # 写入推广，返回写入结果
-            if self.new_promotion_result['status'] == "failed":  # 检查写入是否成功，如果失败则返回错误信息
-                print("写入失败，返回错误信息")
-                self.error_message.append(f"{self.account_form['profileLink']}:{self.new_promotion_result['message']}")
-                return False
-            else:
-                print("写入成功")
-                return True
-        else:
-            print("推广写入数据检查失败，返回错误信息")
-            print(write.error_message)
+    def change_dyurl_usertomodid(self, long_url):
+        try:
+            modal_id = re.search(r'modal_id=([^&]*)', long_url).group(1)
+            url = "https://www.douyin.com/video/" + modal_id
+            return url
+        except:
             return False
 
     def writrNote(self, row):
+        output_model = OutputModel.query.filter_by(name=row[9]).first()
+        pvcontent_link = row[8].split("?")[0]
+        pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
+        pvcontent_model = PVContentModel() if not pvcontent_model else pvcontent_model
+        pvcontent_model.output = output_model
+        pvcontent_model.content_link = pvcontent_link
+        max_id = db.session.query(func.max(PVContentModel.id)).scalar() or 0  # 获取最大的id
+        note_search_id = generate_Number_string(8, max_id + 1)  # 生成8位的id
+        pvcontent_model.search_id = note_search_id
+        db.session.add(pvcontent_model)
+        db.session.commit()
 
-        promotion_id = PromotionModel.query.filter_by(
-            search_id=self.new_promotion_result['search_id']).first().id  # 获取推广id
-        self.note_dict['promotion_id'] = promotion_id  # 获取推广id
-        self.note_dict['account_id'] = self.account_dict['account']  # 获取账号id
-        self.note_dict['note_id'] = self.new_promotion_result['note_search_id']  # 获取笔记id
-        self.note_dict['noteLink'] = row[8]  # 获取笔记链接
-        create_time = row[10]  # 获取创建时间
+    def writeAccount(self, row):
+        pvcontent_link = row[8].split("?")[0]
+        pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
 
-        search_note = searchNotes(self.note_dict)
-        if search_note.check():
-            note_info = search_note.spyderNote()
-            print(note_info)
-            if note_info['status'] == "success":
-                search_note.writeNote(create_time=create_time)
-                print("笔记写入成功")
-                return True
-            elif note_info["status"] == "1":
-                print("笔记状态出错，更新笔记时间")
-                note_model = PVContentModel.query.filter_by(search_id=self.note_dict['note_id']).first()
-                note_model.create_time = create_time
-                db.session.add(note_model)
-                db.session.commit()
-                return True
-            elif note_info["status"] == "2":
-                return self.writrNote(row)
-            elif note_info["status"] == "failed":
-                print(note_info['message'])
+        plat_model = PlatModel.query.filter_by(name=row[3]).first()
+        account_link = row[2].split("?")[0]
+        account_model = AccountModel.query.filter_by(profile_link=account_link).first()
+        account_model = AccountModel() if not account_model else account_model
+        account_model.plat = plat_model
+        account_model.profile_link = account_link
+        account_model.self = row[11]
 
-                self.Spam = note_info['message']
-                return False
-        else:
-            print("笔记检查失败，返回错误信息")
-            return False
+        pvcontent_model.account = account_model
+        db.session.add(account_model)
+        db.session.add(pvcontent_model)
+        db.session.commit()
+
+    def writePromotion(self, row):
+        pvcontent_link = row[8].split("?")[0]
+        pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
+
+        output_model = OutputModel.query.filter_by(name=row[9]).first()
+
+        promotion_id = pvcontent_model.promotion_id
+        promotion_model = PromotionModel.query.filter_by(id=promotion_id).first()
+        promotion_model = PromotionModel() if not promotion_model else promotion_model
+
+        group_model = GroupModel.query.filter(GroupModel.name.in_(row[4].split(","))).all()  # 商品组
+        user_model = UserModel.query.filter_by(name=row[0]).first()
+        if not user_model:
+            user_model = UserModel(name=row[0])
+            db.session.add(user_model)
+            db.session.commit()
+        bloger_model = BlogerModel.query.filter_by(wechat=row[1]).first()  # 博主
+        if not bloger_model:
+            bloger_model = BlogerModel(wechat=row[1])
+            db.session.add(bloger_model)
+            db.session.commit()
+        max_id = db.session.query(func.max(PromotionModel.id)).scalar() or 0  # 获取最大的id
+        search_id = generate_Number_string(8, max_id + 1)  # 生成8位的id
+        promotion_model.search_id = search_id
+        promotion_model.fee = row[7]
+        promotion_model.commission = row[8]
+        promotion_model.group = group_model
+        promotion_model.feeModel = output_model
+        promotion_model.user = user_model
+        promotion_model.bloger = bloger_model
+
+        pvcontent_model.promotion = promotion_model
+        db.session.add(promotion_model)
+        db.session.add(pvcontent_model)
+        db.session.commit()
+
+
+class WriteSQLData(object):
+    def WriteSqlPVcontentData(self, note_link, notes_Info):
+        pvcontent_model = PVContentModel.query.filter_by(content_link=note_link).first()
+        if not pvcontent_model:
+            return {"status": "failed", "message": "没有该推广内容"}
+        date_today = datetime.now().strftime("%Y-%m-%d")
+        info = note_link + date_today
+        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+
+        pvcontent_model.title = notes_Info["title"]
+        pvcontent_model.content_id = notes_Info["content_id"]
+        pvcontent_model.liked = notes_Info["liked"]
+        pvcontent_model.desc = notes_Info["desc"]
+        pvcontent_model.collected = notes_Info["collected"]
+        pvcontent_model.forwarded = notes_Info["forwarded"]
+        pvcontent_model.commented = notes_Info["commented"]
+        pvcontent_model.video_link = notes_Info["video_link"]
+        pvcontent_model.contenttype = "视频" if notes_Info["video_link"] else "图文"
+        pvcontent_model.spyder_url = notes_Info["spyder_url"]
+        pvcontent_model.status = notes_Info["status"]
+        pvcontent_model.upload_time = notes_Info["upload_time"]
+        pvcontent_model.upgrade_time = date_today
+
+        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
+        pvcontent_today_model = PVDataModel() if not pvcontent_today_model else pvcontent_today_model
+        pvcontent_today_model.search_id = DaydataID
+        pvcontent_today_model.pvcontent = pvcontent_model
+        pvcontent_today_model.liked = notes_Info["liked"]
+        pvcontent_today_model.collected = notes_Info["collected"]
+        pvcontent_today_model.forwarded = notes_Info["forwarded"]
+        pvcontent_today_model.commented = notes_Info["commented"]
+        pvcontent_today_model.forwarded = notes_Info["forwarded"]
+        pvcontent_today_model.createtime = date_today
+
+        db.session.add(pvcontent_model)
+        db.session.add(pvcontent_today_model)
+        db.session.commit()
+        return True
+
+    def changeSQLNoteStatus(self, note_link, status):
+        pvcontent_model = PVContentModel.query.filter_by(content_link=note_link).first()
+        if not pvcontent_model:
+            return {"status": "failed", "message": "没有该推广内容"}
+        pvcontent_model.status = status
+        db.session.add(pvcontent_model)
+        db.session.commit()
+
+    def writePvcontengDayData(self):
+        pass

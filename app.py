@@ -13,14 +13,17 @@ from exts import db, mail, cache
 from bbs_celery import make_celery
 from flask_wtf import CSRFProtect
 from blueprints.sale.saleManage import bp as sale_bp, convert_to_number
-from blueprints.promotionManage import bp as prm_bp
-from blueprints.promotionData import bp as prd_bp
+from blueprints.promotion.promotionManage import bp as prm_bp
+from blueprints.promotion.promotionData import bp as prd_bp
+from blueprints.promotion.promotionXHS import bp as xhs_bp
+from blueprints.promotion.promotionDY import bp as dy_bp
 from blueprints.handOrderManage import bp as hd_bp
 from blueprints.back.backManage import bp as bk_bp
 from blueprints.back.product import bp as pr_bp
 from blueprints.back.permission import bp as per_bp
 from blueprints.back.user import bp as user_bp
 from blueprints.back.store import bp as store_bp
+from blueprints.back.backSpyder import bp as spyder_bp
 from models.store import ParentOrderModel
 
 app = Flask(__name__)
@@ -55,9 +58,12 @@ app.register_blueprint(prd_bp)
 app.register_blueprint(hd_bp)
 app.register_blueprint(bk_bp)
 app.register_blueprint(pr_bp)
+app.register_blueprint(xhs_bp)
+app.register_blueprint(dy_bp)
 app.register_blueprint(per_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(store_bp)
+app.register_blueprint(spyder_bp)
 
 # 绑定command命令
 app.cli.command("baseSelectModel")(command.baseSelectModel)

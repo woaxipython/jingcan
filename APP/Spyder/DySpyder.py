@@ -19,22 +19,12 @@ class DouYinSpyder():
     def __init__(self):
         self.user_url = "https://www.douyin.com/user/MS4wLjABAAAAfjsAJZbhlKTAhClTsxbP1b04RvyTjBRPgNWzLGnMR0c"
         # self.note_url = "https://www.douyin.com/video/7218888878109904186"
-        self.note_url = "https://www.douyin.com/user/MS4wLjABAAAASZj6di2175kheLW0qkCaaJSVzm3DjJqY9gpAv3DB5X3vtdA7AjAcls94-VVa3uIv?modal_id=7234598596195142970&vid=7234582445616614716"
-        self.mobile_token_url = "https://sso.douyin.com/send_activation_code/v2"
-        self.login_url = "https://sso.douyin.com/send_activation_code/v2"
-        # self.header = {
-        #     'cid': 'd9ba8ae07d955b83c3b04280f3dc5a4a',
-        #     'timestamp': ts,
-        #     'user-agent': 'okhttp/3.10.0.12'
-        # }
-        # 这里只是获取cookie，可以用playwright或selenium替代
-        # res = requests.post("http://api2.52jan.com/dyapi/get_cookie/v2", data={"sign": self.set_sign()},
-        #                     headers=self.header).json()
-        # "cookie": res['data'][0][0]
-        # print(res)
+        # self.note_url = "https://www.douyin.com/user/MS4wLjABAAAASZj6di2175kheLW0qkCaaJSVzm3DjJqY9gpAv3DB5X3vtdA7AjAcls94-VVa3uIv?modal_id=7302669308935638309"
+        self.note_url = "https://www.douyin.com/video/7234836427853352249/"
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                          'Chrome/111.0.0.0 Safari/537.36', }
+                          'Chrome/111.0.0.0 Safari/537.36',
+        }
 
     def set_sign(self):
         """
@@ -60,52 +50,97 @@ class DouYinSpyder():
         if "user" in url:
             try:
                 modal_id = re.search(r'modal_id=([^&]*)', url).group(1)
-                url = "https://www.douyin.com/video/" + modal_id
+                Referer = "https://www.douyin.com/video/" + modal_id
             except:
-                url = url
-                modal_id = ""
+                return {"status": "0", "message": "抖音链接错误"}
+        elif "video" in url:
+            modal_id = re.search(r'video/(\d+)/?', url).group(1)
+            Referer = "https://www.douyin.com/video/" + modal_id
         else:
-            modal_id = re.search(r'video/([^&]*)/?', url).group(1)
-        ret = requests.get(url, headers=self.headers)
+            return {"status": "0", "message": "抖音链接错误"}
+        spyder_url = "https://www.douyin.com/aweme/v1/web/aweme/detail/?"
+        self.headers['Referer'] = Referer
+        data = {
+            "device_platform": "webapp",
+            "aid": "6383",
+            "channel": "channel_pc_web",
+            "aweme_id": modal_id,
+            "pc_client_type": "1",
+            "version_code": "190500",
+            "version_name": "19.5.0",
+            "cookie_enabled": "true",
+            "screen_width": "1920",
+            "screen_height": "1080",
+            "browser_language": "zh-CN",
+            "browser_platform": "Win32",
+            "browser_name": "Chrome",
+            "browser_version": "114.0.0.0",
+            "browser_online": "true",
+            "engine_name": "Blink",
+            "engine_version": "114.0.0.0",
+            "os_name": "Windows",
+            "os_version": "10",
+            "cpu_core_num": "16",
+            "device_memory": "8",
+            "platform": "PC",
+            "downlink": "10",
+            "effective_type": "4g",
+            "round_trip_time": "50",
+            "webid": "7303072417411532314",
+            "msToken": "rCasLwylPrkYXfqOpkyoV47dPbeOH9ezXdKrnkuR5rWZSe1ld4kjkZHD8xbobObGm-hraDQvOSJLZtEMwM_hr4NnGGQbqGg1jsBOin0-xQ6Ku4-9MgfagAHmZK8=",
+        }
+        spyder_url = spyder_url + urllib.parse.urlencode(data)
+        response = requests.get(spyder_url, headers=self.headers)
+        if response.status_code == 200:
+            notice = self.testNotice(response)
+            if notice:
+                data = response.json()['aweme_detail']
 
-        if ret.status_code == 200:
-            try:
-                soup = BeautifulSoup(ret.text, 'html.parser')
-                collected = re.sub(r'\D', "", soup.select('span.CE7XkkTw')[1].text)
-                commented = re.sub(r'\D', "", soup.select('span.CE7XkkTw')[2].text)
-                forword = re.sub(r'\D', "", soup.select('span.Uehud9DZ')[0].text)
-                liked = re.sub(r'\D', "", soup.select('span.CE7XkkTw')[0].text)
-
+                upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data.get("create_time")))
                 title_result = {
-                    "title": soup.title.text,
+                    "title": data.get("desc"),
                     "content_id": modal_id,
-                    "liked": liked if liked else 0,
-                    "desc": soup.select('p.Z_bgHH02')[0].text,
-                    "collected": collected if collected else 0,
-                    "commented": commented if commented else 0,
-                    "forwarded": forword if forword else 0,
-
+                    "liked": data.get("statistics").get("digg_count"),
+                    "desc": data.get("statistics").get("desc"),
+                    "collected": data.get("statistics").get("collect_count"),
+                    "commented": data.get("statistics").get("comment_count"),
+                    "forwarded": data.get("statistics").get("share_count"),
                     "imageList": [],
-                    "commentList": [comment.text for comment in soup.select('span.VD5Aa1A1')],
+                    "commentList": [],
                     "hashTags": [],
                     "video_link": url,
                     "spyder_url": url,
-                    "upload_time": soup.select('span.aQoncqRg')[0].text.replace("发布时间：", ""),
-                    "content_link": url,
+                    "upload_time": upload_time,
+                    "content_link": "",
+                    "status": "正常",
                 }
-                return {"status": "success", "message": title_result}
-            except:
-                return {"status": "1", "message": "异常"}
+                return {"status": "1", "message": title_result}
+            else:
+                return {"status": "3", "message": "笔记不存在"}
         else:
-            return {"status": "failed", "message": "获取抖音数据出错"}
+            return {"status": "2", "message": "登录已过期"}
 
     def testCookie(self, token):
-        result = self.getUserInfo(token=token)
-        if result.get("status") == "success":
-            return {'status': 'success',
-                    'message': "抖音测试成功，成功获取 {} 信息".format(result['message']["nickname"])}
+        result = self.getNoteInfo(token=token)
+        if result.get("status") == "1" or result.get("status") == "3":
+            return {'status': 'success', 'message': "抖音测试成功"}
         else:
             return result
+
+    def testNotice(self, response):
+        try:
+            notice = response.json()['filter_detail']['notice']
+            if notice == "抱歉，作品不见了":
+                return False
+            else:
+                return True
+        except:
+            return True
+            # data = response.json()['aweme_detail']
+            # if data:
+            #     return True
+            # else:
+            #     return False
 
     def getUserInfo(self, token, url=""):
         self.headers['cookie'] = token
@@ -127,7 +162,8 @@ class DouYinSpyder():
                 "boards": None,
                 "location": soup.select('span.a83NyFJ4')[0].text if soup.select('span.a83NyFJ4') else "",
                 "collected": None,
-                "desc": "".join([span.text for span in soup.select('span.Nu66P_ba')]) if soup.select('span.Nu66P_ba') else "",
+                "desc": "".join([span.text for span in soup.select('span.Nu66P_ba')]) if soup.select(
+                    'span.Nu66P_ba') else "",
                 "officialVerifyName": soup.select('div.HqxPzh_q')[0].text if soup.select('div.HqxPzh_q') else "",
                 "profile_link": url,
                 "spyder_url": url,
@@ -149,6 +185,6 @@ if __name__ == '__main__':
     # url = "https://www.douyin.com/video/7214409188234120487"
     # url = "https://www.douyin.com/user/MS4wLjABAAAAj_5sNno0lusPp1AOp6h0tvPxELuPxI1Q5DyxmEJ7x_4?modal_id=7218888878109904186"
     dy = DouYinSpyder()
-    token = 'ttwid=1%7CNvLn_dFZxi5e7vG7FHjiNooA_0VOzam6PJZ77OPdfiM%7C1681889128%7C2cc1a98c7532fc3194aeffe9238bc6a422a3dba39a6d5d4abf8116d851a26158; passport_csrf_token=b8e30d7d38b232c46b41fefe0c471d17; passport_csrf_token_default=b8e30d7d38b232c46b41fefe0c471d17; s_v_web_id=verify_lgndd2ax_s5kCld9F_I7TG_4LTK_8y1V_CMpjQQjgH1qC; pwa2=%223%7C0%22; ttcid=1cbda62ceff94064bb877f7e6c52732f39; strategyABtestKey=%221684403170.925%22; __ac_nonce=064660a41005452bdf4bc; __ac_signature=_02B4Z6wo00f01h0e6fQAAIDCnRwTtwxbJO4dPu1AAOMvxPzbso-FvWV08uLJocXrMEVTA8W5.Ec3KZQouFyA3X1GuiPhkxTpd.AmY93e4QZGYVcsF98Hvl6IDHk8CVaw8D17Y87l8h9Sik.2af; download_guide=%223%2F20230518%22; douyin.com; d_ticket=ec7e699b5c2118fcd3faaa84e70b895b72c94; passport_assist_user=Cjz1O9l9Az1Q55mknWxfoYEGxOvHZqZev1FgFZo_usknPvGPOG1sLLVGaAbMwJzdwcvOsXsAEvmUWzCxOggaSAo8PUytSvd7xKs6k0od6pjbnw1D5wd29-rQH_BDqoh8y4K-GP9yujAB2-ClQgdEzwARmcRmypj1fHlPQe-TEK27sQ0Yia_WVCIBA6nd_N0%3D; n_mh=acm93QdnGeokQ8P9OssEFwOxgViwjjf-3wI379AUXj0; sso_auth_status=1e8efa73012bd7f252e39d07c634a9cc; sso_auth_status_ss=1e8efa73012bd7f252e39d07c634a9cc; sso_uid_tt=e46edc4ec726a056f711db0e1a8bb60c; sso_uid_tt_ss=e46edc4ec726a056f711db0e1a8bb60c; toutiao_sso_user=263c5d87974c6ba4fa2f2dc6482ea097; toutiao_sso_user_ss=263c5d87974c6ba4fa2f2dc6482ea097; sid_ucp_sso_v1=1.0.0-KDBhNWY2MTAxOWRjMzA0NDYyMjdjYjgwOTlkNGUzYjNkNDcxNGUwYWMKHQjAgNWO4wIQl5eYowYY7zEgDDDy4aHVBTgCQPEHGgJobCIgMjYzYzVkODc5NzRjNmJhNGZhMmYyZGM2NDgyZWEwOTc; ssid_ucp_sso_v1=1.0.0-KDBhNWY2MTAxOWRjMzA0NDYyMjdjYjgwOTlkNGUzYjNkNDcxNGUwYWMKHQjAgNWO4wIQl5eYowYY7zEgDDDy4aHVBTgCQPEHGgJobCIgMjYzYzVkODc5NzRjNmJhNGZhMmYyZGM2NDgyZWEwOTc; odin_tt=ac36a113358aa14bb2aa885d2dc483a3c7918f55e4ed76cf4ad982fcb128c943fee90a255e6f434be3ec5e586083a711; passport_auth_status=f79ac2e6db0d7c4e7caca42ee1061f04%2Cb81ba07f3de81cc75f02101940062756; passport_auth_status_ss=f79ac2e6db0d7c4e7caca42ee1061f04%2Cb81ba07f3de81cc75f02101940062756; uid_tt=9bc02b6263804a3f5495c4c9205a625c; uid_tt_ss=9bc02b6263804a3f5495c4c9205a625c; sid_tt=d1aad2c5dd6505edf1820b01e608a1e9; sessionid=d1aad2c5dd6505edf1820b01e608a1e9; sessionid_ss=d1aad2c5dd6505edf1820b01e608a1e9; publish_badge_show_info=%220%2C0%2C0%2C1684409242734%22; VIDEO_FILTER_MEMO_SELECT=%7B%22expireTime%22%3A1685014042761%2C%22type%22%3A1%7D; FOLLOW_LIVE_POINT_INFO=%22MS4wLjABAAAA9Ax-pVKjsUPUNdV-gbVq5OBjCe9HrIGwrNnNrTUP6pQ%2F1684425600000%2F0%2F1684409243125%2F0%22; LOGIN_STATUS=1; store-region=cn-gd; store-region-src=uid; home_can_add_dy_2_desktop=%221%22; sid_guard=d1aad2c5dd6505edf1820b01e608a1e9%7C1684409243%7C5183999%7CMon%2C+17-Jul-2023+11%3A27%3A22+GMT; sid_ucp_v1=1.0.0-KGFiZDU1OGJjN2RlNWExMjAwZjUwMDVkNTVjNDU4YzUzMDYzOTQ3OTYKGQjAgNWO4wIQm5eYowYY7zEgDDgCQPEHSAQaAmxmIiBkMWFhZDJjNWRkNjUwNWVkZjE4MjBiMDFlNjA4YTFlOQ; ssid_ucp_v1=1.0.0-KGFiZDU1OGJjN2RlNWExMjAwZjUwMDVkNTVjNDU4YzUzMDYzOTQ3OTYKGQjAgNWO4wIQm5eYowYY7zEgDDgCQPEHSAQaAmxmIiBkMWFhZDJjNWRkNjUwNWVkZjE4MjBiMDFlNjA4YTFlOQ; csrf_session_id=532b1cf3fc3c148eaff7458b61c79baa; bd_ticket_guard_server_data=; bd_ticket_guard_client_data=eyJiZC10aWNrZXQtZ3VhcmQtdmVyc2lvbiI6MiwiYmQtdGlja2V0LWd1YXJkLWl0ZXJhdGlvbi12ZXJzaW9uIjoxLCJiZC10aWNrZXQtZ3VhcmQtY2xpZW50LWNlcnQiOiItLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS1cbk1JSUNFekNDQWJxZ0F3SUJBZ0lVUE5UKzhjSzdER3RldHcya0YyQTVSNGx6SkFBd0NnWUlLb1pJemowRUF3SXdcbk1URUxNQWtHQTFVRUJoTUNRMDR4SWpBZ0JnTlZCQU1NR1hScFkydGxkRjluZFdGeVpGOWpZVjlsWTJSellWOHlcbk5UWXdIaGNOTWpNd05URTRNVEV5TnpJd1doY05Nek13TlRFNE1Ua3lOekl3V2pBbk1Rc3dDUVlEVlFRR0V3SkRcblRqRVlNQllHQTFVRUF3d1BZbVJmZEdsamEyVjBYMmQxWVhKa01Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERcbkFRY0RRZ0FFeCtDVDNETy9BWkdNTXAwS1hBYjlqcThwTUE5T2RGQUExODFqZUZqK2wwa1d4S0ZQUDBURm9GRndcbno3L1RhbEZKVXNDSnBEdjJuTGQ5clBjY0FiY28zYU9CdVRDQnRqQU9CZ05WSFE4QkFmOEVCQU1DQmFBd01RWURcblZSMGxCQ293S0FZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ0JnZ3JCZ0VGQlFjREF3WUlLd1lCQlFVSEF3UXdcbktRWURWUjBPQkNJRUlOcWVRSDI2NFMvRlBJazlVRHdvVjhRa3FVL0JXTkh6M2gwRkl4bGlBSFQzTUNzR0ExVWRcbkl3UWtNQ0tBSURLbForcU9aRWdTamN4T1RVQjdjeFNiUjIxVGVxVFJnTmQ1bEpkN0lrZURNQmtHQTFVZEVRUVNcbk1CQ0NEbmQzZHk1a2IzVjVhVzR1WTI5dE1Bb0dDQ3FHU000OUJBTUNBMGNBTUVRQ0lFZ1pJNUJzSFZlcXJBWDZcbmFvaUJSQXhSN29kVDhmTTJ0RTdMNGNVeXFkQmJBaUJlTk1pZzUwdVJEMjFoVzhHRTcvOXdHR3I2Q0hJK1BSVUFcbjlGSFlMZzA3a2c9PVxuLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLVxuIn0=; msToken=q3swEkrVbYpGLEHOXttLCSSBkXQa7NPtkF1WGPPGRZKuQBAB1P0EfgDD7frClweAUHjeE9_GwhTVIkuRmtmfrW5trqcFyhmaWru5YOc2ekHFuAWCsRwYeA==; tt_scid=U3kcLqUtZWMVGP-Te9v9s2dyY3wqSZNh91egu.vQtyxQmH.fkZmSGGx5TIcdeXcFe414; msToken=SBKqYut1erJlvFpq5dS0Obkcu04XEeDfar19o131FDSOJTZBQdbO-xK8b9bneWijk9PKH9VOiiMozv5YySpBH0ywCiP0tAxS4rNB0HVbwwG0MWoZNkqpMw==; passport_fe_beating_status=false'
-    result = dy.getNoteInfo(token=token)
+    token = 'ttwid=1%7CR2iz-zprlt6A_O_khmqi8WvZnjvk2N6PiLASc8ylM-M%7C1700379066%7Cc43b6114c76844ded9fda67b74147db0d47d0f138ffbcd0c848ba4a2967f537e; douyin.com; device_web_cpu_core=16; device_web_memory_size=8; architecture=amd64; webcast_local_quality=null; passport_csrf_token=ca6a2160323aeaf35c20b9f5fde86c72; passport_csrf_token_default=ca6a2160323aeaf35c20b9f5fde86c72; strategyABtestKey=%221700379068.989%22; volume_info=%7B%22isUserMute%22%3Afalse%2C%22isMute%22%3Atrue%2C%22volume%22%3A0.6%7D; s_v_web_id=verify_lp55smva_Ka8sAsmh_6qv0_4b6Q_9NJb_hoOPANDLjfUu; xgplayer_user_id=446687971665; FORCE_LOGIN=%7B%22videoConsumedRemainSeconds%22%3A180%2C%22isForcePopClose%22%3A1%7D; csrf_session_id=7e32b81ea0d86f0e060315e862a1c325; ttcid=d16be550844342098cd89f74ad40bbea39; d_ticket=e31c32687fe00ad6ef78aacc6851ae7847f36; passport_assist_user=Cjy0UMXqiuSuHoNhhEDJTBVl6P_Ll_SKaX3u8v6Dzm687v17XpmjtHCaY0XNtX7YDbIYNmE78AJobioV9WgaSgo8YwjZ4DYp8vG5XB8t1UGX-0YcOKxXqxllKluu1fFaE_7kaLbY7JuxD43C2wSHWTF5C3mkl32Aduh5qe5VELDawQ0Yia_WVCABIgEDcJa8uQ%3D%3D; n_mh=acm93QdnGeokQ8P9OssEFwOxgViwjjf-3wI379AUXj0; sso_auth_status=415d996fd54f2d69d901663620746fe8; sso_auth_status_ss=415d996fd54f2d69d901663620746fe8; sso_uid_tt=c58f1e24c0e9d635f00f5b1fb362a7ae; sso_uid_tt_ss=c58f1e24c0e9d635f00f5b1fb362a7ae; toutiao_sso_user=5c32092d523ddecdb2a825e60882716b; toutiao_sso_user_ss=5c32092d523ddecdb2a825e60882716b; sid_ucp_sso_v1=1.0.0-KDAzZWFmMzUxNjk1MTI4Nzg3N2ExZGQ4ODk1OTI2ZjY0NWM2MDc3YmIKHQjAgNWO4wIQzfPmqgYY7zEgDDDy4aHVBTgCQPEHGgJobCIgNWMzMjA5MmQ1MjNkZGVjZGIyYTgyNWU2MDg4MjcxNmI; ssid_ucp_sso_v1=1.0.0-KDAzZWFmMzUxNjk1MTI4Nzg3N2ExZGQ4ODk1OTI2ZjY0NWM2MDc3YmIKHQjAgNWO4wIQzfPmqgYY7zEgDDDy4aHVBTgCQPEHGgJobCIgNWMzMjA5MmQ1MjNkZGVjZGIyYTgyNWU2MDg4MjcxNmI; passport_auth_status=161f7fd86fbb82595e8a0c1b78f6a51c%2C6a8c773765bc1cefd5397baa5a1055c5; passport_auth_status_ss=161f7fd86fbb82595e8a0c1b78f6a51c%2C6a8c773765bc1cefd5397baa5a1055c5; sid_ucp_v1=1.0.0-KGNmZTVlNDZjMDI2MDViOGQxMDRiZGZhNDA3NGI3YmRmNTIzMmQxYTMKGQjAgNWO4wIQzvPmqgYY7zEgDDgCQPEHSAQaAmxxIiBhYTI4YzkwNjFhYTUwNGI2YmI3NzZhMzhjNjQwZmRkNQ; ssid_ucp_v1=1.0.0-KGNmZTVlNDZjMDI2MDViOGQxMDRiZGZhNDA3NGI3YmRmNTIzMmQxYTMKGQjAgNWO4wIQzvPmqgYY7zEgDDgCQPEHSAQaAmxxIiBhYTI4YzkwNjFhYTUwNGI2YmI3NzZhMzhjNjQwZmRkNQ; sid_guard=5c32092d523ddecdb2a825e60882716b%7C1700379086%7C5184001%7CThu%2C+18-Jan-2024+07%3A31%3A27+GMT; uid_tt=c58f1e24c0e9d635f00f5b1fb362a7ae; uid_tt_ss=c58f1e24c0e9d635f00f5b1fb362a7ae; sid_tt=5c32092d523ddecdb2a825e60882716b; sessionid=5c32092d523ddecdb2a825e60882716b; sessionid_ss=5c32092d523ddecdb2a825e60882716b; LOGIN_STATUS=1; publish_badge_show_info=%220%2C0%2C0%2C1700379097310%22; _bd_ticket_crypt_doamin=2; _bd_ticket_crypt_cookie=3d0d05b6ef426481638a8e4dfb572324; __security_server_data_status=1; store-region=cn-gd; store-region-src=uid; VIDEO_FILTER_MEMO_SELECT=%7B%22expireTime%22%3A1700984959114%2C%22type%22%3A1%7D; download_guide=%223%2F20231119%2F0%22; pwa2=%220%7C0%7C3%7C0%22; stream_player_status_params=%22%7B%5C%22is_auto_play%5C%22%3A0%2C%5C%22is_full_screen%5C%22%3A0%2C%5C%22is_full_webscreen%5C%22%3A0%2C%5C%22is_mute%5C%22%3A1%2C%5C%22is_speed%5C%22%3A1%2C%5C%22is_visible%5C%22%3A0%7D%22; stream_recommend_feed_params=%22%7B%5C%22cookie_enabled%5C%22%3Atrue%2C%5C%22screen_width%5C%22%3A1920%2C%5C%22screen_height%5C%22%3A1080%2C%5C%22browser_online%5C%22%3Atrue%2C%5C%22cpu_core_num%5C%22%3A16%2C%5C%22device_memory%5C%22%3A8%2C%5C%22downlink%5C%22%3A10%2C%5C%22effective_type%5C%22%3A%5C%224g%5C%22%2C%5C%22round_trip_time%5C%22%3A50%7D%22; __ac_nonce=06559c0e200377b7cc7b3; __ac_signature=_02B4Z6wo00f01zdHfkQAAIDCVE2-LdRlBsc3Z3rAAKiSzTejaVuekaGQFSNPncAaw7NOOBqC-AwS76aAIPjDhvYPtdKYL9-oaDnIl0lk-o-4PbtiBJir7K2q1RKTrABRZaAygVE2l6yoBOgV38; FOLLOW_LIVE_POINT_INFO=%22MS4wLjABAAAA9Ax-pVKjsUPUNdV-gbVq5OBjCe9HrIGwrNnNrTUP6pQ%2F1700409600000%2F0%2F0%2F1700382388046%22; FOLLOW_NUMBER_YELLOW_POINT_INFO=%22MS4wLjABAAAA9Ax-pVKjsUPUNdV-gbVq5OBjCe9HrIGwrNnNrTUP6pQ%2F1700409600000%2F0%2F0%2F1700382988046%22; bd_ticket_guard_client_data=eyJiZC10aWNrZXQtZ3VhcmQtdmVyc2lvbiI6MiwiYmQtdGlja2V0LWd1YXJkLWl0ZXJhdGlvbi12ZXJzaW9uIjoxLCJiZC10aWNrZXQtZ3VhcmQtcmVlLXB1YmxpYy1rZXkiOiJCQTRaOFJWNi9ORnZRSmxPT3hXMGpOeFYzQUcwcTNwcG5aSWkwZ2xoYWFTd0kwcSs4ZUloc0hwMm92eEJCdEpFT2szaGd0aDlKaVcvV3N2bHMydTg1Yzg9IiwiYmQtdGlja2V0LWd1YXJkLXdlYi12ZXJzaW9uIjoxfQ%3D%3D; odin_tt=2565e6682fc63a92aafef518c84c8865c43f816b109e626bf279a945498bbcfa18df891b28236e28ccf7fd444c07e4af8ddc7f8991819e718a4e9914a6af39d9; tt_scid=fyMt5weNnmrEF5vNU-8-n7t5iMIFC7dFifab7SyC8ikKhIM4hGavQ-XCqwsQHAsa27a6; msToken=rCasLwylPrkYXfqOpkyoV47dPbeOH9ezXdKrnkuR5rWZSe1ld4kjkZHD8xbobObGm-hraDQvOSJLZtEMwM_hr4NnGGQbqGg1jsBOin0-xQ6Ku4-9MgfagAHmZK8=; msToken=zrvVWnOkN-Nbl5ArZ1EdJQkjBIiI5zqpiwzGtoV0dn4fCft4Fddh1GFfS_MgULLtdiTMVQAuMb1DD9Qq0eAko4SjdZon9s0_lXk7T9lXvXjz_zeTdPjQHGdWC-E=; passport_fe_beating_status=false; IsDouyinActive=false; home_can_add_dy_2_desktop=%220%22'
+    result = dy.testCookie(token=token)
     print(result)
