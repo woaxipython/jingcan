@@ -20,7 +20,7 @@ class DouYinSpyder():
         self.user_url = "https://www.douyin.com/user/MS4wLjABAAAAfjsAJZbhlKTAhClTsxbP1b04RvyTjBRPgNWzLGnMR0c"
         # self.note_url = "https://www.douyin.com/video/7218888878109904186"
         # self.note_url = "https://www.douyin.com/user/MS4wLjABAAAASZj6di2175kheLW0qkCaaJSVzm3DjJqY9gpAv3DB5X3vtdA7AjAcls94-VVa3uIv?modal_id=7302669308935638309"
-        self.note_url = "https://www.douyin.com/video/7234836427853352249/"
+        self.note_url = "https://www.douyin.com/video/7259263909654187316"
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
                           'Chrome/111.0.0.0 Safari/537.36',
@@ -91,30 +91,33 @@ class DouYinSpyder():
         }
         spyder_url = spyder_url + urllib.parse.urlencode(data)
         response = requests.get(spyder_url, headers=self.headers)
+        print(response.json())
         if response.status_code == 200:
             notice = self.testNotice(response)
             if notice:
                 data = response.json()['aweme_detail']
-
-                upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data.get("create_time")))
-                title_result = {
-                    "title": data.get("desc"),
-                    "content_id": modal_id,
-                    "liked": data.get("statistics").get("digg_count"),
-                    "desc": data.get("statistics").get("desc"),
-                    "collected": data.get("statistics").get("collect_count"),
-                    "commented": data.get("statistics").get("comment_count"),
-                    "forwarded": data.get("statistics").get("share_count"),
-                    "imageList": [],
-                    "commentList": [],
-                    "hashTags": [],
-                    "video_link": url,
-                    "spyder_url": url,
-                    "upload_time": upload_time,
-                    "content_link": "",
-                    "status": "正常",
-                }
-                return {"status": "1", "message": title_result}
+                if data:
+                    upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data.get("create_time")))
+                    title_result = {
+                        "title": data.get("desc"),
+                        "content_id": modal_id,
+                        "liked": data.get("statistics").get("digg_count"),
+                        "desc": data.get("statistics").get("desc"),
+                        "collected": data.get("statistics").get("collect_count"),
+                        "commented": data.get("statistics").get("comment_count"),
+                        "forwarded": data.get("statistics").get("share_count"),
+                        "imageList": [],
+                        "commentList": [],
+                        "hashTags": [],
+                        "video_link": url,
+                        "spyder_url": url,
+                        "upload_time": upload_time,
+                        "content_link": "",
+                        "status": "正常",
+                    }
+                    return {"status": "1", "message": title_result}
+                else:
+                    return {"status": "3", "message": "笔记不存在"}
             else:
                 return {"status": "3", "message": "笔记不存在"}
         else:
