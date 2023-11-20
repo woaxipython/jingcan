@@ -111,7 +111,7 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
 def searchPVContentSql2(plat="", self="", group=""):
     group_by = []
     group_by.extend(group.split(",")) if group else group_by
-    filters = [PVContentModel.content_link != None]
+    filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常",PVContentModel.status==None)]
     filters.append(AccountModel.self == self) if self and self != "0" else filters
     filters.append(PlatModel.name == plat) if plat else filters
     entities = [

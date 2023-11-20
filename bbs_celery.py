@@ -86,6 +86,7 @@ def GetXHSNote2(note_link):
 def GetDYNote(self, plat):
     contents = searchPVContentSql2(self=self, plat=plat)
     i = 1
+    print(1233556)
     for content in contents:
         note_link = content.link
         date_today = datetime.now().strftime("%Y-%m-%d")

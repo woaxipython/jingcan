@@ -193,6 +193,7 @@ def getPVcontentData():
     self = request.args.get("self")
     plat = "" if plat == "null" else plat
     self = "" if self == "null" else self
+
     if plat:
         result = sypderCelery(plat=plat, self=self)
         if not result:
