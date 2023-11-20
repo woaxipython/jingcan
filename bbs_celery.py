@@ -53,7 +53,7 @@ def GetXHSNote(self, plat):
             continue
         i += 1
         print("共计{}条小红书待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
-        time.sleep(random.randint(30, 50))
+        time.sleep(random.randint(15, 30))
 
 
 def GetXHSNote2(note_link):
