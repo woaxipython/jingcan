@@ -153,7 +153,7 @@ def GetOrders(stores, endDate, startDate, token):
         writeOrderData(dealresult)
         i += 1
         status["processed"] = i
-        print(i)
+        print("共计{}条订单，已更新至第{}条,剩余{}条".format(totalCount, i, totalCount - i))
     for page in range(2, pageNo + 1):
         order_JSON = kdzs.getOrder(pageNo=page, stores=stores, endDate=endDate, startDate=startDate, token=token)
         dealResults = kdzs.DealOrder(order_JSON=order_JSON)
@@ -162,6 +162,7 @@ def GetOrders(stores, endDate, startDate, token):
             writeOrderData(dealresult)
             status["processed"] = i
             i += 1
+            print("共计{}条订单，已更新至第{}条,剩余{}条".format(totalCount, i, totalCount - i))
         time.sleep(80)
     return status
 
@@ -169,9 +170,12 @@ def GetOrders(stores, endDate, startDate, token):
 def writeHandOrder(save_path):
     write = WriteExcelOrder(save_path)
     dealResults = write.dealHandOrder()
+    totalCount = len(dealResults)
+    i = 1
     for dealresult in dealResults:
         print(dealresult)
         writeOrderData(dealresult)
+        print("共计{}条订单，已更新至第{}条,剩余{}条".format(totalCount, i, totalCount - i))
 
 
 def GetRefund(endDate, startDate, token):

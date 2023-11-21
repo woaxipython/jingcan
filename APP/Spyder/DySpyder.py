@@ -91,7 +91,6 @@ class DouYinSpyder():
         }
         spyder_url = spyder_url + urllib.parse.urlencode(data)
         response = requests.get(spyder_url, headers=self.headers)
-        print(response.json())
         if response.status_code == 200:
             notice = self.testNotice(response)
             if notice:

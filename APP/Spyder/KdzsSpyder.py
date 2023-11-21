@@ -152,7 +152,6 @@ class KuaiDiZhuShouSpyder():
         response = self.spyder.post(self.search_url, json=search_json, headers=self.headers)
         if response.status_code == 200 and pageNo == 1:
             data = response.json()
-            print(data)
             return {'status': 'success', 'message': "正在获取订单", "data": data, "total": data["data"]["totalCount"]}
         elif pageNo != 1:
             data = response.json()
