@@ -29,6 +29,7 @@ class writeOrderData(object):
         self.order_info = order_info
         self.store_id = self.order_info['sellerId']
         self.plat_store_name = self.order_info['sellerNick']
+        self.store_model = StoreModel.query.filter_by(store_id=self.store_id).first()  # 查询店铺是否存在
         self.store_name = self.order_info['sellerNick']
         self.orderID = self.order_info['orderID']
         self.province = self.order_info['receiverProvince']
@@ -56,6 +57,7 @@ class writeOrderData(object):
             self.parent_order_model.totalPayment = self.totalPayment
             self.parent_order_model.totalReceivedPayment = self.totalReceivedPayment
             self.parent_order_model.updateTime = self.updateTime
+        self.parent_order_model.store = self.store_model
         self.parent_order_model.payTime = self.payTime
 
     def writrOrder(self):
