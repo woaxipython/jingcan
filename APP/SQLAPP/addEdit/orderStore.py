@@ -56,7 +56,6 @@ class writeOrderData(object):
             self.parent_order_model.totalPayment = self.totalPayment
             self.parent_order_model.totalReceivedPayment = self.totalReceivedPayment
             self.parent_order_model.updateTime = self.updateTime
-        self.parent_order_model.store = self.store_model
         self.parent_order_model.payTime = self.payTime
 
     def writrOrder(self):
