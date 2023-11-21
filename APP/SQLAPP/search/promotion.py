@@ -77,8 +77,9 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
     interval = 365 if interval == 171 else interval
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
-    filters = [PVContentModel.create_time >= start_date, PVContentModel.create_time < end_date,
-               PVContentModel.content_link != None,]
+    filters = [PVContentModel.upload_time >= start_date, PVContentModel.upload_time < end_date,
+               PVContentModel.upload_time != None,
+               PVContentModel.content_link != None, ]
 
     filters.append(AccountModel.self == self) if self and self != "0" else filters
     filters.append(GroupModel.id == group) if group and group != "0" else filters
@@ -88,7 +89,7 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
     filters.append(PromotionModel.rate_id == rate) if rate and rate != "0" else filters
     filters = [PromotionModel.search_id == promotion_id] if promotion_id else filters
     group_by.extend(group_.split(",")) if group_ else group_by
-    entities = [cast(PVContentModel.create_time, Date).label('date'),
+    entities = [cast(PVContentModel.upload_time, Date).label('date'),
                 GroupModel.name.label('group'),
                 AccountModel.nickname.label('account'),
                 AccountModel.profile_link.label('profile_link'),
@@ -111,7 +112,7 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
 def searchPVContentSql2(plat="", self="", group=""):
     group_by = []
     group_by.extend(group.split(",")) if group else group_by
-    filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常",PVContentModel.status==None)]
+    filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
     filters.append(AccountModel.self == self) if self and self != "0" else filters
     filters.append(PlatModel.name == plat) if plat else filters
     entities = [
