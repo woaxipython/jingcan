@@ -144,8 +144,8 @@ def GetDYNote2(note_link):
 
 def GetOrders(stores, endDate, startDate, token):
     order_JSON = kdzs.getOrder(stores, endDate=endDate, startDate=startDate, token=token)
-    totalCount = order_JSON['total']
-    pageNo = math.ceil(int(totalCount) / 1000)
+    totalCount = int(order_JSON['total'])
+    pageNo = math.ceil(totalCount / 1000)
     dealResults = kdzs.DealOrder(order_JSON=order_JSON)
     i = 1
     status = {"total": totalCount, "processed": 0}
