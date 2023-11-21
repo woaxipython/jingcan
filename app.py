@@ -15,8 +15,7 @@ from flask_wtf import CSRFProtect
 from blueprints.sale.saleManage import bp as sale_bp, convert_to_number
 from blueprints.promotion.promotionManage import bp as prm_bp
 from blueprints.promotion.promotionData import bp as prd_bp
-from blueprints.promotion.promotionXHS import bp as xhs_bp
-from blueprints.promotion.promotionDY import bp as dy_bp
+from blueprints.promotion.promotionPV import bp as pv_bp
 from blueprints.handOrderManage import bp as hd_bp
 from blueprints.back.backManage import bp as bk_bp
 from blueprints.back.product import bp as pr_bp
@@ -32,7 +31,6 @@ app = Flask(__name__)
 # app.config.from_object(config.DevelopmentConfig)
 app.config.from_object(config.ProductiongConfig)
 # app.config.from_object(config.TestingConfig)
-
 # SQlAlchemy初始化
 db.init_app(app=app)
 
@@ -58,8 +56,7 @@ app.register_blueprint(prd_bp)
 app.register_blueprint(hd_bp)
 app.register_blueprint(bk_bp)
 app.register_blueprint(pr_bp)
-app.register_blueprint(xhs_bp)
-app.register_blueprint(dy_bp)
+app.register_blueprint(pv_bp)
 app.register_blueprint(per_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(store_bp)

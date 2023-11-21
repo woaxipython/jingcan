@@ -73,7 +73,7 @@ class GetPromotionModel():
 def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", rate="", promotion_id="", wechat="",
                        interval=365, plat="",
                        prtype="", group="", group_=""):
-    group_by = ["link"]
+    group_by = ["title"]
     interval = 365 if interval == 171 else interval
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
@@ -95,13 +95,14 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
                 AccountModel.profile_link.label('profile_link'),
                 AccountModel.self.label('self'),
                 PVContentModel.title.label('title'),
-                PVContentModel.search_id.label('id'),
+                PVContentModel.search_id.label('search_id'),
                 PVContentModel.content_link.label('link'),
                 PVContentModel.liked.label('liked'),
                 PVContentModel.commented.label('commented'),
                 PVContentModel.forwarded.label('forwarded'),
                 PVContentModel.collected.label('collected'),
                 PVContentModel.video_link.label('video'),
+                PVContentModel.attention.label('attention'),
                 PlatModel.name.label('plat')]
     pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
         AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities).group_by(
@@ -112,15 +113,19 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
 def searchPVContentSql2(plat="", self="", group=""):
     group_by = []
     group_by.extend(group.split(",")) if group else group_by
-    filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
+    # filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
+
+    filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None),
+               or_(PVContentModel.attention == 1, PVContentModel.attention == None, PVContentModel.attention == 2)]
     filters.append(AccountModel.self == self) if self and self != "0" else filters
+    print(plat)
     filters.append(PlatModel.name == plat) if plat else filters
     entities = [
         AccountModel.profile_link.label('profile_link'),
         PVContentModel.content_link.label('link'),
         PlatModel.name.label('plat')]
     pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
-        AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities).group_by(
+        AccountModel.plat).with_entities(*entities).group_by(
         "link").all()
     return pvcontent_list
 

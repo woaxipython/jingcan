@@ -11,9 +11,11 @@ from APP.SQLAPP.addEdit.orderStore import writeRefund, writeOrderData, WriteExce
 from APP.SQLAPP.addEdit.promotion import WriteExcelPromotion, WriteSQLData
 from APP.SQLAPP.search.promotion import searchNotes, searchPVContentSql2
 from APP.Spyder.KdzsSpyder import KuaiDiZhuShouSpyder
-from exts import mail
+from exts import mail, db
 from celery import Celery
 
+from models.back import PlatModel
+from models.promotion import AccountModel
 from models.promotiondata import PVContentModel, PVDataModel
 
 kdzs = KuaiDiZhuShouSpyder()
@@ -30,7 +32,45 @@ def GetAddress():
     print("发送成功")
 
 
+def changePlat():
+    # pvcontent_lists = AccountModel.query.filter(AccountModel.profile_link != None).with_entities(
+    #     AccountModel.profile_link, AccountModel.id).all()
+    # for pvcontent_list in pvcontent_lists:
+    #     print(pvcontent_list.profile_link)
+    #     if "xiaohongshu" in pvcontent_list.profile_link:
+    #         plat_model = PlatModel.query.filter(PlatModel.name == "小红书").first()
+    #         pn_model = AccountModel.query.filter(AccountModel.id == pvcontent_list.id).first()
+    #         pn_model.plat_id = plat_model.id
+    #         db.session.add(pn_model)
+    #         db.session.commit()
+    #     elif "douyin" in pvcontent_list.profile_link:
+    #         plat_model = PlatModel.query.filter(PlatModel.name == "抖音").first()
+    #         pn_model = AccountModel.query.filter(AccountModel.id == pvcontent_list.id).first()
+    #         pn_model.plat_id = plat_model.id
+    #         db.session.add(pn_model)
+    #         db.session.commit()
+    pvcontent_lists = PVContentModel.query.filter(PVContentModel.account_id == None).with_entities(
+        PVContentModel.content_link, PVContentModel.id).all()
+    for pvcontent_list in pvcontent_lists:
+        print(pvcontent_list.content_link)
+        if "xiaohongshu" in pvcontent_list.content_link:
+            plat_model = PlatModel.query.filter(PlatModel.name == "小红书").first()
+        elif "douyin" in pvcontent_list.content_link:
+            plat_model = PlatModel.query.filter(PlatModel.name == "抖音").first()
+        pv_model = PVContentModel.query.filter(PVContentModel.id == pvcontent_list.id).first()
+        account_model = AccountModel()
+        account_model.plat = plat_model
+        account_model.profile_link = pvcontent_list.content_link
+        account_model.self = "素人"
+
+        pv_model.account = account_model
+        db.session.add(account_model)
+        db.session.add(pv_model)
+        db.session.commit()
+
+
 def GetXHSNote(self, plat):
+    # changePlat()
     contents = searchPVContentSql2(self=self, plat=plat)
     i = 1
     for content in contents:

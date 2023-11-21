@@ -23,6 +23,7 @@ class PVContentModel(db.Model):
     contenttype = db.Column(db.String(20))
     spyder_url = db.Column(db.String(200))
     status = db.Column(db.String(20), default='正常')
+    attention = db.Column(db.Integer, default=2)
     upload_time = db.Column(db.DateTime, )
     upgrade_time = db.Column(db.DateTime, )
     create_time = db.Column(db.DateTime, default=datetime.now)

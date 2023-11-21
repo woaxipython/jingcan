@@ -249,19 +249,15 @@ class PromotionFileForm():
             if cell.value != header[head_row.index(cell)]:
                 self.messages.append('表头错误')
                 break
-        for row in sheet.iter_rows(min_row=2):
-            if not row[2].value:
-                self.messages.append('第{}行第{}列账号主页链接不能为空'.format(row[2].row, row[2].column))
+        for row in sheet.iter_rows(min_row=8):
+            if not row[8].value:
+                self.messages.append('第{}行第{}列账号图文链接不能为空'.format(row[8].row, row[8].column))
                 return False
         for row in sheet.iter_rows(min_row=2):
             if not row[3].value:
                 self.messages.append('第{}行第{}列平台不能为空'.format(row[3].row, row[3].column))
                 return False
 
-        for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[2].value, str):
-                self.messages.append('第{}行第{}列账号主页链接应当是字符串'.format(row[2].row, row[2].column))
-                return False
         for row in sheet.iter_rows(min_row=2):
             if not isinstance(row[3].value, str):
                 self.messages.append('第{}行第{}列平台应当是字符串'.format(row[3].row, row[3].column))

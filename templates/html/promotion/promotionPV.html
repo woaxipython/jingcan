@@ -20,7 +20,7 @@
                         <div class="page-pretitle">
                         </div>
                         <h2 class="page-title">
-                            抖音视频
+                            {{ title }}
                         </h2>
                     </div>
                     <!-- Page title actions -->
@@ -173,73 +173,79 @@
                                 <h3 class="card-title">推广列表</h3>
                             </div>
                             <div class="card-body border-bottom py-3">
-                                <form action="{{ url_for("xhs.manage") }}" method="post">
-                                    <input type="hidden" name="csrf_token"
-                                           value="{{ csrf_token() }}">
-                                    <input type="hidden" name="interval" value="171">
-                                    <input type="hidden" name="self" value="0">
-                                    <input type="hidden" name="contenttype" value="0">
-                                    <input type="hidden" name="nickname" value="0">
-                                    <input type="hidden" name="group_name" value="0">
-                                    <div class="d-flex">
-                                        <div class="me-2 d-inline-block">
-                                            <select class="form-control px-2 select-input" data-select="interval">
-                                                <option value="0" disabled selected>发布时间</option>
-                                                <option value="1">最近1天</option>
-                                                <option value="30">最近30天</option>
-                                                <option value="60">最近60天</option>
-                                                <option value="90">最近90天</option>
-                                                <option value="180">最近180天</option>
-                                                <option value="365">最近1年</option>
-                                                <option value="730">最近2年</option>
-                                            </select>
-                                        </div>
-                                        <div class="me-2 d-inline-block">
-                                            <select class="form-control px-2 select-input" data-select="self">
-                                                <option value="0" disabled selected>账号类型</option>
-                                                {% for self in selfs %}
-                                                    {% if self.name %}
-                                                        <option value="{{ self.name }}">{{ self.name }}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="me-2 d-inline-block">
-                                            <select class="form-control px-2 select-input" data-select="contenttype">
-                                                <option value="0" disabled selected>内容形式</option>
-                                                {% for contenttype in contenttypes %}
-                                                    {% if contenttype.name %}
-                                                        <option value="{{ contenttype.name }}">{{ contenttype.name }}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="me-2 d-inline-block">
-                                            <select class="form-control px-2 select-input" data-select="nickname">
-                                                <option value="0" disabled selected>自营账号</option>
-                                                {% for account in accounts %}
-                                                    <option value="{{ account.id }}">{{ account.nickname }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="me-2 d-inline-block">
-                                            <select class="form-control px-2 select-input" data-select="group_name">
-                                                <option value="0" disabled selected>相关产品</option>
-                                                {% for group in groups %}
-                                                    <option value="{{ group.id }}">{{ group.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="ms-auto text-muted">
-                                            <button type="reset" class="btn btn-blue px-3">重置</button>
-                                        </div>
-                                        <div class="ms-2 text-muted">
-                                            <button type="submit" class="btn btn-blue px-3">查找</button>
-                                        </div>
-                                        <div class="ms-2 text-muted">
-                                            <button type="button" class="btn btn-danger px-3">下载数据</button>
-                                        </div>
+                                {% if title=="小红书图文管理" %}
+                                    <form action="{{ url_for("pv.xhsmanage") }}" method="post">
+                                {% elif title == "抖音图文管理" %}
+                                    <form action="{{ url_for("pv.dymanage") }}" method="post">
+                                {% else %}
+                                    <form action="" method="post">
+                                {% endif %}
+                                <input type="hidden" name="csrf_token"
+                                       value="{{ csrf_token() }}">
+                                <input type="hidden" name="interval" value="171">
+                                <input type="hidden" name="self" value="0">
+                                <input type="hidden" name="contenttype" value="0">
+                                <input type="hidden" name="nickname" value="0">
+                                <input type="hidden" name="group_name" value="0">
+                                <div class="d-flex">
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="interval">
+                                            <option value="0" disabled selected>发布时间</option>
+                                            <option value="1">最近1天</option>
+                                            <option value="30">最近30天</option>
+                                            <option value="60">最近60天</option>
+                                            <option value="90">最近90天</option>
+                                            <option value="180">最近180天</option>
+                                            <option value="365">最近1年</option>
+                                            <option value="730">最近2年</option>
+                                        </select>
                                     </div>
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="self">
+                                            <option value="0" disabled selected>账号类型</option>
+                                            {% for self in selfs %}
+                                                {% if self.name %}
+                                                    <option value="{{ self.name }}">{{ self.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="contenttype">
+                                            <option value="0" disabled selected>内容形式</option>
+                                            {% for contenttype in contenttypes %}
+                                                {% if contenttype.name %}
+                                                    <option value="{{ contenttype.name }}">{{ contenttype.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="nickname">
+                                            <option value="0" disabled selected>自营账号</option>
+                                            {% for account in accounts %}
+                                                <option value="{{ account.id }}">{{ account.nickname }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="group_name">
+                                            <option value="0" disabled selected>相关产品</option>
+                                            {% for group in groups %}
+                                                <option value="{{ group.id }}">{{ group.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="ms-auto text-muted">
+                                        <button type="reset" class="btn btn-blue px-3">重置</button>
+                                    </div>
+                                    <div class="ms-2 text-muted">
+                                        <button type="submit" class="btn btn-blue px-3">查找</button>
+                                    </div>
+                                    <div class="ms-2 text-muted">
+                                        <button type="button" class="btn btn-danger px-3">下载数据</button>
+                                    </div>
+                                </div>
                                 </form>
 
                             </div>
@@ -256,6 +262,7 @@
                                         <th>内容形式</th>
                                         <th>自营</th>
                                         <th>发布时间</th>
+                                        <th>重点关注</th>
                                         <th>
                                             <div class="d-flex justify-content-center">详情</div>
                                         </th>
@@ -263,7 +270,7 @@
                                     </thead>
                                     <tbody>
                                     {% for pvcontent in pvcontents %}
-                                        <tr data-id="{{ pvcontent.id }}">
+                                        <tr data-id="{{ pvcontent.search_id }}">
                                             <td>
                                                 <small><a
                                                         href="{{ pvcontent.profile_link }}"
@@ -271,17 +278,17 @@
                                             </td>
                                             <td>
                                                 {% if pvcontent.title %}
-                                                <div style="width: 200px" class="text-truncate">
-                                                    <small><a
-                                                            href="{{ pvcontent.link }}"
-                                                            target="_blank"><span>{{ pvcontent.title }}</span></a></small>
-                                                </div>
+                                                    <div style="width: 200px" class="text-truncate">
+                                                        <small><a
+                                                                href="{{ pvcontent.link }}"
+                                                                target="_blank"><span>{{ pvcontent.title }}</span></a></small>
+                                                    </div>
                                                 {% else %}
-                                                <div style="width: 200px" class="text-truncate">
-                                                    <small><a
-                                                            href="{{ pvcontent.link }}"
-                                                            target="_blank"><span>{{ pvcontent.link }}</span></a></small>
-                                                </div>
+                                                    <div style="width: 200px" class="text-truncate">
+                                                        <small><a
+                                                                href="{{ pvcontent.link }}"
+                                                                target="_blank"><span>{{ pvcontent.link }}</span></a></small>
+                                                    </div>
                                                 {% endif %}
                                                 <div>
                                                     <small><span class="text-muted">{{ pvcontent.group }}</span></small>
@@ -332,6 +339,16 @@
                                                 {% else %}
                                                     -
                                                 {% endif %}
+                                            </td>
+                                            <td class="editAttention">
+
+                                                <small>
+                                                    {% if pvcontent.attention %}
+                                                        <a class="cursor-pointer text-danger">取消关注</a>
+                                                    {% else %}
+                                                        <a class="cursor-pointer">关注</a>
+                                                    {% endif %}
+                                                </small>
                                             </td>
                                             <td>
                                                                                         <span class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
@@ -544,7 +561,7 @@
                 "searching": false,
                 "ordering": true,
                 language: {
-                    info: '共计 _TOTAL_ 条推广数据',
+                    info: '共计现存 _TOTAL_ 条推广数据',
                     paginate: {
                         next: '下一页',
                         previous: '上一页',

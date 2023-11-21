@@ -14,7 +14,25 @@ $(document).ready(function () {
             .catch(function (error) {
                 alert(error)
             })
-
+    })
+    $("tbody").on('click', '.editAttention', function () {
+        var tr = $(this).closest("tr")
+        var search_id = tr.data('id')
+        var a = $(this).find('a')
+        var text = a.text()
+        if (text === '关注') {
+            var attention = 1
+        } else {
+            attention = 0
+        }
+        var url = '/pv/attention' + "?search_id=" + search_id + '&attention=' + attention
+        GetRequest(url)
+            .then(function (result) {
+                a.text(result['message'])
+            })
+            .catch(function (error) {
+                alert(error)
+            })
     })
 
     $("tbody").on('click', '.editConstract', function () {

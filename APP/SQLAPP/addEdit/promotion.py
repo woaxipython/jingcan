@@ -173,8 +173,7 @@ class WriteExcelPromotion(object):
         for row in self.data_list:
             self.writrNote(row)  # 写入推广内容
             self.writeAccount(row)  # 写入账号
-            if row[-1] != "自营":
-                self.writePromotion(row)  # 写入推广
+            self.writePromotion(row)  # 写入推广
             i += 1
             print(self.error_message)
             print("------------")
@@ -240,16 +239,17 @@ class WriteExcelPromotion(object):
                 else:
                     self.error_message.append(f"第{self.checked}行的图文链接转换失败")
                     continue
-            if len(row[2]) < 40:  # 图文链接长度少于40，那么为短连接，需转换为长连接
-                long_url = self.short_to_long(row[8])
-                time.sleep(0.1)
-                if long_url:
-                    row[2] = long_url
-                else:
-                    self.error_message.append(f"第{self.checked}行的主页链接转换失败")
-                    continue
+            if row[2]:
+                if len(row[2]) < 40:  # 图文链接长度少于40， 那么为短连接，需转换为长连接
+                    long_url = self.short_to_long(row[8])
+                    time.sleep(0.1)
+                    if long_url:
+                        row[2] = long_url
+                    else:
+                        self.error_message.append(f"第{self.checked}行的主页链接转换失败")
+                        continue
             if "modal_id" in row[8] and "douyin" in row[8]:
-                video_url = self.change_dyurl_usertomodid(row[2])
+                video_url = self.change_dyurl_usertomodid(row[8])
                 if video_url:
                     row[8] = video_url
                 else:
@@ -262,6 +262,8 @@ class WriteExcelPromotion(object):
 
     def change_dyurl_usertomodid(self, long_url):
         try:
+            if len(long_url) < 40:
+                long_url = self.short_to_long(long_url)
             modal_id = re.search(r'modal_id=([^&]*)', long_url).group(1)
             url = "https://www.douyin.com/video/" + modal_id
             return url
@@ -343,6 +345,7 @@ class WriteSQLData(object):
         date_today = datetime.now().strftime("%Y-%m-%d")
         info = note_link + date_today
         DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+        pvcontent_model.attention = 0 if pvcontent_model.attention != 1 else 1
 
         pvcontent_model.title = notes_Info["title"]
         pvcontent_model.content_id = notes_Info["content_id"]
