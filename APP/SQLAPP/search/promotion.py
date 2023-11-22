@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 
 import pandas as pd
-from sqlalchemy import or_, func, Date, cast
+from sqlalchemy import or_, func, Date, cast, and_
 
 from APP.DataCalculate.CalCulate import AccountBasicData
 from APP.Spyder.DySpyder import DouYinSpyder
@@ -70,9 +70,9 @@ class GetPromotionModel():
         return orders
 
 
-def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", rate="", promotion_id="", wechat="",
+def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                        interval=365, plat="",
-                       prtype="", group="", group_=""):
+                       contenttype="", group="", ):
     group_by = ["title"]
     interval = 365 if interval == 171 else interval
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
@@ -83,12 +83,11 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
 
     filters.append(AccountModel.self == self) if self and self != "0" else filters
     filters.append(GroupModel.id == group) if group and group != "0" else filters
-    filters.append(PrtypeModel.name == prtype) if prtype and prtype != "0" else filters
-    filters.append(BlogerModel.wechat == wechat) if wechat else filters
     filters.append(PlatModel.name == plat) if plat else filters
-    filters.append(PromotionModel.rate_id == rate) if rate and rate != "0" else filters
-    filters = [PromotionModel.search_id == promotion_id] if promotion_id else filters
-    group_by.extend(group_.split(",")) if group_ else group_by
+
+    filters.append(PVContentModel.contenttype == contenttype) if contenttype and contenttype != "0" else filters
+    filters.append(PVContentModel.contenttype != None) if contenttype and contenttype != "0" else filters
+
     entities = [cast(PVContentModel.upload_time, Date).label('date'),
                 GroupModel.name.label('group'),
                 AccountModel.nickname.label('account'),
@@ -102,6 +101,7 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="", ra
                 PVContentModel.forwarded.label('forwarded'),
                 PVContentModel.collected.label('collected'),
                 PVContentModel.video_link.label('video'),
+                PVContentModel.contenttype.label('contenttype'),
                 PVContentModel.attention.label('attention'),
                 PlatModel.name.label('plat')]
     pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(

@@ -29,36 +29,29 @@ def xhsmanage():
 
 @bp.route("/dymanage", methods=['GET', 'POST'])
 def dymanage():
-    return dataManage("抖音")
+    return dataManage("小红书")
 
 
 @bp.route("/attention")
 def attention():
     search_id = request.args.get("search_id")
     attention = request.args.get("attention")
-    print(search_id)
-    print(attention)
     pvcontent = PVContentModel.query.filter(PVContentModel.search_id == search_id).first()
     pvcontent.attention = 1 if attention == "1" else 0
     db.session.commit()
     message = "取消关注" if attention == "1" else "关注"
-    print(message)
     return jsonify({"status": "success", "message": message})
 
 
 def dataManage(plat):
     plats = PlatModel.query.all()
     accounts = AccountModel.query.with_entities(AccountModel.id, AccountModel.nickname, AccountModel.self).filter(
-        AccountModel.self == True).all()
+        AccountModel.self == "自营", AccountModel.nickname != None).distinct().all()
     selfs = AccountModel.query.with_entities(AccountModel.self.label("name")).distinct().all()
     contenttypes = PVContentModel.query.with_entities(PVContentModel.contenttype.label("name")).distinct().all()
     groups = GroupModel.query.all()
-    users = db.session.query(UserModel.id, UserModel.name).all()
-    rates = RateModel.query.all()
-    fee_models = FeeModel.query.all()
-    outputs = OutputModel.query.all()
+
     end_date = datetime.now().strftime("%Y-%m-%d")
-    pvcontents = searchPVContentSql(end_date=end_date, plat=plat)
     if plat == "抖音":
         title = "抖音图文管理"
     elif plat == "小红书":
@@ -71,9 +64,11 @@ def dataManage(plat):
         contenttype = request.form.get("contenttype")
         nickname = request.form.get("nickname")
         group = request.form.get("group_name")
+        print(plat, interval, self, contenttype, nickname, group)
 
-        pvcontents = searchPVContentSql(end_date=end_date, interval=interval, plat="抖音", group=group, )
+        pvcontents = searchPVContentSql(end_date=end_date, interval=interval, plat=plat, group=group, self=self,
+                                        contenttype=contenttype)
+    else:
+        pvcontents = searchPVContentSql(end_date=end_date, plat=plat)
     return render_template("html/promotion/promotionPV.html", selfs=selfs, accounts=accounts, plats=plats,
-                           groups=groups, contenttypes=contenttypes, title=title,
-                           users=users, rates=rates,
-                           feeModels=fee_models, outputs=outputs, pvcontents=pvcontents)
+                           groups=groups, contenttypes=contenttypes, title=title, pvcontents=pvcontents)

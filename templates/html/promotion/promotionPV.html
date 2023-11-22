@@ -316,11 +316,16 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                {% if pvcontent.video %}
+                                                {% if pvcontent.contenttype %}
                                                     <small><span
-                                                            class="text-danger">视频</span></small>
+                                                            class="text-muted text-black">{{ pvcontent.contenttype }}</span></small>
                                                 {% else %}
-                                                    <small><span class="text-muted text-black">图文</span></small>
+                                                    {% if pvcontent.video %}
+                                                        <small><span
+                                                                class="text-danger">视频</span></small>
+                                                    {% else %}
+                                                        <small><span class="text-muted text-black">图文</span></small>
+                                                    {% endif %}
                                                 {% endif %}
                                             </td>
                                             <td>
@@ -343,11 +348,11 @@
                                             <td class="editAttention">
 
 
-                                                    {% if pvcontent.attention %}
-                                                        <a class="cursor-pointer text-danger">取消关注</a>
-                                                    {% else %}
-                                                        <a class="cursor-pointer text-blue">关注</a>
-                                                    {% endif %}
+                                                {% if pvcontent.attention %}
+                                                    <a class="cursor-pointer text-danger">取消关注</a>
+                                                {% else %}
+                                                    <a class="cursor-pointer text-blue">关注</a>
+                                                {% endif %}
 
                                             </td>
                                             <td>
