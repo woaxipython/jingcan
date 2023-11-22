@@ -16,10 +16,13 @@ $(document).ready(function () {
             })
     })
     $("tbody").on('click', '.editAttention', function () {
+        console.log(1)
         var tr = $(this).closest("tr")
+        console.log(2)
         var search_id = tr.data('id')
-        var a = $(this).find('a')
-        var text = a.text()
+        console.log(3)
+        var small = $(this).find('small')
+        var text = small.text()
         if (text === '关注') {
             var attention = 1
         } else {
@@ -28,7 +31,7 @@ $(document).ready(function () {
         var url = '/pv/attention' + "?search_id=" + search_id + '&attention=' + attention
         GetRequest(url)
             .then(function (result) {
-                a.text(result['message'])
+                small.text(result['message'])
             })
             .catch(function (error) {
                 alert(error)
