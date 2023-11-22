@@ -141,6 +141,26 @@ $('tbody').on('click', '.testXhs', function () {
         })
 })
 
+$("tbody").on('click', '.editAttention', function () {
+    var tr = $(this).closest("tr")
+    var search_id = tr.data('id')
+    var small = $(this).find('small')
+    var text = small.text()
+    if (text === '关注') {
+        var attention = 1
+    } else {
+        attention = 0
+    }
+    var url = '/pv/attention' + "?search_id=" + search_id + '&attention=' + attention
+    GetRequest(url)
+        .then(function (result) {
+            small.text(result['message'])
+        })
+        .catch(function (error) {
+            alert(error)
+        })
+})
+
 $('#testSpyderXhs').click(function () {
     var url = "/spyder/testXhs"
     GetRequest(url)
