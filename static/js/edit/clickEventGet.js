@@ -144,8 +144,9 @@ $('tbody').on('click', '.testXhs', function () {
 $("tbody").on('click', '.editAttention', function () {
     var tr = $(this).closest("tr")
     var search_id = tr.data('id')
-    var small = $(this).find('small')
-    var text = small.text()
+    var a = $(this).find('a')
+    var text = a.text()
+    console.log(text)
     if (text === '关注') {
         var attention = 1
     } else {
@@ -154,7 +155,7 @@ $("tbody").on('click', '.editAttention', function () {
     var url = '/pv/attention' + "?search_id=" + search_id + '&attention=' + attention
     GetRequest(url)
         .then(function (result) {
-            small.text(result['message'])
+            a.text(result['message'])
         })
         .catch(function (error) {
             alert(error)
