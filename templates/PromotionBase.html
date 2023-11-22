@@ -9,6 +9,38 @@
 -->
 {% extends "base.html" %}
 <!-- Navbar -->
+{% block style %}
+    <style>
+        /* 自定义搜索框样式 */
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #ccc; /* 修改搜索框边框样式 */
+            border-radius: 4px; /* 修改搜索框边框圆角 */
+            padding: 6px 8px; /* 修改搜索框内边距 */
+            box-shadow: none; /* 去除搜索框阴影 */
+            background-color: #FFFFFF; /* 修改搜索框背景颜色 */
+            color: #333; /* 修改搜索框文字颜色 */
+            font-size: 14px; /* 修改搜索框文字大小 */
+            width: 200px; /* 修改搜索框宽度 */
+            margin: 10px 10px 0px 10px; /* 修改搜索框与上方内容的距离 */
+        }
+
+        .dataTables_length select {
+            width: 100px !important; /* 修改下拉框宽度 */
+            border: 1px solid #ccc; /* 修改下拉框边框样式 */
+            border-radius: 4px; /* 修改下拉框边框圆角 */
+            padding: 6px 8px; /* 修改下拉框内边距 */
+            box-shadow: none; /* 去除下拉框阴影 */
+            background-color: #FFFFFF; /* 修改下拉框背景颜色 */
+            color: #333; /* 修改下拉框文字颜色 */
+            font-size: 14px; /* 修改下拉框文字大小 */
+            margin: 10px 10px 0px 10px; /* 修改搜索框与上方内容的距离 */
+        }
+
+        .dataTables_length label {
+            margin: 0px 10px 0px 10px; /* 修改搜索框与上方内容的距离 */
+        }
+    </style>
+{% endblock %}
 {% block page %}
     <div class="page-wrapper">
         <!-- Page header -->

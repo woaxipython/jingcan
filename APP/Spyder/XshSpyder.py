@@ -85,13 +85,23 @@ class GetXhsSpyder():
         self.headers['authorization'] = token
         url = url if url else self.test_note_url
         uid = ""
+        print(url)
         if "explore" in url:
-            uid = re.findall(r"explore/([^?]+)|/explore/(\w+)", url)[0]
-            uid = uid[0] if uid[0] else uid[1]
+            try:
+                uid = re.findall(r"explore/([^?]+)|/explore/(\w+)", url)[0]
+                uid = uid[0] if uid[0] else uid[1]
+            except:
+                return {'status': '0', 'message': "获取uid失败"}
         elif "profile" in url:
-            uid = re.search(r'[0-9a-zA-Z]+$', url).group() if re.search(r'[0-9a-zA-Z]+$', url) else ""
+            try:
+                uid = re.search(r'[0-9a-zA-Z]+$', url).group() if re.search(r'[0-9a-zA-Z]+$', url) else ""
+            except:
+                return {'status': '0', 'message': "获取uid失败"}
         elif "discover" in url:
-            uid = re.search(r'[0-9a-zA-Z]+$', url).group() if re.search(r'[0-9a-zA-Z]+$', url) else ""
+            try:
+                uid = re.search(r'[0-9a-zA-Z]+$', url).group() if re.search(r'[0-9a-zA-Z]+$', url) else ""
+            except:
+                return {'status': '0', 'message': "获取uid失败"}
         if uid:
             real_note_url = f'/fe_api/burdock/weixin/v2/note/{uid}/single_feed'
             xsign = 'X' + self.m_md5(real_note_url + "WSUDD")
@@ -116,7 +126,7 @@ class GetXhsSpyder():
                     "spyder_url": spyder_url,
                     "upload_time": data['time'],
                     "content_link": url.split("?")[0],
-                    "status":"正常",
+                    "status": "正常",
                 }
                 return {"status": "1", "message": title_result}
 

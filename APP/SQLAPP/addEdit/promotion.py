@@ -211,10 +211,6 @@ class WriteExcelPromotion(object):
                 if PlatModel.query.filter_by(name=row[3]).first() is None:  # 检查平台是否存在
                     self.error_message.append(f"第{self.checked}行的平台不存在")
                     continue
-            if row[9]:
-                if OutputModel.query.filter_by(name=row[9]).first() is None:  # 检查产出形式是否存在
-                    self.error_message.append(f"第{self.checked}行的输出模板不存在")
-                    continue
             if "," in row[4]:
                 for group_name in row[4].split(","):
                     if GroupModel.query.filter_by(name=group_name).first() is None:  # 检查商品组是否存在
@@ -248,6 +244,8 @@ class WriteExcelPromotion(object):
                     else:
                         self.error_message.append(f"第{self.checked}行的主页链接转换失败")
                         continue
+            else:
+                row[2] = row[8]
             if "modal_id" in row[8] and "douyin" in row[8]:
                 video_url = self.change_dyurl_usertomodid(row[8])
                 if video_url:

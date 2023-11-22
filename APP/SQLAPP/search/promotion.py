@@ -71,17 +71,24 @@ class GetPromotionModel():
 
 
 def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
-                       interval=365, plat="",
+                       interval=365, plat="", nickname="", liked_s=-1, liked_e=200000000,
+                       commented_s=-1, commented_e=200000000,
+                       collected_s=-1, collected_e=200000000,
                        contenttype="", group="", ):
     group_by = ["title"]
     interval = 365 if interval == 171 else interval
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
-    filters = [PVContentModel.upload_time >= start_date, PVContentModel.upload_time < end_date,
+    filters = [PVContentModel.upload_time >= start_date,
+               PVContentModel.liked >= liked_s, PVContentModel.liked < liked_e,
+               PVContentModel.commented >= commented_s, PVContentModel.commented < commented_e,
+               PVContentModel.collected >= collected_s, PVContentModel.collected < collected_e,
+               PVContentModel.upload_time < end_date,
                PVContentModel.upload_time != None,
                PVContentModel.content_link != None, ]
 
     filters.append(AccountModel.self == self) if self and self != "0" else filters
+    filters.append(AccountModel.nickname == nickname) if nickname and nickname != "0" else filters
     filters.append(GroupModel.id == group) if group and group != "0" else filters
     filters.append(PlatModel.name == plat) if plat else filters
 
@@ -94,7 +101,7 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                 AccountModel.profile_link.label('profile_link'),
                 AccountModel.self.label('self'),
                 PVContentModel.title.label('title'),
-                PVContentModel.search_id.label('search_id'),
+                PVContentModel.id.label('search_id'),
                 PVContentModel.content_link.label('link'),
                 PVContentModel.liked.label('liked'),
                 PVContentModel.commented.label('commented'),
@@ -105,8 +112,9 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                 PVContentModel.attention.label('attention'),
                 PlatModel.name.label('plat')]
     pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
-        AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities).group_by(
-        *group_by).all()
+        AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities)\
+        .order_by(PVContentModel.liked.desc())\
+        .group_by(*group_by).all()
     return pvcontent_list
 
 
@@ -285,8 +293,8 @@ class searchNotes(object):
 def makePromotionExcel(save_path):
     writer = pd.ExcelWriter(save_path)
 
-    columns = ["推广人", "博主微信", "账号主页链接", "平台", "推广产品，多个产品,隔开", "付费形式", "费用",
-               "佣金", "图文链接", "产出形式", "合作时间", "账号自营"]
+    columns = ["推广人", "博主微信", "账号主页链接", "*平台", "*推广产品，多个产品,隔开", "付费形式", "费用",
+               "佣金", "*图文链接", "产出形式", "合作时间", "*账号自营"]
     df2 = pd.DataFrame(columns=columns)
     df2.to_excel(writer, sheet_name="推广模板", index=False)
 

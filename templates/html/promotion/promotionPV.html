@@ -183,6 +183,10 @@
                                 <input type="hidden" name="csrf_token"
                                        value="{{ csrf_token() }}">
                                 <input type="hidden" name="interval" value="171">
+                                <input type="hidden" name="liked" value="-1,2000000000">
+                                <input type="hidden" name="commented" value="-1,2000000000">
+                                <input type="hidden" name="collected" value="-1,2000000000">
+                                <input type="hidden" name="" value="0-50">
                                 <input type="hidden" name="self" value="0">
                                 <input type="hidden" name="contenttype" value="0">
                                 <input type="hidden" name="nickname" value="0">
@@ -198,6 +202,127 @@
                                             <option value="180">最近180天</option>
                                             <option value="365">最近1年</option>
                                             <option value="730">最近2年</option>
+                                        </select>
+                                    </div>
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="liked">
+                                            <option value="0" disabled selected>点赞</option>
+                                            <option value="-1,50">0-50</option>
+                                            <option value="50,200">50-200</option>
+                                            <option value="200,500">200-500</option>
+                                            <option value="500,1000">500-1000</option>
+                                            <option value="1000,2000">1千-2千</option>
+                                            <option value="2000,5000">2千-5千</option>
+                                            <option value="5000,10000">5千-1万</option>
+                                            <option value="10000,20000">1万-2万</option>
+                                            <option disabled>------</option>
+                                            <option value="1,200000000">0以上</option>
+                                            <option value="10,200000000">10以上</option>
+                                            <option value="20,200000000">20以上</option>
+                                            <option value="30,200000000">30以上</option>
+                                            <option value="40,200000000">40以上</option>
+                                            <option value="50,200000000">50以上</option>
+                                            <option value="200,200000000">200以上</option>
+                                            <option value="500,200000000">500以上</option>
+                                            <option value="1000,200000000">1千以上</option>
+                                            <option value="2000,200000000">2千以上</option>
+                                            <option value="5000,200000000">5千以上</option>
+                                            <option value="10000,200000000">1万以上</option>
+                                            <option value="20000,200000000">2万以上</option>
+                                            <option disabled>------</option>
+                                            <option value="-1,10">10以下</option>
+                                            <option value="-1,20">20以下</option>
+                                            <option value="-1,30">30以下</option>
+                                            <option value="-1,40">40以下</option>
+                                            <option value="-1,50">50以下</option>
+                                            <option value="-1,200">200以下</option>
+                                            <option value="-1,500">500以下</option>
+                                            <option value="-1,1000">1千以下</option>
+                                            <option value="-1,2000">2千以下</option>
+                                            <option value="-1,5000">5千以下</option>
+                                            <option value="-1,10000">1万以下</option>
+                                            <option value="-1,20000">2万以下</option>
+                                        </select>
+                                    </div>
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="commented">
+                                            <option value="0" disabled selected>评论</option>
+                                            <option value="-1,10">0-10</option>
+                                            <option value="10,50">10-30</option>
+                                            <option value="30,50">30-50</option>
+                                            <option value="50,200">50-200</option>
+                                            <option value="200,500">200-500</option>
+                                            <option value="500,1000">500-1000</option>
+                                            <option value="1000,2000">1千-2千</option>
+                                            <option value="2000,5000">2千-5千</option>
+                                            <option value="5000,10000">5千-1万</option>
+                                            <option value="10000,20000">1万-2万</option>
+                                            <option disabled>------</option>
+                                            <option value="1,200000000">0以上</option>
+                                            <option value="10,200000000">10以上</option>
+                                            <option value="20,200000000">20以上</option>
+                                            <option value="30,200000000">30以上</option>
+                                            <option value="40,200000000">40以上</option>
+                                            <option value="50,200000000">50以上</option>
+                                            <option value="30,200000000">30以上</option>
+                                            <option value="200,200000000">200以上</option>
+                                            <option value="500,200000000">500以上</option>
+                                            <option value="1000,200000000">1千以上</option>
+                                            <option value="2000,200000000">2千以上</option>
+                                            <option value="5000,200000000">5千以上</option>
+                                            <option disabled>------</option>
+                                            <option value="-1,10">10以下</option>
+                                            <option value="-1,20">20以下</option>
+                                            <option value="-1,30">30以下</option>
+                                            <option value="-1,40">40以下</option>
+                                            <option value="-1,50">50以下</option>
+                                            <option value="-1,200">200以下</option>
+                                            <option value="-1,500">500以下</option>
+                                            <option value="-1,1000">1千以下</option>
+                                            <option value="-1,2000">2千以下</option>
+                                            <option value="-1,5000">5千以下</option>
+                                            <option value="-1,10000">1万以下</option>
+                                            <option value="-1,20000">2万以下</option>
+                                        </select>
+                                    </div>
+                                    <div class="me-2 d-inline-block">
+                                        <select class="form-control px-2 select-input" data-select="collected">
+                                            <option value="0" disabled selected>收藏</option>
+                                            <option value="-1,10">0-10</option>
+                                            <option value="10,50">10-30</option>
+                                            <option value="30,50">30-50</option>
+                                            <option value="50,200">50-200</option>
+                                            <option value="200,500">200-500</option>
+                                            <option value="500,1000">500-1000</option>
+                                            <option value="1000,2000">1千-2千</option>
+                                            <option value="2000,5000">2千-5千</option>
+                                            <option value="5000,10000">5千-1万</option>
+                                            <option value="10000,20000">1万-2万</option>
+                                            <option disabled>------</option>
+                                            <option value="1,200000000">0以上</option>
+                                            <option value="10,200000000">10以上</option>
+                                            <option value="20,200000000">20以上</option>
+                                            <option value="30,200000000">30以上</option>
+                                            <option value="40,200000000">40以上</option>
+                                            <option value="50,200000000">50以上</option>
+                                            <option value="200,200000000">200以上</option>
+                                            <option value="500,200000000">500以上</option>
+                                            <option value="1000,200000000">1千以上</option>
+                                            <option value="2000,200000000">2千以上</option>
+                                            <option value="5000,200000000">5千以上</option>
+                                            <option disabled>------</option>
+                                            <option value="-1,10">10以下</option>
+                                            <option value="-1,20">20以下</option>
+                                            <option value="-1,30">30以下</option>
+                                            <option value="-1,40">40以下</option>
+                                            <option value="-1,50">50以下</option>
+                                            <option value="-1,200">200以下</option>
+                                            <option value="-1,500">500以下</option>
+                                            <option value="-1,1000">1千以下</option>
+                                            <option value="-1,2000">2千以下</option>
+                                            <option value="-1,5000">5千以下</option>
+                                            <option value="-1,10000">1万以下</option>
+                                            <option value="-1,20000">2万以下</option>
                                         </select>
                                     </div>
                                     <div class="me-2 d-inline-block">
@@ -237,14 +362,11 @@
                                         </select>
                                     </div>
                                     <div class="ms-auto text-muted">
-                                        <button type="reset" class="btn btn-blue px-3">重置</button>
-                                    </div>
-                                    <div class="ms-2 text-muted">
                                         <button type="submit" class="btn btn-blue px-3">查找</button>
                                     </div>
-                                    <div class="ms-2 text-muted">
-                                        <button type="button" class="btn btn-danger px-3">下载数据</button>
-                                    </div>
+                                    {#                                    <div class="ms-2 text-muted">#}
+                                    {#                                        <button type="button" disabled class="btn btn-danger px-3">下载数据</button>#}
+                                    {#                                    </div>#}
                                 </div>
                                 </form>
 
@@ -348,7 +470,7 @@
                                             <td class="editAttention">
 
 
-                                                {% if pvcontent.attention %}
+                                                {% if pvcontent.attention==1 %}
                                                     <a class="cursor-pointer text-danger">取消关注</a>
                                                 {% else %}
                                                     <a class="cursor-pointer text-blue">关注</a>
@@ -562,17 +684,23 @@
         $(function () {
             $('#promotionManageTable').DataTable({
                 "paging": true,
-                "lengthChange": false,
-                "searching": false,
+                "lengthChange": true,
+                "searching": true,
                 "ordering": true,
+                "order": [[2, "desc"], [3, "desc"]],
+                "lengthMenu": [[10, 25, 50, -1], ["10", "25", "50", "全部"]], // 设置显示entries的选项和对应的文本
                 language: {
                     info: '共计现存 _TOTAL_ 条推广数据',
+                    search: "搜索：",  // 修改搜索框前的文字
+                    searchPlaceholder: "输入关键词搜索", // 修改搜索框的placeholder
+                    lengthMenu: "每页显示 _MENU_ 条数据",
                     paginate: {
                         next: '下一页',
                         previous: '上一页',
                         first: '首页',
                         last: '尾页'
                     },
+
                     zeroRecords: '没有找到符合条件的数据',
                     infoEmpty: '没有符合条件的数据',
                     infoFiltered: '(从 _MAX_ 条数据中过滤)'
