@@ -69,9 +69,9 @@ def changePlat():
         db.session.commit()
 
 
-def GetXHSNote(self, plat):
+def GetXHSNote(attention, plat):
     # changePlat()
-    contents = searchPVContentSql2(self=self, plat=plat)
+    contents = searchPVContentSql2(attention=attention, plat=plat)
     i = 1
     for content in contents:
         note_link = content.link
@@ -123,8 +123,8 @@ def GetXHSNote2(note_link):
         return "0"
 
 
-def GetDYNote(self, plat):
-    contents = searchPVContentSql2(self=self, plat=plat)
+def GetDYNote(attention, plat):
+    contents = searchPVContentSql2(attention=attention, plat=plat)
     i = 1
 
     for content in contents:

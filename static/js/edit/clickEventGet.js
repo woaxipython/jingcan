@@ -12,8 +12,8 @@ $("#refreshLocation").click(function () {
 $("#getPVContentData").click(function () {
     var div = $(this).closest("div")
     var plat = div.find("select[data-promotion='plat']").val()
-    var self = div.find("select[data-promotion='self']").val()
-    var url = '/spyder/getPVcontentData?plat=' + plat + '&self=' + self
+    var attention = div.find("select[data-promotion='attention']").val()
+    var url = '/spyder/getPVcontentData?plat=' + plat + '&attention=' + attention
     GetRequest(url = url)
         .then(function (result) {
             alert(result['message'])
@@ -22,6 +22,13 @@ $("#getPVContentData").click(function () {
             alert(error)
         })
 })
+
+$("#downloadPV").click(function () {
+    var plat = $("#TitleID").data("plat")
+    var url = '/pv/downloadpv?plat=' + plat
+    downloadFile(url = url, plateform = "推广数据下载")
+})
+
 
 $(".city-select").change(function () {
     var city = $(this).val()

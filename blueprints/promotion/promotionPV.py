@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 from APP.SQLAPP.addEdit.promotion import writeNewPromotionModel, writePromotionFee
-from APP.SQLAPP.makePandas.promotion import PromotionData
+from APP.SQLAPP.makePandas.promotion import PromotionData, makePVEcel
 from APP.SQLAPP.search.promotion import searchAccount, searchPVContentSql, searchNotes, makePromotionExcel, \
     GetPromotionModel
 from blueprints.sale.saleManage import allExcelFile, convert_to_number
@@ -45,6 +45,29 @@ def attention():
     return jsonify({"status": "success", "message": message})
 
 
+@bp.route("/downloadpv", methods=['GET', 'POST'])
+def downloadpv():
+    plat = request.args.get("plat")
+    if plat == "dy":
+        plat = "抖音"
+    elif plat == "xhs":
+        plat = "小红书"
+    else:
+        plat = "其他"
+    pvcontents = searchPVContentSql(plat=plat)
+    print(plat)
+    save_path = 'static/excel/推广数据下载.xlsx'.format(plat)
+    makePVEcel(pvcontents, save_path)
+    return send_file(save_path, as_attachment=True)
+
+
+@bp.route("/downFile")
+def downFile():
+    save_path = 'static/excel/推广批量上传模板.xlsx'
+    makePromotionExcel(save_path)
+    return send_file(save_path, as_attachment=True)
+
+
 def dataManage(plat):
     plats = PlatModel.query.all()
     accounts = AccountModel.query.with_entities(AccountModel.id, AccountModel.nickname, AccountModel.self).filter(
@@ -56,10 +79,13 @@ def dataManage(plat):
     end_date = datetime.now().strftime("%Y-%m-%d")
     if plat == "抖音":
         title = "抖音图文管理"
+        title_id = "dy"
     elif plat == "小红书":
         title = "小红书图文管理"
+        title_id = "xhs"
     else:
         title = "图文管理"
+        title_id = "other"
     if request.method == "POST":
         interval = convert_to_number(request.form.get("interval"))
         self = request.form.get("self")
@@ -70,7 +96,6 @@ def dataManage(plat):
         contenttype = request.form.get("contenttype")
         nickname = request.form.get("nickname")
         group = request.form.get("group_name")
-        print(liked_s, liked_e, commented_s, commented_e, collected_s, collected_e, nickname)
 
         pvcontents = searchPVContentSql(end_date=end_date, interval=interval, plat=plat, group=group, self=self,
                                         liked_s=liked_s, liked_e=liked_e, commented_s=commented_s,
@@ -79,7 +104,22 @@ def dataManage(plat):
     else:
         pvcontents = searchPVContentSql(end_date=end_date, plat=plat)
     return render_template("html/promotion/promotionPV.html", selfs=selfs, accounts=accounts, plats=plats,
-                           groups=groups, contenttypes=contenttypes, title=title, pvcontents=pvcontents)
+                           groups=groups, contenttypes=contenttypes, title=title, pvcontents=pvcontents,
+                           title_id=title_id)
+
+
+def PlatPvData(plat, end_date):
+    count = searchPVContentSql(end_date=end_date, plat=plat).count()
+    video_count = searchPVContentSql(end_date=end_date, plat=plat, contenttype="视频").count()
+    img_count = searchPVContentSql(end_date=end_date, plat=plat, contenttype="图文").count()
+
+
+@bp.route("/downVideo", methods=['GET', 'POST'])
+def downVideo():
+    id = request.args.get("id")
+    pvcontent_link = PVContentModel.query.filter(PVContentModel.id == id).first().content_link
+
+    return render_template("html/promotion/downVideo.html")
 
 
 def split_num(num):

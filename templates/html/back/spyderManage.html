@@ -295,21 +295,25 @@
                                 <div class="me-2 d-inline-block">
                                     <select class="form-control px-4" data-promotion="plat">
                                         <option value="" disabled selected>选择平台</option>
-                                        <option value="小红书">小红书</option>
                                         {% for content_plat in content_plats %}
                                             <option value="{{ content_plat.name }}">{{ content_plat.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="me-2 d-inline-block">
-                                    <select class="form-control px-4" data-promotion="self">
+                                    <select class="form-control px-4" data-promotion="attention">
                                         <option value="all" disabled selected>选择内容</option>
                                         <option value="all">所有内容</option>
-                                        {% for self in selfs %}
-                                            {% if self.name==None %}
-                                                <option value="缺省值">空值</option>
+                                        <option value="3">重点关注,未同步</option>
+                                        {% for attention in attentions %}
+                                            {% if attention.attention==1 %}
+                                                <option value="1" class="text-danger">**重点关注**</option>
+                                            {% elif attention.attention==0 %}
+                                                <option value="0">未关注</option>
+                                            {% elif attention.attention==None %}
+                                                <option value="4">空值</option>
                                             {% else %}
-                                                <option value="{{ self.name }}">{{ self.name }}</option>
+                                                <option value="2">未同步</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>

@@ -19,7 +19,7 @@
                         <!-- Page pre-title -->
                         <div class="page-pretitle">
                         </div>
-                        <h2 class="page-title">
+                        <h2 class="page-title" id="TitleID" data-plat="{{ title_id }}">
                             {{ title }}
                         </h2>
                     </div>
@@ -363,6 +363,8 @@
                                     </div>
                                     <div class="ms-auto text-muted">
                                         <button type="submit" class="btn btn-blue px-3">查找</button>
+                                        <button type="button" class="btn btn-danger px-3" id="downloadPV">下载全部
+                                        </button>
                                     </div>
                                     {#                                    <div class="ms-2 text-muted">#}
                                     {#                                        <button type="button" disabled class="btn btn-danger px-3">下载数据</button>#}
@@ -468,14 +470,11 @@
                                                 {% endif %}
                                             </td>
                                             <td class="editAttention">
-
-
                                                 {% if pvcontent.attention==1 %}
                                                     <a class="cursor-pointer text-danger">取消关注</a>
                                                 {% else %}
                                                     <a class="cursor-pointer text-blue">关注</a>
                                                 {% endif %}
-
                                             </td>
                                             <td>
                                                                                         <span class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
@@ -690,7 +689,7 @@
                 "order": [[2, "desc"], [3, "desc"]],
                 "lengthMenu": [[10, 25, 50, -1], ["10", "25", "50", "全部"]], // 设置显示entries的选项和对应的文本
                 language: {
-                    info: '共计现存 _TOTAL_ 条推广数据',
+                    info: '共计 _TOTAL_ 条推广数据',
                     search: "搜索：",  // 修改搜索框前的文字
                     searchPlaceholder: "输入关键词搜索", // 修改搜索框的placeholder
                     lengthMenu: "每页显示 _MENU_ 条数据",

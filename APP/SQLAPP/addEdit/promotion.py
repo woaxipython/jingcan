@@ -353,6 +353,7 @@ class WriteSQLData(object):
         pvcontent_model.forwarded = notes_Info["forwarded"]
         pvcontent_model.commented = notes_Info["commented"]
         pvcontent_model.video_link = notes_Info["video_link"]
+        pvcontent_model.imageList = ",".join(notes_Info["imageList"]) if notes_Info["imageList"] else ""
         pvcontent_model.contenttype = "视频" if notes_Info["video_link"] else "图文"
         pvcontent_model.spyder_url = notes_Info["spyder_url"]
         pvcontent_model.status = notes_Info["status"]

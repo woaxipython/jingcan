@@ -74,7 +74,7 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                        interval=365, plat="", nickname="", liked_s=-1, liked_e=200000000,
                        commented_s=-1, commented_e=200000000,
                        collected_s=-1, collected_e=200000000,
-                       contenttype="", group="", ):
+                       contenttype="", group="", liked=False, commented=False, collected=False, ):
     group_by = ["title"]
     interval = 365 if interval == 171 else interval
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
@@ -108,25 +108,47 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                 PVContentModel.forwarded.label('forwarded'),
                 PVContentModel.collected.label('collected'),
                 PVContentModel.video_link.label('video'),
+                PVContentModel.imageList.label('imageList'),
                 PVContentModel.contenttype.label('contenttype'),
                 PVContentModel.attention.label('attention'),
                 PlatModel.name.label('plat')]
-    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
-        AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities)\
-        .order_by(PVContentModel.liked.desc())\
-        .group_by(*group_by).all()
+    if not liked:
+        pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
+            AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities) \
+            .order_by(PVContentModel.liked.desc()) \
+            .group_by(*group_by).all()
+    else:
+        entities = [PVContentModel.liked.label('liked'), ]
+        pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
+            AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities) \
+            .order_by(PVContentModel.liked.desc()) \
+            .group_by(*group_by).all()
     return pvcontent_list
 
 
-def searchPVContentSql2(plat="", self="", group=""):
+def searchPVContentSql2(plat="", attention="", group=""):
     group_by = []
     group_by.extend(group.split(",")) if group else group_by
-    # filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
-
     filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None),
-               or_(PVContentModel.attention == 1, PVContentModel.attention == None, PVContentModel.attention == 2)]
-    filters.append(AccountModel.self == self) if self and self != "0" else filters
-    print(plat)
+               ]
+    print(attention)
+    # filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
+    if attention == "all":
+        attention_filter = or_(PVContentModel.attention == 1, PVContentModel.attention == None,
+                               PVContentModel.attention == 0, PVContentModel.attention == 2)
+    elif attention == "0":
+        attention_filter = PVContentModel.attention == 0
+    elif attention == "1":
+        attention_filter = PVContentModel.attention == 1
+    elif attention == "2":
+        attention_filter = PVContentModel.attention == 2
+    elif attention == "3":
+        attention_filter = or_(PVContentModel.attention == 1, PVContentModel.attention == 2)
+    elif attention == "4":
+        attention_filter = PVContentModel.attention == None
+    else:
+        attention_filter = PVContentModel.attention == 1
+    filters.append(attention_filter)
     filters.append(PlatModel.name == plat) if plat else filters
     entities = [
         AccountModel.profile_link.label('profile_link'),

@@ -30,6 +30,25 @@ class GetXhsSpyder():
 
         self.test_user_url = 'https://www.xiaohongshu.com/user/profile/5c015af7000000000800d647'
 
+    def downloadVideo(self, url, filename,token):
+        self.headers['authorization'] = token
+        # uid = re.findall(r"\d\/(.+)\.mp4\?", url)[0]
+        # print(uid)
+        # real_user_url = f'/fe_api/burdock/weixin/v2/video/{uid}'
+        # xsign = 'X' + self.m_md5(uid + "WSUDD")
+        # self.headers['x-sign'] = xsign
+        # spyder_url = self.base_url + real_user_url
+        response = requests.get(url, headers=self.headers, verify=False)
+        print(response.status_code)
+        if response.status_code == 200:
+            with open(filename, 'wb') as f:
+                text = response.content.decode()
+                print(text)
+                pattern = r'"rule":"(.*?)"'
+                result = re.search(pattern, text)
+                print(result)
+                f.write(response.content)
+
     def testCookie(self, token=""):
         result = self.getNoteInfo(token=token)
         if result.get("status") == "1":
@@ -85,7 +104,6 @@ class GetXhsSpyder():
         self.headers['authorization'] = token
         url = url if url else self.test_note_url
         uid = ""
-        print(url)
         if "explore" in url:
             try:
                 uid = re.findall(r"explore/([^?]+)|/explore/(\w+)", url)[0]
@@ -142,4 +160,9 @@ class GetXhsSpyder():
 
 if __name__ == '__main__':
     xhs = GetXhsSpyder()
-    xhs.getNoteInfo()
+    download_url = "http://v.xiaohongshu.com/stream/110/259/01e468842fba380e010370038838517ae1_259.mp4?sign=4f48cb6a71f147292f6ee8afe2e76f25&t=655ee1d3"
+    token = "wxmp.25d57530-68bd-47a1-9d77-3ac796bda046"
+    filename = "test.mp4"
+    # a = xhs.getNoteInfo(token=token)
+    # print(a)q
+    xhs.downloadVideo(url=download_url, filename=filename,token=token)

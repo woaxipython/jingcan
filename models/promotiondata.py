@@ -19,6 +19,7 @@ class PVContentModel(db.Model):
     forwarded = db.Column(db.Integer)
     content_link = db.Column(db.String(200))
     video_link = db.Column(db.String(200))
+    imageList = db.Column(db.Text)
     contenttype = db.Column(db.String(20), default='图文')
     spyder_url = db.Column(db.String(200))
     status = db.Column(db.String(20), default='正常')

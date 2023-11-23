@@ -28,18 +28,17 @@ dy = DouYinSpyder()
 def manage():
     content_plats = PVContentModel.query.filter().join(PVContentModel.account).join(AccountModel.plat).with_entities(
         PlatModel.name).distinct().all()
-    selfs = AccountModel.query.with_entities(AccountModel.self.label("name")).distinct().all()
+    attentions = PVContentModel.query.with_entities(PVContentModel.attention.label("attention")).distinct().all()
     xhs_tokens = XhsTokenModel.query.all()
     dy_tokens = DyTokenModel.query.all()
     return render_template("html/back/spyderManage.html", xhs_tokens=xhs_tokens, content_plats=content_plats,
                            dy_tokens=dy_tokens,
-                           selfs=selfs)
+                           attentions=attentions)
 
 
 @bp.route("/loginKs", methods=['POST'])
 def loginKs():
     form_dict = request.form.to_dict()
-    print(form_dict)
     form = KsLoginForm(form_dict)
     if form.validate():
         result = ks.login(phone=form_dict.get("ksAccount"), smsCode=form_dict.get("ksPhoneCode"))
@@ -190,12 +189,13 @@ def testDy():
 @bp.route("/getPVcontentData")
 def getPVcontentData():
     plat = request.args.get("plat")
-    self = request.args.get("self")
+    attention = request.args.get("attention")
+    print(plat,attention)
     plat = "" if plat == "null" else plat
-    self = "" if self == "null" else self
+    attention = "" if attention == "null" else attention
 
     if plat:
-        result = sypderCelery(plat=plat, self=self)
+        result = sypderCelery(plat=plat, attention=attention)
         if not result:
             return jsonify({"status": "failed", "message": "暂不支持该平台的内容爬取"})
         else:
@@ -203,15 +203,15 @@ def getPVcontentData():
     else:
         return jsonify({"status": "failed", "message": "请选择平台"})
 
-def sypderCelery(plat, self):
+def sypderCelery(plat, attention):
     if plat == "小红书":
-        current_app.celery.send_task("GetXHSNote", (self, plat,))
+        current_app.celery.send_task("GetXHSNote", (attention, plat,))
         return True
     elif plat == "抖音":
-        current_app.celery.send_task("GetDYNote", (self, plat,))
+        current_app.celery.send_task("GetDYNote", (attention, plat,))
         return True
     elif plat == "快手":
-        current_app.celery.send_task("GetKSNote", (self, plat,))
+        current_app.celery.send_task("GetKSNote", (attention, plat,))
         return True
     else:
         return False

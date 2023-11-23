@@ -14,6 +14,29 @@ function GetRequest(url) {
     });
 }
 
+function downloadFile(url,plateform) {
+    return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var blob = xhr.response;
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = plateform;
+                link.click();
+                resolve('File downloaded successfully');
+            } else {
+                reject('File download failed');
+            }
+        };
+
+        xhr.send();
+    });
+}
+
 function FormRequest(formArray, url) {
     return new Promise(function (resolve, reject) {
         $.ajax({

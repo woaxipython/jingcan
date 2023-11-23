@@ -37,6 +37,13 @@ def PromotionData(sql_list, cycle=""):
             un_normal_data, bloger_data, pv_data_list]
 
 
+def makePVEcel(sql_list, save_path):
+    columns = ['上传日期', '产品', '账号', '账号链接', '是否自营', '标题', '数据库ID', '图文链接', '点赞量', '评论量',
+               '转发量', '收藏量', '视频链接(小红书无效)', '图文链接', '内容形式', '重点关注', '平台']
+    pro = pd.DataFrame(sql_list, columns=columns)
+    pro.to_excel(save_path, index=False)
+
+
 def mainPvcontentData(pro):
     pv_data = pro.drop_duplicates(subset=['title'], keep='first')
     pv_data = pv_data.reset_index()
@@ -165,7 +172,7 @@ def promotionChartData2(sql_list, cycle="D", values='output', column="plat", cou
     users = pro.columns.get_level_values(1).unique()
     ratios = pd.DataFrame()
     for user in users:
-        ratio = round(pro['fee', user] / pro['total', user].replace(0, 1),2)
+        ratio = round(pro['fee', user] / pro['total', user].replace(0, 1), 2)
         ratios[user] = ratio
     ratios = ratios.reset_index()
     pro = pro.reset_index()
