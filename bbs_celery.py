@@ -9,13 +9,13 @@ from flask_mail import Message
 from APP.SQLAPP.addEdit.dataWrite import writeLocationModel
 from APP.SQLAPP.addEdit.orderStore import writeRefund, writeOrderData, WriteExcelOrder
 from APP.SQLAPP.addEdit.promotion import WriteExcelPromotion, WriteSQLData
-from APP.SQLAPP.search.promotion import searchNotes, searchPVContentSql2
+from APP.SQLAPP.search.promotion import searchNotes, searchPVContentSql2, searchAccountSql2, searchAccount
 from APP.Spyder.KdzsSpyder import KuaiDiZhuShouSpyder
 from exts import mail, db
 from celery import Celery
 
 from models.back import PlatModel
-from models.promotion import AccountModel
+from models.promotion import AccountModel, AccountDayDataModel
 from models.promotiondata import PVContentModel, PVDataModel
 
 kdzs = KuaiDiZhuShouSpyder()
@@ -32,55 +32,57 @@ def GetAddress():
     print("发送成功")
 
 
+def makeHASID(link):
+    date_today = datetime.now().strftime("%Y-%m-%d")
+    info = link + date_today
+    hasID = hashlib.sha1(info.encode()).hexdigest()[:20]
+    return hasID
 
 
+def time_plat_sleep(plat):
+    if plat == "小红书":
+        time.sleep(random.randint(15, 30))
+    elif plat == "抖音":
+        time.sleep(random.randint(3, 8))
 
-def GetXHSNote(attention, plat):
-    # changePlat()
-    contents = searchPVContentSql2(attention=attention, plat=plat)
+
+def GetAccount(attention, plat):
+    contents = searchAccountSql2(attention=attention, plat=plat)
+    accounts = searchAccount()
     i = 1
     for content in contents:
-        note_link = content.link
-        date_today = datetime.now().strftime("%Y-%m-%d")
-        info = note_link + date_today
-        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
-        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
-        if pvcontent_today_model:
-            if pvcontent_today_model.liked:
+        link = content.link
+        print(link)
+        DaydataID = makeHASID(link)
+        account_today_model = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == DaydataID).first()
+        if account_today_model:
+            if account_today_model.liked:
                 i += 1
-                print("共计{}条小红书待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
+                print("共计{}条{}账号待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i, len(contents) - i))
                 continue
-        token_status = GetXHSNote2(note_link)
-        if token_status == "4":
+        result = accounts.sypderXHSAccount(profile_link=link) if plat == "小红书" else accounts.spyderDYAccount(
+            profile_link=link)
+        status = writeAccount(link, result, plat)
+        if status == "4":
             print("token已经全部失效")
             break
-        elif token_status == "0":
+        elif status == "0":
             print("链接错误")
             continue
         i += 1
-        print("共计{}条小红书待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
-        time.sleep(random.randint(15, 30))
+        print("共计{}条{}账号待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i, len(contents) - i))
+        time_plat_sleep(plat)
 
 
-def GetXHSNote2(note_link):
-    notes = searchNotes()
-    result = notes.spyderXHSNote(note_link=note_link)
+def writeAccount(profile_link, result, plat):
     write = WriteSQLData()
-    print(note_link)
     if result['status'] == "1":
         # 等于1时返回了正确数据，写入到数据库
-        write.WriteSqlPVcontentData(note_link, result['message'],plat="小红书")
-        return "1"
+        write.WriteSqlAccount(profile_link, result['message'], plat=plat)
     elif result['status'] == "2":
-        # 等于2时是token过期，重新获取token，然后重新爬取
-        if result['message'] == "token过期" or result['message'] == "登录已过期":
-            token_status = notes.spyderXHSNote(note_link=note_link)
-            return token_status
-        else:
-            write.changeSQLNoteStatus(note_link, result['message'])
-            return "1"
+        write.changeSQLAccountStatus(profile_link, result['message'])
     elif result['status'] == "3":
-        write.changeSQLNoteStatus(note_link, result['message'])
+        write.changeSQLAccountStatus(profile_link, result['message'])
     elif result['status'] == "4":
         # 全部token失效
         return "4"
@@ -89,13 +91,13 @@ def GetXHSNote2(note_link):
         return "0"
 
 
-def GetDYNote(attention, plat):
+def GetNote(attention, plat):
+    # changePlat()
+    notes = searchNotes()
     contents = searchPVContentSql2(attention=attention, plat=plat)
     i = 1
-
     for content in contents:
         note_link = content.link
-        print(note_link)
         date_today = datetime.now().strftime("%Y-%m-%d")
         info = note_link + date_today
         DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
@@ -103,42 +105,34 @@ def GetDYNote(attention, plat):
         if pvcontent_today_model:
             if pvcontent_today_model.liked:
                 i += 1
-                print("共计{}条抖音待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
+                print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i,
+                                                                                len(contents) - i))
                 continue
-        token_status = GetDYNote2(note_link)
-        if token_status == "4":
+        result = notes.spyderXHSNote(note_link=note_link) if plat == "小红书" else notes.spyderDYNote(
+            note_link=note_link)
+        status = writeNote(result, note_link)
+        if status == "4":
             print("token已经全部失效")
             break
-        elif token_status == "0":
-            i += 1
+        elif status == "0":
             print("链接错误")
-            print("共计{}条抖音待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
             continue
         i += 1
-        print("共计{}条抖音待更新，已更新至第{}条,剩余{}条".format(len(contents), i, len(contents) - i))
-        time.sleep(random.randint(5, 8))
+        print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i, len(contents) - i))
+        time_plat_sleep(plat)
 
 
-def GetDYNote2(note_link):
-    notes = searchNotes()
-    result = notes.spyderDYNote(note_link=note_link)
-    print(note_link)
+def writeNote(result, note_link):
     write = WriteSQLData()
     if result['status'] == "1":
         # 等于1时返回了正确数据，写入到数据库
-        write.WriteSqlPVcontentData(note_link, result['message'],plat="抖音")
+        write.WriteSqlPVcontentData(note_link, result['message'], )
         return "1"
-
     elif result['status'] == "2":
         # 等于2时是token过期，重新获取token，然后重新爬取
-        if result['message'] == "token过期" or result['message'] == "登录已过期":
-            return GetDYNote2(note_link=note_link)
-        else:
-            write.changeSQLNoteStatus(note_link, result['message'])
-            return "1"
+        write.changeSQLNoteStatus(note_link, result['message'])
     elif result['status'] == "3":
         write.changeSQLNoteStatus(note_link, result['message'])
-        return "1"
     elif result['status'] == "4":
         # 全部token失效
         return "4"
@@ -157,7 +151,7 @@ def GetXHSAccountNote(profile_link, notes):
             break
         i += 6
         print("共计{}条小红书待更新，已更新至第{}条,剩余{}条".format(notes, i, notes - i))
-        time.sleep(random.randint(15, 30))
+        time_plat_sleep("小红书")
 
 
 def GetXHSAccountNote2(profile_link, page):
@@ -270,11 +264,12 @@ def make_celery(app):
     celery.task(name="send_mail")(send_mail)
     celery.task(name="GetOrders")(GetOrders)
     celery.task(name="GetRefund")(GetRefund)
-    celery.task(name="GetXHSNote")(GetXHSNote)
-    celery.task(name="GetDYNote")(GetDYNote)
     celery.task(name="GetAddress")(GetAddress)
     celery.task(name="writeFilePromotionC")(writeFilePromotionC)
     celery.task(name="writeHandOrder")(writeHandOrder)
+
+    celery.task(name="GetNote")(GetNote)
+    celery.task(name="GetAccount")(GetAccount)
     celery.task(name="GetXHSAccountNote")(GetXHSAccountNote)
 
     return celery

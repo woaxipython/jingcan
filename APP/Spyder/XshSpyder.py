@@ -53,7 +53,6 @@ class GetXhsSpyder():
         uid = makeRealURL.makeXHSAccount_id(url)
         if not uid:
             return {'status': '0', 'message': "请输入正确的主页连接"}
-            # /fe_api/burdock/weixin/v2/user/62c97fa9000000000e00f44a/notes
         real_user_url = f'/fe_api/burdock/weixin/v2/user/{uid}'
         xsign = 'X' + self.m_md5(real_user_url + "WSUDD")
         self.headers['x-sign'] = xsign
@@ -61,7 +60,6 @@ class GetXhsSpyder():
         response = requests.get(spyder_url, headers=self.headers, verify=False)
         if response.status_code == 200 and response.json()["success"] == True:
             data = response.json()['data']
-            print(data)
             Account_result = {
                 "nickname": data.get("nickname", ""),
                 "follow": data.get("follows", 0),
@@ -85,7 +83,7 @@ class GetXhsSpyder():
                 response_json = response.json()
                 return {'status': '2', 'message': response_json['msg']}
             except:
-                return {'status': '2', 'message': "笔记状态异常，请检查笔记是否存在"}
+                return {'status': '3', 'message': "账号异常，请检查账号是否存在"}
 
     def getNoteList(self, token, page, url=""):
         self.headers['authorization'] = token

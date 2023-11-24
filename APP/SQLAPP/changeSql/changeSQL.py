@@ -2,6 +2,7 @@ from sqlalchemy import or_
 
 from APP.Spyder.makeRealURL import MakeRealURL
 from exts import db
+from models.back import PlatModel
 from models.promotion import AccountModel
 from models.promotiondata import PVContentModel
 
@@ -9,7 +10,24 @@ from models.promotiondata import PVContentModel
 class ChangeSQL():
     def __init__(self):
         pass
+    def changeAccountPlat(self):
+        account_lists = AccountModel.query.filter(AccountModel.profile_link != None).with_entities(
+            AccountModel.profile_link, AccountModel.id).all()
+        for account_list in account_lists:
 
+            if "xiaohongshu" in account_list.profile_link:
+                plat_model = PlatModel.query.filter(PlatModel.name == "小红书").first()
+                pn_model = AccountModel.query.filter(AccountModel.id == account_list.id).first()
+                pn_model.plat_id = plat_model.id
+                db.session.add(pn_model)
+                db.session.commit()
+            elif "douyin" in account_list.profile_link:
+                plat_model = PlatModel.query.filter(PlatModel.name == "抖音").first()
+                pn_model = AccountModel.query.filter(AccountModel.id == account_list.id).first()
+                pn_model.plat_id = plat_model.id
+                db.session.add(pn_model)
+                db.session.commit()
+            print(account_list.profile_link)
     def changeContentLink(self):
         filters = [PVContentModel.content_link != None, PVContentModel.content_link != ""]
         entities = [PVContentModel.content_link]

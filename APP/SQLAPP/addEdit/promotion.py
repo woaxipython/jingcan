@@ -307,10 +307,18 @@ class WriteExcelPromotion(object):
 
 # 写入SQL查询的各类数据
 class WriteSQLData(object):
-    def WriteSqlPVcontentData(self, note_link, notes_Info, plat=""):
-        pvcontent_model = PVContentModel.query.filter_by(content_link=note_link).first()
-        if not pvcontent_model:
+    def WriteSqlPVcontentData(self, note_link, notes_Info, ):
+        pvcontent_models = PVContentModel.query.filter_by(content_link=note_link).all()
+        if not pvcontent_models:
             return {"status": "failed", "message": "没有该条内容"}
+        if len(pvcontent_models) > 1:
+            for pvcontent_model in pvcontent_models:
+                self.__writeSQlNote(note_link, notes_Info, pvcontent_model)
+        else:
+            pvcontent_model = pvcontent_models[0]
+            self.__writeSQlNote(note_link, notes_Info, pvcontent_model)
+
+    def __writeSQlNote(self, note_link, notes_Info, pvcontent_model):
         date_today = datetime.now().strftime("%Y-%m-%d")
         info = note_link + date_today
         DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
@@ -343,59 +351,70 @@ class WriteSQLData(object):
         pvcontent_today_model.commented = notes_Info["commented"]
         pvcontent_today_model.createtime = date_today
 
+        plat = "抖音" if "douyin" in note_link else "快手" if "kuaishou" in note_link else "小红书" if "xiaohongshu" in note_link else "其他"
+        plat_model = PlatModel.query.filter_by(name=plat).first()
+
         account_model = AccountModel.query.filter_by(id=pvcontent_model.account_id).first()
         account_model = AccountModel() if not account_model else account_model
         account_model.account_id = notes_Info["account_id"]
+        account_model.attention = 0 if account_model.attention != 1 else 1
         account_model.profile_link = notes_Info["profile_link"]
+        account_model.plat = plat_model
 
-        db.session.add(account_model)
-        db.session.add(pvcontent_model)
-        db.session.add(pvcontent_today_model)
+        db.session.merge(account_model)
+        db.session.merge(pvcontent_model)
+        db.session.merge(pvcontent_today_model)
         db.session.commit()
-        return True
 
     def writeAccountNotes(self, profile_link, notes_Info):
-        account_model = AccountModel.query.filter_by(profile_link=profile_link).first()
-
         note_link = notes_Info["content_link"]
         pvcontent_models = PVContentModel.query.filter_by(content_link=note_link).all()
-        for pvcontent_model in pvcontent_models:
-            pvcontent_model = PVContentModel(content_link=note_link) if not pvcontent_model else pvcontent_model
+        if len(pvcontent_models) > 1:
+            for pvcontent_model in pvcontent_models:
+                self.__writeAccountNotes(profile_link, notes_Info, pvcontent_model, note_link)
+        else:
+            pvcontent_model = pvcontent_models[0]
+            self.__writeAccountNotes(profile_link, notes_Info, pvcontent_model, note_link)
 
-            date_today = datetime.now().strftime("%Y-%m-%d")
-            info = note_link + date_today
-            DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
-            pvcontent_model.attention = 1
+    def __writeAccountNotes(self, profile_link, notes_Info, pvcontent_model, note_link):
+        account_model = AccountModel.query.filter_by(profile_link=profile_link).first()
 
-            pvcontent_model.title = notes_Info["title"]
-            pvcontent_model.content_id = notes_Info["content_id"]
-            pvcontent_model.liked = notes_Info["liked"]
-            pvcontent_model.desc = notes_Info["desc"]
-            pvcontent_model.collected = notes_Info["collected"]
-            pvcontent_model.forwarded = notes_Info["forwarded"]
-            pvcontent_model.commented = notes_Info["commented"]
-            pvcontent_model.video_link = notes_Info["video_link"]
-            pvcontent_model.imageList = ",".join(notes_Info["imageList"]) if notes_Info["imageList"] else ""
-            pvcontent_model.contenttype = "视频" if notes_Info["video_link"] else "图文"
-            pvcontent_model.spyder_url = notes_Info["spyder_url"]
-            pvcontent_model.status = notes_Info["status"]
-            pvcontent_model.upload_time = notes_Info["upload_time"]
-            pvcontent_model.upgrade_time = date_today
-            pvcontent_model.account = account_model
+        pvcontent_model = PVContentModel(content_link=note_link) if not pvcontent_model else pvcontent_model
 
-            pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
-            pvcontent_today_model = PVDataModel() if not pvcontent_today_model else pvcontent_today_model
-            pvcontent_today_model.search_id = DaydataID
-            pvcontent_today_model.pvcontent = pvcontent_model
-            pvcontent_today_model.liked = notes_Info["liked"]
-            pvcontent_today_model.collected = notes_Info["collected"]
-            pvcontent_today_model.forwarded = notes_Info["forwarded"]
-            pvcontent_today_model.commented = notes_Info["commented"]
-            pvcontent_today_model.createtime = date_today
+        date_today = datetime.now().strftime("%Y-%m-%d")
+        info = note_link + date_today
+        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+        pvcontent_model.attention = 0
 
-            db.session.merge(pvcontent_model)
-            db.session.merge(pvcontent_today_model)
-            db.session.commit()
+        pvcontent_model.title = notes_Info["title"]
+        pvcontent_model.content_id = notes_Info["content_id"]
+        pvcontent_model.liked = notes_Info["liked"]
+        pvcontent_model.desc = notes_Info["desc"]
+        pvcontent_model.collected = notes_Info["collected"]
+        pvcontent_model.forwarded = notes_Info["forwarded"]
+        pvcontent_model.commented = notes_Info["commented"]
+        pvcontent_model.video_link = notes_Info["video_link"]
+        pvcontent_model.imageList = ",".join(notes_Info["imageList"]) if notes_Info["imageList"] else ""
+        pvcontent_model.contenttype = "视频" if notes_Info["video_link"] else "图文"
+        pvcontent_model.spyder_url = notes_Info["spyder_url"]
+        pvcontent_model.status = notes_Info["status"]
+        pvcontent_model.upload_time = notes_Info["upload_time"]
+        pvcontent_model.upgrade_time = date_today
+        pvcontent_model.account = account_model
+
+        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
+        pvcontent_today_model = PVDataModel() if not pvcontent_today_model else pvcontent_today_model
+        pvcontent_today_model.search_id = DaydataID
+        pvcontent_today_model.pvcontent = pvcontent_model
+        pvcontent_today_model.liked = notes_Info["liked"]
+        pvcontent_today_model.collected = notes_Info["collected"]
+        pvcontent_today_model.forwarded = notes_Info["forwarded"]
+        pvcontent_today_model.commented = notes_Info["commented"]
+        pvcontent_today_model.createtime = date_today
+
+        db.session.merge(pvcontent_model)
+        db.session.merge(pvcontent_today_model)
+        db.session.commit()
 
     def changeSQLNoteStatus(self, note_link, status):
         pvcontent_model = PVContentModel.query.filter_by(content_link=note_link).first()
@@ -405,38 +424,53 @@ class WriteSQLData(object):
         db.session.add(pvcontent_model)
         db.session.commit()
 
+    def changeSQLAccountStatus(self, note_link, status):
+        account_model = AccountModel.query.filter_by(profile_link=note_link).first()
+        if not account_model:
+            return {"status": "failed", "message": "没有该账号"}
+        account_model.status = status
+        db.session.add(account_model)
+        db.session.commit()
+
     def WriteSqlAccount(self, profile_link, account_Info, plat, selfs=""):
 
+        account_models = AccountModel.query.filter(AccountModel.profile_link == profile_link).all()
+        if len(account_models) > 1:
+            for account_model in account_models:
+                self.__writeAccount(profile_link, account_Info, plat, account_model, selfs)
+        else:
+            account_model = account_models[0]
+            self.__writeAccount(profile_link, account_Info, plat, account_model, selfs)
+
+    def __writeAccount(self, profile_link, account_Info, plat, account_model, selfs="", ):
         date_today = datetime.now().strftime("%Y-%m-%d")
         info = profile_link + date_today
         DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
 
         plat_model = PlatModel.query.filter_by(name=plat).first()
-        account_models = AccountModel.query.filter(AccountModel.profile_link == profile_link).all()
-        for account_model in account_models:
-            if account_model:
-                for key, value in account_Info.items(): setattr(account_model, key, value)
-            else:
-                account_model = AccountModel(**account_Info)  # 实例化账号模型
-            account_model.profile_link = MakeRealURL().makeAccountURL(profile_link)
-            account_model.upgradetime = date_today
-            account_model.attention = 0 if account_model.attention != 1 else 1
-            selfs = selfs if selfs else ""
-            account_model.plat = plat_model
-            account_model.self = selfs
+        if account_model:
+            for key, value in account_Info.items(): setattr(account_model, key, value)
+        else:
+            account_model = AccountModel(**account_Info)  # 实例化账号模型
+        account_model.profile_link = MakeRealURL().makeAccountURL(profile_link)
+        account_model.upgradetime = date_today
+        account_model.attention = 0 if account_model.attention != 1 else 1
+        selfs = selfs if selfs else ""
+        account_model.plat = plat_model
+        account_model.self = selfs
 
-            account_today_model = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == DaydataID).first()
-            account_today_model = AccountDayDataModel() if not account_today_model else account_today_model
-            account_today_model.search_id = DaydataID
-            account_today_model.account = account_model
-            account_today_model.nickname = account_Info["nickname"]
-            account_today_model.fans = account_Info["fans"]
-            account_today_model.notes = account_Info["notes"]
-            account_today_model.liked = account_Info["liked"]
-            account_today_model.collected = account_Info["collected"]
-            account_today_model.follow = account_Info["follow"]
-            account_today_model.upgradetime = date_today
+        account_today_model = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == DaydataID).first()
+        account_today_model = AccountDayDataModel() if not account_today_model else account_today_model
+        account_today_model.search_id = DaydataID
+        account_today_model.account = account_model
+        account_today_model.nickname = account_Info["nickname"]
+        account_today_model.fans = account_Info["fans"]
+        account_today_model.notes = account_Info["notes"]
+        account_today_model.liked = account_Info["liked"]
+        account_today_model.collected = account_Info["collected"]
+        account_today_model.follow = account_Info["follow"]
+        account_today_model.upgradetime = date_today
 
-            db.session.merge(account_model)
-            db.session.merge(account_today_model)
-            db.session.commit()
+        db.session.merge(account_model)
+        db.session.merge(account_today_model)
+        db.session.commit()

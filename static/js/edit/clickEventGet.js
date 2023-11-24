@@ -9,6 +9,20 @@ $("#refreshLocation").click(function () {
         })
 })
 
+$("#getAccountData").click(function () {
+    var div = $(this).closest("div")
+    var plat = div.find("select[data-promotion='plat']").val()
+    var attention = div.find("select[data-promotion='attention']").val()
+    var url = '/spyder/getAccountData?plat=' + plat + '&attention=' + attention
+    GetRequest(url = url)
+        .then(function (result) {
+            alert(result['message'])
+        })
+        .catch(function (error) {
+            alert(error)
+        })
+})
+
 $("#getPVContentData").click(function () {
     var div = $(this).closest("div")
     var plat = div.find("select[data-promotion='plat']").val()

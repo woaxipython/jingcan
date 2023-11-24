@@ -114,23 +114,6 @@ def editPromotion():
         return jsonify({"status": "failed", "message": form.messages})
 
 
-@bp.route("/getAccount", methods=['POST'])
-def getAccount():
-    form_dict = request.form.to_dict()
-    form = ProfileLinkForm(form_dict)  # 验证数据
-    if form.validate():
-        write = searchAccount(form_dict)  # 写入数据
-        if write.check():
-            spyder_result = write.sypderAccount()  # 爬取数据
-            if spyder_result["status"] == "success":  # 爬取成功
-                return jsonify(write.writeAccount())  # 返回写入数据
-            else:  # 爬取失败
-                return jsonify(spyder_result)  # 返回爬取失败信息
-        else:
-            return jsonify({"status": "failed", "message": write.error_message})
-    else:
-        return jsonify({"status": "failed", "message": form.messages})
-
 
 # @bp.route("/getNotes", methods=['POST'])
 # def getNotes():

@@ -75,7 +75,7 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                        commented_s=-1, commented_e=200000000,
                        collected_s=-1, collected_e=200000000,
                        contenttype="", group="", liked=False, commented=False, collected=False, ):
-    group_by = ["title"]
+    group_by = ["content_link"]
     interval = 365 if interval == 171 else interval
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
@@ -112,27 +112,18 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                 PVContentModel.contenttype.label('contenttype'),
                 PVContentModel.attention.label('attention'),
                 PlatModel.name.label('plat')]
-    if not liked:
-        pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
-            AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities) \
-            .order_by(PVContentModel.liked.desc()) \
-            .group_by(*group_by).all()
-    else:
-        entities = [PVContentModel.liked.label('liked'), ]
-        pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
-            AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities) \
-            .order_by(PVContentModel.liked.desc()) \
-            .group_by(*group_by).all()
+
+    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.account).join(
+        AccountModel.plat).join(PVContentModel.promotion).join(PromotionModel.group).with_entities(*entities) \
+        .order_by(PVContentModel.liked.desc()).distinct() \
+        .group_by(*group_by).all()
     return pvcontent_list
 
 
-def searchPVContentSql2(plat="", attention="", group=""):
-    group_by = []
-    group_by.extend(group.split(",")) if group else group_by
+def searchPVContentSql2(plat="", attention=""):
     filters = [PVContentModel.content_link != None,
                or_(PVContentModel.status == "正常", PVContentModel.status == None),
                ]
-    print(attention)
     # filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
     if attention == "all":
         attention_filter = or_(PVContentModel.attention == 1, PVContentModel.attention == None,
@@ -159,6 +150,37 @@ def searchPVContentSql2(plat="", attention="", group=""):
         AccountModel.plat).with_entities(*entities).group_by(
         "link").all()
     return pvcontent_list
+
+
+def searchAccountSql2(plat="", attention=""):
+    filters = [AccountModel.profile_link != None,
+               or_(AccountModel.status == "正常", AccountModel.status == None),
+               ]
+    # filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
+    if attention == "all":
+        attention_filter = or_(AccountModel.attention == 1, AccountModel.attention == None,
+                               AccountModel.attention == 0, AccountModel.attention == 2)
+    elif attention == "0":
+        attention_filter = AccountModel.attention == 0
+    elif attention == "1":
+        attention_filter = AccountModel.attention == 1
+    elif attention == "2":
+        attention_filter = AccountModel.attention == 2
+    elif attention == "3":
+        attention_filter = or_(AccountModel.attention == 1, AccountModel.attention == 2)
+    elif attention == "4":
+        attention_filter = AccountModel.attention == None
+    else:
+        attention_filter = AccountModel.attention == 1
+    filters.append(attention_filter)
+    filters.append(PlatModel.name == plat) if plat else filters
+    entities = [
+        AccountModel.profile_link.label('link'),
+        PlatModel.name.label('plat')]
+    account_list = AccountModel.query.filter(*filters).join(
+        AccountModel.plat).with_entities(*entities).group_by(
+        "link").all()
+    return account_list
 
 
 def dictPromotionORM(promotion_ORM):
@@ -189,74 +211,87 @@ def dictPromotionORM(promotion_ORM):
 
 
 class searchAccount(object):
-    def __init__(self, form_dict):
+    def __init__(self, ):
         """ 初始化 """
         """
         profileLink: 账号链接 (必填) str
         platId: 平台id (必填) int
         nickname: 昵称 (必填) str
         """
-        self.form_dict = form_dict
-        self.error_message = []
-        self.profile_result = {}
-        self.plat_id = self.form_dict["platId"]
-        self.plat_name = ""
 
-    def checkExist(self):
-        account_link = self.form_dict["profileLink"]
-        account_model = AccountModel.query.filter_by(profile_link=account_link).first()
-        if account_model:
-            return True
-        else:
-            return False
-
-    def check(self):
-
-        self.plat_model = PlatModel.query.get(self.plat_id)
-        if not self.plat_model:
-            self.error_message.append("推广平台不存在，请确认或录入至手工录入平台")
-            return False
-        self.plat_name = self.plat_model.name
-        return True
-
-    def sypderAccount(self):
-        profile_link = self.form_dict["profileLink"]
+    def spyderDYAccount(self, profile_link):
         token = xhsToken()
-
-        if self.plat_name == "小红书":
-            if not token:
-                return {"status": "failed", "message": "正常小红书账号已用完，请联系管理员"}
-            profile_result = xhs.getUserInfo(token=token, url=profile_link)  # 获取账号信息
-        elif self.plat_name == "抖音":
-            profile_result = dy.getUserInfo(token=dyToken(), url=profile_link)  # 获取账号信息
-        else:
-            return {"status": "failed", "message": "暂时无法获取该平台账号数据，请手动录入，或联系管理员录入"}  # 返回失败信息
-
-        if profile_result["status"] == "failed":  # 获取失败
-            return {"status": "failed", "message": profile_result["message"]}  # 返回失败信息
-        elif profile_result["status"] == "1":  # 获取成功，但是账号不存在或触发验证
+        if not token:
+            return {"status": "4", "message": "正常抖音账号已用完，请联系管理员"}
+        profile_result = dy.getUserInfo(token=token, url=profile_link)  # 获取账号信息
+        if profile_result["status"] == "0":
+            # 链接错误
+            return {"status": "0", "message": profile_result["message"]}
+        elif profile_result["status"] == "3":
+            return {"status": "3", "message": profile_result["message"]}
+        elif profile_result["status"] == "2":
+            token_model = DyTokenModel.query.filter_by(name=token).first()
             if profile_result["message"] == "Spam":
-                token_model = XhsTokenModel.query.filter_by(name=token).first()
                 token_model.status = "触发验证"
                 db.session.add(token_model)
-                return {"status": "2", "message": "触发小红书验证"}
+                db.session.commit()
+                return {"status": "2", "message": "token过期"}
+            elif profile_result["message"] == "登录已过期":
+                token_model.status = "登录已过期"
+                db.session.add(token_model)
+                db.session.commit()
+                result = self.sypderXHSAccount(profile_link)
+                return result
             else:
-                return {"status": "failed", "message": "爬虫解析错误"}
+                return {"status": "2", "message": profile_result["message"]}
         else:
-            self.profile_result = AccountBasicData(profile_result["message"])  # 获取成功，返回账号基础数据
-            return {"status": "success", "message": self.profile_result}  # 返回成功信息
+            return {"status": "1", "message": profile_result["message"]}
 
-    def writeAccount(self):
-        account_model = AccountModel.query.filter_by(account_id=self.profile_result["account_id"]).first()
-        if account_model:
-            for key, value in self.profile_result.items(): setattr(account_model, key, value)
-            account_model.plat = self.plat_model
+    def sypderXHSAccount(self, profile_link):
+        token = xhsToken()
+        if not token:
+            return {"status": "4", "message": "正常小红书账号已用完，请联系管理员"}
+        profile_result = xhs.getUserInfo(token=token, url=profile_link)  # 获取账号信息
+        if profile_result["status"] == "0":
+            # 链接错误
+            return {"status": "0", "message": profile_result["message"]}
+        elif profile_result["status"] == "3":
+            return {"status": "3", "message": profile_result["message"]}
+        elif profile_result["status"] == "2":
+            token_model = XhsTokenModel.query.filter_by(name=token).first()
+            if profile_result["message"] == "Spam":
+                token_model.status = "触发验证"
+                db.session.add(token_model)
+                db.session.commit()
+                return {"status": "2", "message": "token过期"}
+            elif profile_result["message"] == "登录已过期":
+                token_model.status = "登录已过期"
+                db.session.add(token_model)
+                db.session.commit()
+                result = self.sypderXHSAccount(profile_link)
+                return result
+            else:
+                return {"status": "2", "message": profile_result["message"]}
         else:
-            account_model = AccountModel(**self.profile_result)  # 实例化账号模型
-            account_model.plat = self.plat_model
-        db.session.add(account_model)
-        db.session.commit()
-        return {"status": "success", "message": self.profile_result}
+            return {"status": "1", "message": profile_result["message"]}
+        # elif self.plat_name == "抖音":
+        #     profile_result = dy.getUserInfo(token=dyToken(), url=profile_link)  # 获取账号信息
+        # else:
+        #     return {"status": "failed", "message": "暂时无法获取该平台账号数据，请手动录入，或联系管理员录入"}  # 返回失败信息
+        #
+        # if profile_result["status"] == "failed":  # 获取失败
+        #     return {"status": "failed", "message": profile_result["message"]}  # 返回失败信息
+        # elif profile_result["status"] == "1":  # 获取成功，但是账号不存在或触发验证
+        #     if profile_result["message"] == "Spam":
+        #         token_model = XhsTokenModel.query.filter_by(name=token).first()
+        #         token_model.status = "触发验证"
+        #         db.session.add(token_model)
+        #         return {"status": "2", "message": "触发小红书验证"}
+        #     else:
+        #         return {"status": "failed", "message": "爬虫解析错误"}
+        # else:
+        #     self.profile_result = AccountBasicData(profile_result["message"])  # 获取成功，返回账号基础数据
+        #     return {"status": "success", "message": self.profile_result}  # 返回成功信息
 
 
 class searchNotes(object):
@@ -281,12 +316,14 @@ class searchNotes(object):
                 token_model.status = "触发验证"
                 db.session.add(token_model)
                 db.session.commit()
-                return {"status": "2", "message": "token过期"}
+                result = self.spyderXHSNote(note_link)
+                return result
             elif profile_result["message"] == "登录已过期":
                 token_model.status = "登录已过期"
                 db.session.add(token_model)
                 db.session.commit()
-                return {"status": "2", "message": "登录已过期"}
+                result = self.spyderXHSNote(note_link)
+                return result
             else:
                 return {"status": "2", "message": profile_result["message"]}
         else:
@@ -329,7 +366,8 @@ class searchNotes(object):
             token_model.status = "登录已过期"
             db.session.add(token_model)
             db.session.commit()
-            return {"status": "2", "message": "登录已过期"}
+            result = self.spyderXHSNote(note_link)
+            return result
         else:
             return {"status": "1", "message": profile_result["message"]}
 

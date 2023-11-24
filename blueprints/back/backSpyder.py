@@ -191,6 +191,19 @@ def testDy():
         return jsonify({"message": message})
 
 
+@bp.route("/getAccountData")
+def getAccountData():
+    plat = request.args.get("plat")
+    attention = request.args.get("attention")
+    plat = "" if plat == "null" else plat
+    attention = "" if attention == "null" else attention
+    if plat:
+        current_app.celery.send_task("GetAccount", (attention, plat,))
+        return jsonify({"status": "success", "message": "正在更新内容数据"})
+    else:
+        return jsonify({"status": "failed", "message": "请选择平台"})
+
+
 @bp.route("/getPVcontentData")
 def getPVcontentData():
     plat = request.args.get("plat")
@@ -199,44 +212,24 @@ def getPVcontentData():
     plat = "" if plat == "null" else plat
     attention = "" if attention == "null" else attention
     if plat:
-        result = sypderCelery(plat=plat, attention=attention)
-        if not result:
-            return jsonify({"status": "failed", "message": "暂不支持该平台的内容爬取"})
-        else:
-            return jsonify({"status": "success", "message": "正在更新内容数据"})
+        current_app.celery.send_task("GetNote", (attention, plat,))
+        return jsonify({"status": "failed", "message": "正在更新内容数据"})
     else:
         return jsonify({"status": "failed", "message": "请选择平台"})
 
 
-def sypderCelery(plat, attention):
-    if plat == "小红书":
-        current_app.celery.send_task("GetXHSNote", (attention, plat,))
-        return True
-    elif plat == "抖音":
-        current_app.celery.send_task("GetDYNote", (attention, plat,))
-        return True
-    elif plat == "快手":
-        current_app.celery.send_task("GetKSNote", (attention, plat,))
-        return True
-    else:
-        return False
-
-
 @bp.route("/addAccount", methods=['POST'])
 def addAccount():
-    account_link = request.form.to_dict().get("newXHSAccount")
+    profile_link = request.form.to_dict().get("newXHSAccount")
     note_info = request.form.to_dict().get("note_info")
     # ChangeSQL().changeAccountLink()
     # return jsonify({"status": "success", "message": "新增抖音账号成功"})
     # print(account_link, note_info)
-    if "www.xiaohongshu.com" in account_link:
+    if "xiaohongshu" in profile_link:
         token = xhsToken()
         xhs = GetXhsSpyder()
-        base_url = "https://www.xiaohongshu.com/user/profile/"
-        if "profile" and "user" in account_link:
-            account_link = account_link.split("?")[0] if "?" in account_link else account_link
-            uid = re.findall(r"profile/(.+)", account_link)[0]
-            profile_link = base_url + uid
+        profile_link = MakeRealURL().makeAccountURL(profile_link)
+        if profile_link:
             result = xhs.getUserInfo(token=token, url=profile_link)
             if result["status"] == "1":
                 write = WriteSQLData()
@@ -252,8 +245,8 @@ def addAccount():
         else:
             return jsonify({"status": "failed", "message": "请输入正确的小红书主页链接"})
 
-    elif "www.douyin.com" in account_link:
+    elif "douyin" in profile_link:
         print("抖音")
-        return jsonify({"status": "failed", "message": "新增抖音账号成功"})
+        return jsonify({"status": "failed", "message": "暂不支持抖音账号的新增"})
     else:
         return jsonify({"status": "failed", "message": "请输入正确的主页链接"})
