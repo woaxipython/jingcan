@@ -1,11 +1,15 @@
 import os
+import re
 
 from APP.SQLAPP.addEdit.orderStore import WriteExcelOrder
+from APP.SQLAPP.addEdit.promotion import WriteSQLData
+from APP.SQLAPP.changeSql.changeSQL import ChangeSQL
 from APP.SQLAPP.search.promotion import dyToken, xhsToken, searchPVContentSql, searchPVContentSql2, searchNotes
 from APP.Spyder.DySpyder import DouYinSpyder
 from APP.Spyder.KsSpyder import KuaiShouSpyder
 from APP.Spyder.XshSpyder import GetXhsSpyder
 from APP.SQLAPP.addEdit.dataWrite import writeSimpleModelData, writeNewPromotionPlatModel, writeXhsTokenModel
+from APP.Spyder.makeRealURL import MakeRealURL
 from exts import db
 
 from form.formValidate import KsLoginForm, \
@@ -22,6 +26,7 @@ bp = Blueprint("spyder", __name__, url_prefix="/spyder")
 ks = KuaiShouSpyder()
 xhs = GetXhsSpyder()
 dy = DouYinSpyder()
+makeRealURL = MakeRealURL()
 
 
 @bp.route("/manage")
@@ -190,10 +195,9 @@ def testDy():
 def getPVcontentData():
     plat = request.args.get("plat")
     attention = request.args.get("attention")
-    print(plat,attention)
+    print(plat, attention)
     plat = "" if plat == "null" else plat
     attention = "" if attention == "null" else attention
-
     if plat:
         result = sypderCelery(plat=plat, attention=attention)
         if not result:
@@ -202,6 +206,7 @@ def getPVcontentData():
             return jsonify({"status": "success", "message": "正在更新内容数据"})
     else:
         return jsonify({"status": "failed", "message": "请选择平台"})
+
 
 def sypderCelery(plat, attention):
     if plat == "小红书":
@@ -215,3 +220,40 @@ def sypderCelery(plat, attention):
         return True
     else:
         return False
+
+
+@bp.route("/addAccount", methods=['POST'])
+def addAccount():
+    account_link = request.form.to_dict().get("newXHSAccount")
+    note_info = request.form.to_dict().get("note_info")
+    # ChangeSQL().changeAccountLink()
+    # return jsonify({"status": "success", "message": "新增抖音账号成功"})
+    # print(account_link, note_info)
+    if "www.xiaohongshu.com" in account_link:
+        token = xhsToken()
+        xhs = GetXhsSpyder()
+        base_url = "https://www.xiaohongshu.com/user/profile/"
+        if "profile" and "user" in account_link:
+            account_link = account_link.split("?")[0] if "?" in account_link else account_link
+            uid = re.findall(r"profile/(.+)", account_link)[0]
+            profile_link = base_url + uid
+            result = xhs.getUserInfo(token=token, url=profile_link)
+            if result["status"] == "1":
+                write = WriteSQLData()
+                account_Info = result["message"]
+                selfs = "自营"
+                write.WriteSqlAccount(profile_link=profile_link, account_Info=account_Info, plat="小红书", selfs=selfs)
+                notes = int(account_Info.get("notes")) if account_Info.get("notes") else 0
+                if notes > 0 and note_info == "1":
+                    current_app.celery.send_task("GetXHSAccountNote", (profile_link, notes,))
+                return jsonify({"status": "success", "message": f"新增小红书账号{account_Info.get('nickname')}成功"})
+            else:
+                return jsonify({"status": "failed", "message": result["message"]})
+        else:
+            return jsonify({"status": "failed", "message": "请输入正确的小红书主页链接"})
+
+    elif "www.douyin.com" in account_link:
+        print("抖音")
+        return jsonify({"status": "failed", "message": "新增抖音账号成功"})
+    else:
+        return jsonify({"status": "failed", "message": "请输入正确的主页链接"})

@@ -769,6 +769,23 @@ $('#newStorePro').click(function () {
     }
 })
 
+$("#newXHSAccount").click(function () {
+    var Form = $(this).closest(".border-bottom").find("form")
+    var FormId = $(Form).attr("id")
+    var inputs = Form.find("input")
+    var VerResult = Verification(...inputs)
+    var url = "/spyder/addAccount"
+    if (VerResult.length === 0) {
+        var formData = new FormData(document.getElementById(FormId));
+        FileRequest(formArray = formData, url = url)
+            .then(function (result) {
+                alert(result['message'])
+            })
+            .catch(function (error) {
+                alert(error)
+            })
+    }
+})
 
 $(".newSelectBtn").click(function () {
     var Link = $(this).data("id")

@@ -32,41 +32,7 @@ def GetAddress():
     print("发送成功")
 
 
-def changePlat():
-    # pvcontent_lists = AccountModel.query.filter(AccountModel.profile_link != None).with_entities(
-    #     AccountModel.profile_link, AccountModel.id).all()
-    # for pvcontent_list in pvcontent_lists:
-    #     print(pvcontent_list.profile_link)
-    #     if "xiaohongshu" in pvcontent_list.profile_link:
-    #         plat_model = PlatModel.query.filter(PlatModel.name == "小红书").first()
-    #         pn_model = AccountModel.query.filter(AccountModel.id == pvcontent_list.id).first()
-    #         pn_model.plat_id = plat_model.id
-    #         db.session.add(pn_model)
-    #         db.session.commit()
-    #     elif "douyin" in pvcontent_list.profile_link:
-    #         plat_model = PlatModel.query.filter(PlatModel.name == "抖音").first()
-    #         pn_model = AccountModel.query.filter(AccountModel.id == pvcontent_list.id).first()
-    #         pn_model.plat_id = plat_model.id
-    #         db.session.add(pn_model)
-    #         db.session.commit()
-    pvcontent_lists = PVContentModel.query.filter(PVContentModel.account_id == None).with_entities(
-        PVContentModel.content_link, PVContentModel.id).all()
-    for pvcontent_list in pvcontent_lists:
-        print(pvcontent_list.content_link)
-        if "xiaohongshu" in pvcontent_list.content_link:
-            plat_model = PlatModel.query.filter(PlatModel.name == "小红书").first()
-        elif "douyin" in pvcontent_list.content_link:
-            plat_model = PlatModel.query.filter(PlatModel.name == "抖音").first()
-        pv_model = PVContentModel.query.filter(PVContentModel.id == pvcontent_list.id).first()
-        account_model = AccountModel()
-        account_model.plat = plat_model
-        account_model.profile_link = pvcontent_list.content_link
-        account_model.self = "素人"
 
-        pv_model.account = account_model
-        db.session.add(account_model)
-        db.session.add(pv_model)
-        db.session.commit()
 
 
 def GetXHSNote(attention, plat):
@@ -103,7 +69,7 @@ def GetXHSNote2(note_link):
     print(note_link)
     if result['status'] == "1":
         # 等于1时返回了正确数据，写入到数据库
-        write.WriteSqlPVcontentData(note_link, result['message'])
+        write.WriteSqlPVcontentData(note_link, result['message'],plat="小红书")
         return "1"
     elif result['status'] == "2":
         # 等于2时是token过期，重新获取token，然后重新爬取
@@ -160,14 +126,13 @@ def GetDYNote2(note_link):
     write = WriteSQLData()
     if result['status'] == "1":
         # 等于1时返回了正确数据，写入到数据库
-        write.WriteSqlPVcontentData(note_link, result['message'])
+        write.WriteSqlPVcontentData(note_link, result['message'],plat="抖音")
         return "1"
 
     elif result['status'] == "2":
         # 等于2时是token过期，重新获取token，然后重新爬取
         if result['message'] == "token过期" or result['message'] == "登录已过期":
-            token_status = notes.spyderXHSNote(note_link=note_link)
-            return token_status
+            return GetDYNote2(note_link=note_link)
         else:
             write.changeSQLNoteStatus(note_link, result['message'])
             return "1"
@@ -180,6 +145,40 @@ def GetDYNote2(note_link):
     elif result['status'] == "0":
         # 链接错误
         return "0"
+
+
+def GetXHSAccountNote(profile_link, notes):
+    pages = notes // 6 + 1
+    i = 1
+    for page in range(1, pages + 1):
+        token_status = GetXHSAccountNote2(profile_link=profile_link, page=page)
+        if token_status == "4":
+            print("token已经全部失效")
+            break
+        i += 6
+        print("共计{}条小红书待更新，已更新至第{}条,剩余{}条".format(notes, i, notes - i))
+        time.sleep(random.randint(15, 30))
+
+
+def GetXHSAccountNote2(profile_link, page):
+    notes = searchNotes()
+    results = notes.spyderXHSAccountNote(profile_link=profile_link, page=page)
+    write = WriteSQLData()
+    for result in results:
+        if result['status'] == "1":
+            # 等于1时返回了正确数据，写入到数据库
+            write.writeAccountNotes(profile_link, result['message'])
+        elif result['status'] == "2":
+            # 等于2时是token过期，重新获取token，然后重新爬取
+            if result['message'] == "token过期" or result['message'] == "登录已过期":
+                return GetXHSAccountNote2(profile_link=profile_link, page=page)
+            else:
+                write.changeSQLNoteStatus(profile_link, result['message'])
+        elif result['status'] == "3":
+            write.changeSQLNoteStatus(profile_link, result['message'])
+        elif result['status'] == "4":
+            # 全部token失效
+            return "4"
 
 
 def GetOrders(stores, endDate, startDate, token):
@@ -276,5 +275,6 @@ def make_celery(app):
     celery.task(name="GetAddress")(GetAddress)
     celery.task(name="writeFilePromotionC")(writeFilePromotionC)
     celery.task(name="writeHandOrder")(writeHandOrder)
+    celery.task(name="GetXHSAccountNote")(GetXHSAccountNote)
 
     return celery

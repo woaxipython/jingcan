@@ -11,10 +11,11 @@ from sqlalchemy import func, or_
 
 from APP.SQLAPP.addEdit.dataWrite import generate_Number_string
 from APP.SQLAPP.search.promotion import searchAccount, searchNotes
+from APP.Spyder.makeRealURL import MakeRealURL
 from exts import db
 from models.back import RateModel, PlatModel, FeeModel, OutputModel
 from models.product import GroupModel
-from models.promotion import PromotionModel, BlogerModel, AccountModel
+from models.promotion import PromotionModel, BlogerModel, AccountModel, AccountDayDataModel
 from models.promotiondata import PVContentModel, PVDataModel
 from models.store import OrderModel, ParentOrderModel
 from models.user import UserModel
@@ -150,6 +151,10 @@ class writeNewPromotionModel(object):
         return {"status": "success", "message": "新增成功", 'search_id': search_id, "note_search_id": note_search_id}
 
 
+makeRealURL = MakeRealURL()
+
+
+# 写入EXCEL批量导入的推广内容
 class WriteExcelPromotion(object):
     def __init__(self, save_path):
         """初始化"""
@@ -190,16 +195,6 @@ class WriteExcelPromotion(object):
             self.data_list.append(row_list)  # 读取每行的数据
             self.total += 1
 
-    def short_to_long(self, url):
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
-        }
-        try:
-            response = requests.get(url, headers=headers)
-            return response.url
-        except:
-            return False
-
     def check(self):
         """检查数据"""
         new_data_list = []
@@ -211,6 +206,7 @@ class WriteExcelPromotion(object):
                 if PlatModel.query.filter_by(name=row[3]).first() is None:  # 检查平台是否存在
                     self.error_message.append(f"第{self.checked}行的平台不存在")
                     continue
+
             if "," in row[4]:
                 for group_name in row[4].split(","):
                     if GroupModel.query.filter_by(name=group_name).first() is None:  # 检查商品组是否存在
@@ -220,57 +216,30 @@ class WriteExcelPromotion(object):
                 if GroupModel.query.filter_by(name=row[4]).first() is None:  # 检查商品组是否存在
                     self.error_message.append(f"第{self.checked}行的商品组不存在")
                     continue
+
             if row[5]:
                 if FeeModel.query.filter_by(name=row[5]).first() is None:  # 检查费用模型是否存在
                     self.error_message.append(f"第{self.checked}行的费用模板不存在")
                     continue
-            if not row[8]:  # 图文链接是否为空，为空则跳过
+
+            if row[8]:  # 图文链接是否为空，为空则跳过
+                pv_url = makeRealURL.makePVContentURL(row[8])  # 重构图文链接为标准格式
+                if pv_url:
+                    row[8] = pv_url
+                else:
+                    self.error_message.append(f"第{self.checked}行的图文链接不正确")
+                    continue
+            else:
                 self.error_message.append("第{}行的图文链接为空，已自动跳过".format(self.checked))
                 continue
-            if len(row[8]) < 40:  # 图文链接长度少于30，那么为短连接，需转换为长连接
-                long_url = self.short_to_long(row[8])
-                time.sleep(0.1)
-                if long_url:
-                    row[8] = long_url
-                else:
-                    self.error_message.append(f"第{self.checked}行的图文链接转换失败")
-                    continue
-            if row[2]:
-                if len(row[2]) < 40:  # 图文链接长度少于40， 那么为短连接，需转换为长连接
-                    long_url = self.short_to_long(row[8])
-                    time.sleep(0.1)
-                    if long_url:
-                        row[2] = long_url
-                    else:
-                        self.error_message.append(f"第{self.checked}行的主页链接转换失败")
-                        continue
-            else:
-                row[2] = row[8]
-            if "modal_id" in row[8] and "douyin" in row[8]:
-                video_url = self.change_dyurl_usertomodid(row[8])
-                if video_url:
-                    row[8] = video_url
-                else:
-                    self.error_message.append(f"第{self.checked}行的抖音链接转换失败")
-                    continue
 
             new_data_list.append(row)  # 将检查通过的数据添加到新列表中
 
         self.data_list = new_data_list  # 将检查通过的数据赋值给原来的列表
 
-    def change_dyurl_usertomodid(self, long_url):
-        try:
-            if len(long_url) < 40:
-                long_url = self.short_to_long(long_url)
-            modal_id = re.search(r'modal_id=([^&]*)', long_url).group(1)
-            url = "https://www.douyin.com/video/" + modal_id
-            return url
-        except:
-            return False
-
     def writrNote(self, row):
         output_model = OutputModel.query.filter_by(name=row[9]).first()
-        pvcontent_link = row[8].split("?")[0]
+        pvcontent_link = row[8]
         pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
         pvcontent_model = PVContentModel() if not pvcontent_model else pvcontent_model
         pvcontent_model.output = output_model
@@ -282,15 +251,16 @@ class WriteExcelPromotion(object):
         db.session.commit()
 
     def writeAccount(self, row):
-        pvcontent_link = row[8].split("?")[0]
+        pvcontent_link = row[8]
         pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
 
         plat_model = PlatModel.query.filter_by(name=row[3]).first()
-        account_link = row[2].split("?")[0]
-        account_model = AccountModel.query.filter_by(profile_link=account_link).first()
-        account_model = AccountModel() if not account_model else account_model
-        account_model.plat = plat_model
-        account_model.profile_link = account_link
+        account_link = row[2]
+        if account_link:
+            account_model = AccountModel.query.filter_by(profile_link=account_link).first()
+        else:
+            account_model = AccountModel()
+        account_model.plat = plat_model if plat_model else None
         account_model.self = row[11]
 
         pvcontent_model.account = account_model
@@ -299,7 +269,7 @@ class WriteExcelPromotion(object):
         db.session.commit()
 
     def writePromotion(self, row):
-        pvcontent_link = row[8].split("?")[0]
+        pvcontent_link = row[8]
         pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
 
         output_model = OutputModel.query.filter_by(name=row[9]).first()
@@ -335,16 +305,19 @@ class WriteExcelPromotion(object):
         db.session.commit()
 
 
+# 写入SQL查询的各类数据
 class WriteSQLData(object):
-    def WriteSqlPVcontentData(self, note_link, notes_Info):
+    def WriteSqlPVcontentData(self, note_link, notes_Info, plat=""):
         pvcontent_model = PVContentModel.query.filter_by(content_link=note_link).first()
         if not pvcontent_model:
-            return {"status": "failed", "message": "没有该推广内容"}
+            return {"status": "failed", "message": "没有该条内容"}
         date_today = datetime.now().strftime("%Y-%m-%d")
         info = note_link + date_today
         DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
         pvcontent_model.attention = 0 if pvcontent_model.attention != 1 else 1
-
+        note_link = makeRealURL.makePVContentURL(note_link)
+        print(note_link)
+        pvcontent_model.content_link = note_link
         pvcontent_model.title = notes_Info["title"]
         pvcontent_model.content_id = notes_Info["content_id"]
         pvcontent_model.liked = notes_Info["liked"]
@@ -368,13 +341,61 @@ class WriteSQLData(object):
         pvcontent_today_model.collected = notes_Info["collected"]
         pvcontent_today_model.forwarded = notes_Info["forwarded"]
         pvcontent_today_model.commented = notes_Info["commented"]
-        pvcontent_today_model.forwarded = notes_Info["forwarded"]
         pvcontent_today_model.createtime = date_today
 
+        account_model = AccountModel.query.filter_by(id=pvcontent_model.account_id).first()
+        account_model = AccountModel() if not account_model else account_model
+        account_model.account_id = notes_Info["account_id"]
+        account_model.profile_link = notes_Info["profile_link"]
+
+        db.session.add(account_model)
         db.session.add(pvcontent_model)
         db.session.add(pvcontent_today_model)
         db.session.commit()
         return True
+
+    def writeAccountNotes(self, profile_link, notes_Info):
+        account_model = AccountModel.query.filter_by(profile_link=profile_link).first()
+
+        note_link = notes_Info["content_link"]
+        pvcontent_models = PVContentModel.query.filter_by(content_link=note_link).all()
+        for pvcontent_model in pvcontent_models:
+            pvcontent_model = PVContentModel(content_link=note_link) if not pvcontent_model else pvcontent_model
+
+            date_today = datetime.now().strftime("%Y-%m-%d")
+            info = note_link + date_today
+            DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+            pvcontent_model.attention = 1
+
+            pvcontent_model.title = notes_Info["title"]
+            pvcontent_model.content_id = notes_Info["content_id"]
+            pvcontent_model.liked = notes_Info["liked"]
+            pvcontent_model.desc = notes_Info["desc"]
+            pvcontent_model.collected = notes_Info["collected"]
+            pvcontent_model.forwarded = notes_Info["forwarded"]
+            pvcontent_model.commented = notes_Info["commented"]
+            pvcontent_model.video_link = notes_Info["video_link"]
+            pvcontent_model.imageList = ",".join(notes_Info["imageList"]) if notes_Info["imageList"] else ""
+            pvcontent_model.contenttype = "视频" if notes_Info["video_link"] else "图文"
+            pvcontent_model.spyder_url = notes_Info["spyder_url"]
+            pvcontent_model.status = notes_Info["status"]
+            pvcontent_model.upload_time = notes_Info["upload_time"]
+            pvcontent_model.upgrade_time = date_today
+            pvcontent_model.account = account_model
+
+            pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
+            pvcontent_today_model = PVDataModel() if not pvcontent_today_model else pvcontent_today_model
+            pvcontent_today_model.search_id = DaydataID
+            pvcontent_today_model.pvcontent = pvcontent_model
+            pvcontent_today_model.liked = notes_Info["liked"]
+            pvcontent_today_model.collected = notes_Info["collected"]
+            pvcontent_today_model.forwarded = notes_Info["forwarded"]
+            pvcontent_today_model.commented = notes_Info["commented"]
+            pvcontent_today_model.createtime = date_today
+
+            db.session.merge(pvcontent_model)
+            db.session.merge(pvcontent_today_model)
+            db.session.commit()
 
     def changeSQLNoteStatus(self, note_link, status):
         pvcontent_model = PVContentModel.query.filter_by(content_link=note_link).first()
@@ -384,5 +405,38 @@ class WriteSQLData(object):
         db.session.add(pvcontent_model)
         db.session.commit()
 
-    def writePvcontengDayData(self):
-        pass
+    def WriteSqlAccount(self, profile_link, account_Info, plat, selfs=""):
+
+        date_today = datetime.now().strftime("%Y-%m-%d")
+        info = profile_link + date_today
+        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+
+        plat_model = PlatModel.query.filter_by(name=plat).first()
+        account_models = AccountModel.query.filter(AccountModel.profile_link == profile_link).all()
+        for account_model in account_models:
+            if account_model:
+                for key, value in account_Info.items(): setattr(account_model, key, value)
+            else:
+                account_model = AccountModel(**account_Info)  # 实例化账号模型
+            account_model.profile_link = MakeRealURL().makeAccountURL(profile_link)
+            account_model.upgradetime = date_today
+            account_model.attention = 0 if account_model.attention != 1 else 1
+            selfs = selfs if selfs else ""
+            account_model.plat = plat_model
+            account_model.self = selfs
+
+            account_today_model = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == DaydataID).first()
+            account_today_model = AccountDayDataModel() if not account_today_model else account_today_model
+            account_today_model.search_id = DaydataID
+            account_today_model.account = account_model
+            account_today_model.nickname = account_Info["nickname"]
+            account_today_model.fans = account_Info["fans"]
+            account_today_model.notes = account_Info["notes"]
+            account_today_model.liked = account_Info["liked"]
+            account_today_model.collected = account_Info["collected"]
+            account_today_model.follow = account_Info["follow"]
+            account_today_model.upgradetime = date_today
+
+            db.session.merge(account_model)
+            db.session.merge(account_today_model)
+            db.session.commit()

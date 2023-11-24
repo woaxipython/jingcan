@@ -323,6 +323,33 @@
                                 </button>
                             </div>
                             <hr>
+                            <div class="modal-title mb-1">新增小红书自营账号</div>
+                            <div class="col-auto d-flex border-bottom">
+                                <div class="col-8">
+                                    <form id="newXHSAccountForm" method="post">
+                                        <div class="modal-body me-3">
+                                            <input type="hidden" name="csrf_token"
+                                                   value="{{ csrf_token() }}">
+                                            <input type="text" class="form-control required" name="newXHSAccount"
+                                                   placeholder="请输入小红书主页链接">
+                                            <input type="hidden" name="note_info" value="">
+
+                                            <small class="text-danger d-none"
+                                                   data-input="newXHSAccount">不能为空</small>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class=" col-auto">
+                                    <select class="form-control select-input me-2" data-select="note_info">
+                                        <option value="1" selected>是否同步笔记</option>
+                                        <option value="0">不同步笔记</option>
+                                        <option value="1">同步笔记</option>
+                                    </select>
+                                </div>
+                                <div class="modal-footer ms-auto">
+                                    <button class="btn btn-danger" id="newXHSAccount">获取账号</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

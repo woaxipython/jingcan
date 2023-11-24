@@ -39,7 +39,6 @@ class PromotionModel(db.Model):
     orderstatus = db.Column(db.Integer)
     createtime = db.Column(db.DateTime, default=datetime.now)
 
-
     # 合作与博主之间的多对多关系，一个合作有一个博主，一个博主多个合作
     bloger_id = db.Column(db.Integer, db.ForeignKey('bloger.id'))
     bloger = db.relationship('BlogerModel', backref='promotions')
@@ -84,25 +83,28 @@ class AccountModel(db.Model):
     __tablename__ = 'account'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     search_id = db.Column(db.String(100), default=uuid)
-    self = db.Column(db.String(10))
-    nickname = db.Column(db.String(50))
-    fans = db.Column(db.Integer)
-    follow = db.Column(db.Integer)
-    gender = db.Column(db.Integer)
     account_id = db.Column(db.String(50))
+    nickname = db.Column(db.String(50))
     notes = db.Column(db.Integer)
+    profile_link = db.Column(db.String(200))
     boards = db.Column(db.String(50))
     location = db.Column(db.String(30))
-    collected = db.Column(db.Integer)
-    ave_collected = db.Column(db.Float)
-    collected_rate = db.Column(db.Float)
-    desc = db.Column(db.String(200))
-    liked = db.Column(db.Integer)
-    ave_liked = db.Column(db.Float)
-    liked_rate = db.Column(db.Float)
     officialVerifyName = db.Column(db.String(30))
+    desc = db.Column(db.String(200))
+
+    fans = db.Column(db.Integer)
+    liked = db.Column(db.Integer)
+    collected = db.Column(db.Integer)
+    follow = db.Column(db.Integer)
+    gender = db.Column(db.Integer)
+
+    attention = db.Column(db.Integer, default=2)
+    self = db.Column(db.String(10))
+    status = db.Column(db.String(10))
     spyder_url = db.Column(db.String(200))
-    profile_link = db.Column(db.String(200))
+
+    createtime = db.Column(db.DateTime, default=datetime.now)
+    upgradetime = db.Column(db.DateTime, default=datetime.now)
 
     # 对应博主
     bloger_id = db.Column(db.Integer, db.ForeignKey('bloger.id'))
@@ -111,3 +113,21 @@ class AccountModel(db.Model):
     # 对应平台
     plat_id = db.Column(db.Integer, db.ForeignKey('plat.id'))
     plat = db.relationship('PlatModel', backref='accounts')
+
+
+class AccountDayDataModel(db.Model):
+    __tablename__ = 'account_data'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    search_id = db.Column(db.String(100), nullable=False)
+    nickname = db.Column(db.String(100))
+    fans = db.Column(db.Integer)
+    notes = db.Column(db.Integer)
+    liked = db.Column(db.Integer)
+    collected = db.Column(db.Integer)
+    follow = db.Column(db.Integer)
+    upgradetime = db.Column(db.DateTime, default=datetime.now)
+    createtime = db.Column(db.DateTime, default=datetime.now)
+
+    # 对应账号
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
+    account = db.relationship('AccountModel', backref='account_data')

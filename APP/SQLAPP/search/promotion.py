@@ -129,7 +129,8 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
 def searchPVContentSql2(plat="", attention="", group=""):
     group_by = []
     group_by.extend(group.split(",")) if group else group_by
-    filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None),
+    filters = [PVContentModel.content_link != None,
+               or_(PVContentModel.status == "正常", PVContentModel.status == None),
                ]
     print(attention)
     # filters = [PVContentModel.content_link != None, or_(PVContentModel.status == "正常", PVContentModel.status == None)]
@@ -290,6 +291,27 @@ class searchNotes(object):
                 return {"status": "2", "message": profile_result["message"]}
         else:
             return {"status": "1", "message": profile_result["message"]}
+
+    def spyderXHSAccountNote(self, profile_link, page):
+        token = xhsToken()
+        if not token:
+            yield {"status": "4", "message": "正常小红书账号已用完，请联系管理员"}
+        profile_results = xhs.getNoteList(token=token, page=page, url=profile_link)
+
+        for profile_result in profile_results:
+            if profile_result["status"] == "0":
+                # 链接错误
+                yield {"status": "0", "message": profile_result["message"]}
+            elif profile_result["status"] == "3":
+                yield {"status": "3", "message": profile_result["message"]}
+            elif profile_result["status"] == "2":
+                token_model = XhsTokenModel.query.filter_by(name=token).first()
+                token_model.status = "登录已过期"
+                db.session.add(token_model)
+                db.session.commit()
+                yield {"status": "2", "message": "登录已过期"}
+            else:
+                yield {"status": "1", "message": profile_result["message"]}
 
     def spyderDYNote(self, note_link):
         token = dyToken()
