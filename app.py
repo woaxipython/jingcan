@@ -14,7 +14,6 @@ from bbs_celery import make_celery
 from flask_wtf import CSRFProtect
 from blueprints.sale.saleManage import bp as sale_bp, convert_to_number
 from blueprints.promotion.promotionManage import bp as prm_bp
-from blueprints.promotion.promotionData import bp as prd_bp
 from blueprints.promotion.promotionPV import bp as pv_bp
 from blueprints.handOrderManage import bp as hd_bp
 from blueprints.back.backManage import bp as bk_bp
@@ -52,7 +51,6 @@ CSRFProtect(app=app)
 # 注册蓝图
 app.register_blueprint(sale_bp)
 app.register_blueprint(prm_bp)
-app.register_blueprint(prd_bp)
 app.register_blueprint(hd_bp)
 app.register_blueprint(bk_bp)
 app.register_blueprint(pr_bp)
