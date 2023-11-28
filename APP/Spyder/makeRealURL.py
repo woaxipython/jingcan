@@ -1,14 +1,17 @@
+import hashlib
 import re
 import time
+from datetime import datetime
 
 import requests
 
 
-class MakeRealURL:
+class MakeRealURL(object):
     def __init__(self):
         pass
 
     def short_to_long(self, url):
+
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
         }
@@ -17,7 +20,8 @@ class MakeRealURL:
                 response = requests.get(url, headers=headers)
                 time.sleep(0.1)
                 return response.url
-            except:
+            except Exception as e:
+                print(e)
                 return False
         else:
             return url
@@ -36,9 +40,9 @@ class MakeRealURL:
         base_dy = "https://www.douyin.com/video/"
         content_id = self.makeContentID(url)
         if content_id:
-            if "xiaohongshu" in url:
+            if "xiaohongshu" in url or "xhs" in url:
                 return base_xhs + content_id
-            elif "douyin" in url:
+            elif "douyin" in url or "dy" in url:
                 return base_dy + content_id
             else:
                 return False
@@ -76,6 +80,9 @@ class MakeRealURL:
             return False
 
     def makeContentID(self, url):
+        url = self.short_to_long(url)
+        if not url:
+            return False
         if "xiaohongshu" in url:
             uid = self.makeXHSContent_id(url)
             if uid:
@@ -156,3 +163,16 @@ class MakeRealURL:
             return uid
         else:
             return False
+
+    def makePlatName(self, url):
+        if "xiaohongshu" in url:
+            return "小红书"
+        elif "douyin" in url:
+            return "抖音"
+        else:
+            return False
+
+    def makeUniqueDayId(self, url):
+        date_today = datetime.now().strftime("%Y-%m-%d")
+        info = url + date_today
+        return hashlib.sha1(info.encode()).hexdigest()[:20]

@@ -3,6 +3,13 @@ from datetime import datetime
 from exts import db
 
 
+class ContentKeyWordModel(db.Model):
+    __tablename__ = 'content_keyword'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content_id = db.Column(db.Integer, db.ForeignKey('pvcontent.id'))
+    keyword_id = db.Column(db.Integer, db.ForeignKey('keyword.id'))
+
+
 # 图文
 class PVContentModel(db.Model):
     __tablename__ = 'pvcontent'
@@ -11,7 +18,7 @@ class PVContentModel(db.Model):
     search_id = db.Column(db.String(100), default=uuid)
 
     title = db.Column(db.String(100))
-    content_id = db.Column(db.String(100))
+    content_id = db.Column(db.String(500))
     desc = db.Column(db.String(500))
     liked = db.Column(db.Integer)
     collected = db.Column(db.Integer)
@@ -27,22 +34,25 @@ class PVContentModel(db.Model):
     upload_time = db.Column(db.DateTime, )
     upgrade_time = db.Column(db.DateTime, )
     create_time = db.Column(db.DateTime, default=datetime.now)
+    key_words = db.relationship('KeyWordModel', secondary=ContentKeyWordModel.__tablename__, backref='promotions')
 
-    # 广告方式，有自营、素人、达人等多种方式，后期可能会增加。一个形式，多个推广
-    prtype_id = db.Column(db.Integer, db.ForeignKey('prtype.id'))
-    prtype = db.relationship("PrtypeModel", backref='promotions')
+    plat_id = db.Column(db.Integer, db.ForeignKey('plat.id'))
+    plat = db.relationship('PlatModel', backref='pvcontents')
 
-    # 对应账号，一次合作多个图文
+    # 对应账号，一个账号多个图文
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     account = db.relationship('AccountModel', backref='pvcontents')
 
-    # 对应合作，一次合作多个图文
-    promotion_id = db.Column(db.Integer, db.ForeignKey('promotion.id'))
-    promotion = db.relationship('PromotionModel', backref='pvcontents')
+    # 对应商品
+    goods_id = db.Column(db.Integer, db.ForeignKey('group.id'))
+    goods = db.relationship('GroupModel', backref='pvcontents')
 
-    # 产出模式
-    output_id = db.Column(db.Integer, db.ForeignKey('output_mode.id'))
-    output = db.relationship("OutputModel", backref='pvcontents', uselist=False)
+
+class KeyWordModel(db.Model):
+    __tablename__ = 'keyword'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    keyword = db.Column(db.String(100))
+    createtime = db.Column(db.DateTime, default=datetime.now)
 
 
 # 评论内容

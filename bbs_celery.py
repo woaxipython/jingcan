@@ -6,10 +6,12 @@ from datetime import datetime
 
 from flask_mail import Message
 
+from APP.CeleryApp.OrderCelery import getOrder
+from APP.CeleryApp.SpyderCelery import getAccount, getNote, getDYAccountNote
 from APP.SQLAPP.addEdit.dataWrite import writeLocationModel
 from APP.SQLAPP.addEdit.orderStore import writeRefund, writeOrderData, WriteExcelOrder
-from APP.SQLAPP.addEdit.promotion import WriteExcelPromotion, WriteSQLData
-from APP.SQLAPP.search.promotion import searchNotes, searchPVContentSql2, searchAccountSql2, searchAccount
+from APP.SQLAPP.addEdit.promotion import WriteSQLData, WriteExcelPVContent
+from APP.SQLAPP.search.promotion import searchAccountNotes
 from APP.Spyder.KdzsSpyder import KuaiDiZhuShouSpyder
 from exts import mail, db
 from celery import Celery
@@ -47,101 +49,23 @@ def time_plat_sleep(plat):
 
 
 def GetAccount(attention, plat):
-    contents = searchAccountSql2(attention=attention, plat=plat)
-    accounts = searchAccount()
-    i = 1
-    for content in contents:
-        link = content.link
-        print(link)
-        DaydataID = makeHASID(link)
-        account_today_model = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == DaydataID).first()
-        if account_today_model:
-            if account_today_model.liked:
-                i += 1
-                print("共计{}条{}账号待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i, len(contents) - i))
-                continue
-        result = accounts.sypderXHSAccount(profile_link=link) if plat == "小红书" else accounts.spyderDYAccount(
-            profile_link=link)
-        status = writeAccount(link, result, plat)
-        if status == "4":
-            print("token已经全部失效")
-            break
-        elif status == "0":
-            print("链接错误")
-            continue
-        i += 1
-        print("共计{}条{}账号待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i, len(contents) - i))
-        time_plat_sleep(plat)
-
-
-def writeAccount(profile_link, result, plat):
-    write = WriteSQLData()
-    if result['status'] == "1":
-        # 等于1时返回了正确数据，写入到数据库
-        write.WriteSqlAccount(profile_link, result['message'], plat=plat)
-    elif result['status'] == "2":
-        write.changeSQLAccountStatus(profile_link, result['message'])
-    elif result['status'] == "3":
-        write.changeSQLAccountStatus(profile_link, result['message'])
-    elif result['status'] == "4":
-        # 全部token失效
-        return "4"
-    elif result['status'] == "0":
-        # 链接错误
-        return "0"
+    getAccount(attention=attention, plat=plat)
 
 
 def GetNote(attention, plat):
     # changePlat()
-    notes = searchNotes()
-    contents = searchPVContentSql2(attention=attention, plat=plat)
-    i = 1
-    for content in contents:
-        note_link = content.link
-        date_today = datetime.now().strftime("%Y-%m-%d")
-        info = note_link + date_today
-        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
-        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
-        if pvcontent_today_model:
-            if pvcontent_today_model.liked:
-                i += 1
-                print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i,
-                                                                                len(contents) - i))
-                continue
-        result = notes.spyderXHSNote(note_link=note_link) if plat == "小红书" else notes.spyderDYNote(
-            note_link=note_link)
-        status = writeNote(result, note_link)
-        if status == "4":
-            print("token已经全部失效")
-            break
-        elif status == "0":
-            print("链接错误")
-            continue
-        i += 1
-        print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents), plat, i, len(contents) - i))
-        time_plat_sleep(plat)
+    getNote(attention=attention, plat=plat)
 
 
-def writeNote(result, note_link):
-    write = WriteSQLData()
-    if result['status'] == "1":
-        # 等于1时返回了正确数据，写入到数据库
-        write.WriteSqlPVcontentData(note_link, result['message'], )
-        return "1"
-    elif result['status'] == "2":
-        # 等于2时是token过期，重新获取token，然后重新爬取
-        write.changeSQLNoteStatus(note_link, result['message'])
-    elif result['status'] == "3":
-        write.changeSQLNoteStatus(note_link, result['message'])
-    elif result['status'] == "4":
-        # 全部token失效
-        return "4"
-    elif result['status'] == "0":
-        # 链接错误
-        return "0"
+def GetAccountNote(profile_link, account_Info, plat):
+    if plat == "小红书":
+        getXHSAccountNote(profile_link=profile_link, account_Info=account_Info)
+    elif plat == "抖音":
+        getDYAccountNote(profile_link=profile_link, account_Info=account_Info)
 
 
-def GetXHSAccountNote(profile_link, notes):
+def getXHSAccountNote(profile_link, account_Info):
+    notes = int(account_Info.get("notes")) if account_Info.get("notes") else 0
     pages = notes // 6 + 1
     i = 1
     for page in range(1, pages + 1):
@@ -155,7 +79,7 @@ def GetXHSAccountNote(profile_link, notes):
 
 
 def GetXHSAccountNote2(profile_link, page):
-    notes = searchNotes()
+    notes = searchAccountNotes()
     results = notes.spyderXHSAccountNote(profile_link=profile_link, page=page)
     write = WriteSQLData()
     for result in results:
@@ -176,28 +100,7 @@ def GetXHSAccountNote2(profile_link, page):
 
 
 def GetOrders(stores, endDate, startDate, token):
-    order_JSON = kdzs.getOrder(stores, endDate=endDate, startDate=startDate, token=token)
-    totalCount = int(order_JSON['total'])
-    pageNo = math.ceil(totalCount / 1000)
-    dealResults = kdzs.DealOrder(order_JSON=order_JSON)
-    i = 1
-    status = {"total": totalCount, "processed": 0}
-    for dealresult in dealResults:
-        writeOrderData(dealresult)
-        i += 1
-        status["processed"] = i
-        print("共计{}条订单，已更新至第{}条,剩余{}条".format(totalCount, i, totalCount - i))
-    for page in range(2, pageNo + 1):
-        order_JSON = kdzs.getOrder(pageNo=page, stores=stores, endDate=endDate, startDate=startDate, token=token)
-        dealResults = kdzs.DealOrder(order_JSON=order_JSON)
-        for dealresult in dealResults:
-            print(i)
-            writeOrderData(dealresult)
-            status["processed"] = i
-            i += 1
-            print("共计{}条订单，已更新至第{}条,剩余{}条".format(totalCount, i, totalCount - i))
-        time.sleep(80)
-    return status
+    getOrder(stores=stores, endDate=endDate, startDate=startDate, token=token)
 
 
 def writeHandOrder(save_path):
@@ -237,9 +140,8 @@ def GetRefund(endDate, startDate, token):
 """根据celery重构了celery任务"""
 
 
-def writeFilePromotionC(save_path):
-    write = WriteExcelPromotion(save_path)
-    write.readPromotionExcel()
+def writeFilePVContent(save_path):
+    write = WriteExcelPVContent(save_path)
     write.check()
     write.write()
 
@@ -265,11 +167,11 @@ def make_celery(app):
     celery.task(name="GetOrders")(GetOrders)
     celery.task(name="GetRefund")(GetRefund)
     celery.task(name="GetAddress")(GetAddress)
-    celery.task(name="writeFilePromotionC")(writeFilePromotionC)
+    celery.task(name="writeFilePVContent")(writeFilePVContent)
     celery.task(name="writeHandOrder")(writeHandOrder)
 
     celery.task(name="GetNote")(GetNote)
     celery.task(name="GetAccount")(GetAccount)
-    celery.task(name="GetXHSAccountNote")(GetXHSAccountNote)
+    celery.task(name="GetAccountNote")(GetAccountNote)
 
     return celery

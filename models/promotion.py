@@ -83,7 +83,7 @@ class AccountModel(db.Model):
     __tablename__ = 'account'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     search_id = db.Column(db.String(100), default=uuid)
-    account_id = db.Column(db.String(50))
+    account_id = db.Column(db.String(500))
     nickname = db.Column(db.String(50))
     notes = db.Column(db.Integer)
     profile_link = db.Column(db.String(200))

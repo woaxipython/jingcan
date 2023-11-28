@@ -242,45 +242,19 @@ class PromotionFileForm():
         except:
             self.messages.append('表格名称不正确，请下载模板')
             return False
-        header = ["推广人", "博主微信", "账号主页链接", "*平台", "*推广产品，多个产品,隔开", "付费形式", "费用",
-                  "佣金", "*图文链接", "产出形式", "合作时间", "*账号自营"]
+        header = ["推广产品", "*图文链接"]
         head_row = sheet[1]
         for cell in head_row:
             if cell.value != header[head_row.index(cell)]:
                 self.messages.append('表头错误')
                 break
-        for row in sheet.iter_rows(min_row=2):
-            if not row[3].value:
-                self.messages.append('第{}行第{}列平台不能为空'.format(row[3].row, row[3].column))
-                return False
-        for row in sheet.iter_rows(min_row=2):
-            if not row[4].value:
-                self.messages.append('第{}行第{}列商品不能为空'.format(row[4].row, row[4].column))
-                return False
         for row in sheet.iter_rows(min_row=8):
-            if not row[8].value:
-                self.messages.append('第{}行第{}列账号图文链接不能为空'.format(row[8].row, row[8].column))
+            if not row[1].value:
+                self.messages.append('第{}行第{}列账号图文链接不能为空'.format(row[1].row, row[1].column))
                 return False
         for row in sheet.iter_rows(min_row=2):
-            if not row[11].value:
-                self.messages.append('第{}行第{}列账号自营不能为空'.format(row[11].row, row[11].column))
-                return False
-
-        for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[3].value, str):
-                self.messages.append('第{}行第{}列平台应当是字符串'.format(row[3].row, row[3].column))
-                return False
-        for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[8].value, str) and row[8].value != None:
-                self.messages.append('第{}行第{}列图文链接应当是字符串'.format(row[8].row, row[8].column))
-                return False
-        for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[8].value, str):
-                self.messages.append('第{}行第{}列图文链接应当是字符串'.format(row[3].row, row[3].column))
-                return False
-        for row in sheet.iter_rows(min_row=2):
-            if not isinstance(row[11].value, str) and row[8].value != None:
-                self.messages.append('第{}行第{}列账号自营应当是字符串'.format(row[8].row, row[8].column))
+            if not isinstance(row[1].value, str) and row[8].value != None:
+                self.messages.append('第{}行第{}列图文链接应当是字符串'.format(row[1].row, row[1].column))
                 return False
 
     def validate(self):

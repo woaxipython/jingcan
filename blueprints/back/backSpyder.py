@@ -164,7 +164,8 @@ def testDy():
     token_id = request.args.get("token_id")
     if token_id:
         token_model = DyTokenModel.query.filter_by(id=token_id).first()
-        test_result = dy.testCookie(token=token_model.name)
+        webid, msToken, cookies = token_model.webid, token_model.msToken, token_model.name
+        test_result = dy.testCookie(webid, msToken, cookies)
         if test_result['message'] == "登录已过期":
             token_model.status = "登录已过期"
             db.session.add(token_model)
@@ -179,7 +180,8 @@ def testDy():
         message = ""
         for token in token_list:
             token_model = DyTokenModel.query.filter_by(name=token.name).first()
-            test_result = dy.testCookie(token=token[0])
+            webid, msToken, cookies = token_model.webid, token_model.msToken, token_model.name
+            test_result = dy.testCookie(webid, msToken, cookies)
             if test_result["message"] == "登录已过期":
                 token_model.status = "登录已过期"
                 message += token.phone + " 登录已过期"
@@ -222,31 +224,30 @@ def getPVcontentData():
 def addAccount():
     profile_link = request.form.to_dict().get("newXHSAccount")
     note_info = request.form.to_dict().get("note_info")
-    # ChangeSQL().changeAccountLink()
-    # return jsonify({"status": "success", "message": "新增抖音账号成功"})
-    # print(account_link, note_info)
     if "xiaohongshu" in profile_link:
+        plat = "小红书"
         token = xhsToken()
-        xhs = GetXhsSpyder()
-        profile_link = MakeRealURL().makeAccountURL(profile_link)
-        if profile_link:
-            result = xhs.getUserInfo(token=token, url=profile_link)
-            if result["status"] == "1":
-                write = WriteSQLData()
-                account_Info = result["message"]
-                selfs = "自营"
-                write.WriteSqlAccount(profile_link=profile_link, account_Info=account_Info, plat="小红书", selfs=selfs)
-                notes = int(account_Info.get("notes")) if account_Info.get("notes") else 0
-                if notes > 0 and note_info == "1":
-                    current_app.celery.send_task("GetXHSAccountNote", (profile_link, notes,))
-                return jsonify({"status": "success", "message": f"新增小红书账号{account_Info.get('nickname')}成功"})
-            else:
-                return jsonify({"status": "failed", "message": result["message"]})
-        else:
-            return jsonify({"status": "failed", "message": "请输入正确的小红书主页链接"})
-
+        spyder = GetXhsSpyder()
     elif "douyin" in profile_link:
-        print("抖音")
-        return jsonify({"status": "failed", "message": "暂不支持抖音账号的新增"})
+        plat = "抖音"
+        token, msToken, webid = dyToken()
+        spyder = DouYinSpyder()
     else:
         return jsonify({"status": "failed", "message": "请输入正确的主页链接"})
+    profile_link = MakeRealURL().makeAccountURL(profile_link)
+    if not profile_link:
+        return jsonify({"status": "failed", "message": "链接错误"})
+    if "xiaohongshu" in profile_link:
+        result = spyder.getUserInfo(token=token, url=profile_link)
+    elif "douyin" in profile_link:
+        result = spyder.getUserInfo(token=token, url=profile_link, webid="", msToken="")
+    else:
+        return jsonify({"status": "failed", "message": "请输入正确的主页链接"})
+    if not result["status"] == "1":
+        return jsonify({"status": "failed", "message": result["message"]})
+    write = WriteSQLData()
+    account_Info = result["message"]
+    write.WriteSqlAccount(profile_link=profile_link, account_Info=account_Info, plat=plat, selfs="自营")
+    if note_info == "1":
+        current_app.celery.send_task("GetAccountNote", (profile_link, account_Info, plat,))
+    return jsonify({"status": "success", "message": f"新增{plat}账号{account_Info.get('nickname')}成功"})

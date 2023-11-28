@@ -2,8 +2,7 @@ import os
 
 from APP.SQLAPP.addEdit.promotion import writeNewPromotionModel, writePromotionFee
 from APP.SQLAPP.makePandas.promotion import PromotionData
-from APP.SQLAPP.search.promotion import searchAccount, searchPVContentSql, searchNotes, makePromotionExcel, \
-    dictPromotionORM, GetPromotionModel
+from APP.SQLAPP.search.promotion import searchPVContentSql, makePVContentExcel
 from blueprints.sale.saleManage import allExcelFile
 from exts import db
 from form.fileValidate import PromotionFileForm
@@ -39,7 +38,7 @@ def manage():
 @bp.route("/downFile")
 def downFile():
     save_path = 'static/excel/推广批量上传模板.xlsx'
-    makePromotionExcel(save_path)
+    makePVContentExcel(save_path)
     return send_file(save_path, as_attachment=True)
 
 
@@ -52,43 +51,12 @@ def FilePromotion():
         file.save(save_path)
         form = PromotionFileForm(save_path)
         if form.validate():
-            current_app.celery.send_task("writeFilePromotionC", (save_path,))
+            current_app.celery.send_task("writeFilePVContent", (save_path,))
             return jsonify({"status": "success", "message": "正在上传文件，是否出错请查看日志"})
         else:
             return jsonify({'status': 'failed', 'message': form.messages})
     else:
         return jsonify({"status": "failed", "message": "请上传正确的文件"})
-
-
-@bp.route("/data")
-def data():
-    promotions = GetPromotionModel(interval=9000)
-    promotions = promotions.getSQlData()
-    promotions = PromotionData(promotions)
-    return jsonify({"status": "success", "message": promotions})
-
-
-# @bp.route("/search")
-# def searchPromotion():
-#     promotion_search_id = request.args.get("promotionId")
-#     promotion = searchPVContentSql(promotion_id=promotion_search_id).get("message")
-#     promotion = dictPromotionORM(promotion)
-#     return jsonify({"status": "success", "message": promotion})
-
-
-# @bp.route("/new", methods=['POST'])
-# def newPromotion():
-#     """新建推广"""
-#     form_dict = request.get_json() or request.form.to_dict() or request.args.to_dict()  # 优先级 json > form > args 获取数据
-#     form = NewPromotionForm(form_dict)  # 验证数据
-#     if form.validate():
-#         write = writeNewPromotionModel(form_dict)  # 写入数据
-#         if write.check():
-#             return jsonify(write.write())
-#         else:
-#             return jsonify({"status": "failed", "message": write.error_message})
-#     else:
-#         return jsonify({"status": "failed", "message": form.messages})
 
 
 @bp.route("/edit", methods=['POST'])
@@ -113,26 +81,9 @@ def editPromotion():
         print(form.messages)
         return jsonify({"status": "failed", "message": form.messages})
 
-
-
-# @bp.route("/getNotes", methods=['POST'])
-# def getNotes():
-#     form_dict = request.form.to_dict()
-#     form = NotesLinkForm(form_dict)
-#     if form.validate():
-#         write = searchNotes(form_dict)
-#         if write.check():
-#             spder_result = write.spyderNote()
-#             if spder_result["status"] == "success":
-#                 return jsonify(write.writeNote())
-#             else:
-#                 return jsonify(spder_result)
-#         else:
-#             return jsonify({"status": "failed", "message": write.error_message})
-#     else:
-#         print(form.messages)
-#         return jsonify({"status": "failed", "message": form.messages})
-
+@bp.route("/data")
+def data():
+    return jsonify({"status": "failed", "message": ""})
 
 def allowImageFile(filename):
     return '.' in filename and filename.split('.')[1].lower() in current_app.config.get('IMAGE_ALLOWED_EXTENSIONS')

@@ -155,11 +155,11 @@ makeRealURL = MakeRealURL()
 
 
 # 写入EXCEL批量导入的推广内容
-class WriteExcelPromotion(object):
+class WriteExcelPVContent(object):
     def __init__(self, save_path):
         """初始化"""
         """ header = 
-        ["推广人", "博主微信", "账号主页链接", "平台", "推广产品，多个产品,隔开", "付费形式", "费用","佣金", "图文链接", "产出形式", "合作时间", "账号自营"]
+        ["推广产品", "*图文链接", "账号自营"]
         """
         self.save_path = save_path
         self.workbook = load_workbook(save_path)
@@ -171,20 +171,9 @@ class WriteExcelPromotion(object):
         self.account_form = {}
         self.promotion_form = {}
         self.note_dict = {}
+        self.readExcel()
 
-    def write(self):
-        """写入文件"""
-        i = 0
-        for row in self.data_list:
-            self.writrNote(row)  # 写入推广内容
-            self.writeAccount(row)  # 写入账号
-            self.writePromotion(row)  # 写入推广
-            i += 1
-            print(self.error_message)
-            print("------------")
-            print("已经写入：{}行；图文链接：{}".format(i, row[8]))
-
-    def readPromotionExcel(self):  # 读取推广表格
+    def readExcel(self):  # 读取推广表格
         workbook = load_workbook(self.save_path)  # 打开excel文件
         sheet = workbook.active  # 获取当前活跃的sheet,默认是第一个sheet
         self.total = 0
@@ -195,213 +184,117 @@ class WriteExcelPromotion(object):
             self.data_list.append(row_list)  # 读取每行的数据
             self.total += 1
 
+    def write(self):
+        """写入文件"""
+        i = 0
+
+        for row in self.data_list:
+            self.writrNote(row)  # 写入推广内容
+            i += 1
+            print("------------")
+            print("已经写入：{}行，共计无误链接{}行，有误链接{}行；本次图文链接：{}".format(i, len(self.data_list),
+                                                                                       len(self.error_message), row[1]))
+        print(self.error_message)
+
     def check(self):
         """检查数据"""
+        '["推广产品", "*图文链接", "账号自营"]'
         new_data_list = []
         self.checked = 1  # 因为已经跳过第一行，所以计数从2开始
         for row in self.data_list:
-            print("正在检查第{}行".format(self.checked))
+            print("正在检查第{}行，共计预计导入{}行".format(self.checked, self.total))
             self.checked += 1
-            if row[3]:
-                if PlatModel.query.filter_by(name=row[3]).first() is None:  # 检查平台是否存在
-                    self.error_message.append(f"第{self.checked}行的平台不存在")
-                    continue
-
-            if "," in row[4]:
-                for group_name in row[4].split(","):
-                    if GroupModel.query.filter_by(name=group_name).first() is None:  # 检查商品组是否存在
-                        self.error_message.append(f"第{self.checked}行的商品组不存在")
-                        continue
-            else:
-                if GroupModel.query.filter_by(name=row[4]).first() is None:  # 检查商品组是否存在
+            if row[0]:
+                if GroupModel.query.filter_by(name=row[0]).first() is None:  # 检查商品组是否存在
                     self.error_message.append(f"第{self.checked}行的商品组不存在")
                     continue
-
-            if row[5]:
-                if FeeModel.query.filter_by(name=row[5]).first() is None:  # 检查费用模型是否存在
-                    self.error_message.append(f"第{self.checked}行的费用模板不存在")
+            if row[1]:  # 图文链接是否为空，为空则跳过
+                pv_url = makeRealURL.makePVContentURL(row[1])  # 重构图文链接为标准格式
+                if not pv_url:
+                    self.error_message.append(f"第{self.checked}行的图文链接{row[1]}转换错误")
                     continue
-
-            if row[8]:  # 图文链接是否为空，为空则跳过
-                pv_url = makeRealURL.makePVContentURL(row[8])  # 重构图文链接为标准格式
-                if pv_url:
-                    row[8] = pv_url
-                else:
-                    self.error_message.append(f"第{self.checked}行的图文链接不正确")
-                    continue
-            else:
-                self.error_message.append("第{}行的图文链接为空，已自动跳过".format(self.checked))
-                continue
+                row[1] = pv_url
 
             new_data_list.append(row)  # 将检查通过的数据添加到新列表中
-
         self.data_list = new_data_list  # 将检查通过的数据赋值给原来的列表
 
     def writrNote(self, row):
-        output_model = OutputModel.query.filter_by(name=row[9]).first()
-        pvcontent_link = row[8]
-        pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
-        pvcontent_model = PVContentModel() if not pvcontent_model else pvcontent_model
-        pvcontent_model.output = output_model
-        pvcontent_model.content_link = pvcontent_link
-        max_id = db.session.query(func.max(PVContentModel.id)).scalar() or 0  # 获取最大的id
-        note_search_id = generate_Number_string(8, max_id + 1)  # 生成8位的id
-        pvcontent_model.search_id = note_search_id
-        db.session.add(pvcontent_model)
-        db.session.commit()
+        """写入推广内容"""
+        plat = MakeRealURL().makePlatName(row[1])
+        plat_model = PlatModel.query.filter_by(name=plat).first()
 
-    def writeAccount(self, row):
-        pvcontent_link = row[8]
-        pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
-
-        plat_model = PlatModel.query.filter_by(name=row[3]).first()
-        account_link = row[2]
-        if account_link:
-            account_model = AccountModel.query.filter_by(profile_link=account_link).first()
-        else:
-            account_model = AccountModel()
-        account_model.plat = plat_model if plat_model else None
-        account_model.self = row[11]
-
-        pvcontent_model.account = account_model
-        db.session.add(account_model)
-        db.session.add(pvcontent_model)
-        db.session.commit()
-
-    def writePromotion(self, row):
-        pvcontent_link = row[8]
-        pvcontent_model = PVContentModel.query.filter_by(content_link=pvcontent_link).first()
-
-        output_model = OutputModel.query.filter_by(name=row[9]).first()
-
-        promotion_id = pvcontent_model.promotion_id
-        promotion_model = PromotionModel.query.filter_by(id=promotion_id).first()
-        promotion_model = PromotionModel() if not promotion_model else promotion_model
-
-        group_model = GroupModel.query.filter(GroupModel.name.in_(row[4].split(","))).all()  # 商品组
-        user_model = UserModel.query.filter_by(name=row[0]).first()
-        if not user_model:
-            user_model = UserModel(name=row[0])
-            db.session.add(user_model)
-            db.session.commit()
-        bloger_model = BlogerModel.query.filter_by(wechat=row[1]).first()  # 博主
-        if not bloger_model:
-            bloger_model = BlogerModel(wechat=row[1])
-            db.session.add(bloger_model)
-            db.session.commit()
-        max_id = db.session.query(func.max(PromotionModel.id)).scalar() or 0  # 获取最大的id
-        search_id = generate_Number_string(8, max_id + 1)  # 生成8位的id
-        promotion_model.search_id = search_id
-        promotion_model.fee = row[7]
-        promotion_model.commission = row[8]
-        promotion_model.group = group_model
-        promotion_model.feeModel = output_model
-        promotion_model.user = user_model
-        promotion_model.bloger = bloger_model
-
-        pvcontent_model.promotion = promotion_model
-        db.session.add(promotion_model)
+        content_id = MakeRealURL().makeContentID(row[1])
+        goods_model = GroupModel.query.filter_by(name=row[0]).first()
+        pvcontent_model = PVContentModel.query.filter_by(content_id=content_id).first()
+        pvcontent_model = PVContentModel(content_id=content_id) if not pvcontent_model else pvcontent_model
+        pvcontent_model.content_link = row[1]
+        pvcontent_model.plat = plat_model
+        pvcontent_model.goods = goods_model
         db.session.add(pvcontent_model)
         db.session.commit()
 
 
 # 写入SQL查询的各类数据
 class WriteSQLData(object):
-    def WriteSqlPVcontentData(self, note_link, notes_Info, ):
-        pvcontent_models = PVContentModel.query.filter_by(content_link=note_link).all()
-        if not pvcontent_models:
-            return {"status": "failed", "message": "没有该条内容"}
-        if len(pvcontent_models) > 1:
-            for pvcontent_model in pvcontent_models:
-                self.__writeSQlNote(note_link, notes_Info, pvcontent_model)
-        else:
-            pvcontent_model = pvcontent_models[0]
-            self.__writeSQlNote(note_link, notes_Info, pvcontent_model)
-
-    def __writeSQlNote(self, note_link, notes_Info, pvcontent_model):
-        date_today = datetime.now().strftime("%Y-%m-%d")
-        info = note_link + date_today
-        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
+    def WriteSqlPVcontentData(self, note_link, notes_Info):
+        """写入推广内容"""
+        content_id = MakeRealURL().makeContentID(note_link)
+        if not content_id:
+            return {"status": "failed", "message": "请输入正确的笔记链接"}
+        pvcontent_model = PVContentModel.query.filter_by(content_id=content_id).first()
+        pvcontent_model = PVContentModel(content_id=content_id) if not pvcontent_model else pvcontent_model
+        plat = MakeRealURL().makePlatName(note_link)
+        plat_model = PlatModel.query.filter_by(name=plat).first()
+        for key, value in notes_Info.items(): setattr(pvcontent_model, key, value)
         pvcontent_model.attention = 0 if pvcontent_model.attention != 1 else 1
-        note_link = makeRealURL.makePVContentURL(note_link)
-        print(note_link)
-        pvcontent_model.content_link = note_link
-        pvcontent_model.title = notes_Info["title"]
-        pvcontent_model.content_id = notes_Info["content_id"]
-        pvcontent_model.liked = notes_Info["liked"]
-        pvcontent_model.desc = notes_Info["desc"]
-        pvcontent_model.collected = notes_Info["collected"]
-        pvcontent_model.forwarded = notes_Info["forwarded"]
-        pvcontent_model.commented = notes_Info["commented"]
-        pvcontent_model.video_link = notes_Info["video_link"]
-        pvcontent_model.imageList = ",".join(notes_Info["imageList"]) if notes_Info["imageList"] else ""
         pvcontent_model.contenttype = "视频" if notes_Info["video_link"] else "图文"
-        pvcontent_model.spyder_url = notes_Info["spyder_url"]
-        pvcontent_model.status = notes_Info["status"]
-        pvcontent_model.upload_time = notes_Info["upload_time"]
-        pvcontent_model.upgrade_time = date_today
+        pvcontent_model.plat = plat_model
+        UNIQUE_ID = MakeRealURL().makeUniqueDayId(note_link)
 
-        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
-        pvcontent_today_model = PVDataModel() if not pvcontent_today_model else pvcontent_today_model
-        pvcontent_today_model.search_id = DaydataID
+        db.session.add(pvcontent_model)
+        db.session.commit()
+
+        pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == UNIQUE_ID).first()
+        pvcontent_today_model = PVDataModel(search_id=UNIQUE_ID) if not pvcontent_today_model else pvcontent_today_model
         pvcontent_today_model.pvcontent = pvcontent_model
+
         pvcontent_today_model.liked = notes_Info["liked"]
         pvcontent_today_model.collected = notes_Info["collected"]
         pvcontent_today_model.forwarded = notes_Info["forwarded"]
         pvcontent_today_model.commented = notes_Info["commented"]
-        pvcontent_today_model.createtime = date_today
 
-        plat = "抖音" if "douyin" in note_link else "快手" if "kuaishou" in note_link else "小红书" if "xiaohongshu" in note_link else "其他"
-        plat_model = PlatModel.query.filter_by(name=plat).first()
-
-        account_model = AccountModel.query.filter_by(id=pvcontent_model.account_id).first()
-        account_model = AccountModel() if not account_model else account_model
-        account_model.account_id = notes_Info["account_id"]
-        account_model.attention = 0 if account_model.attention != 1 else 1
+        account_model = AccountModel.query.filter_by(account_id=notes_Info["account_plat_id"]).first()
+        account_model = AccountModel(account_id=notes_Info["account_plat_id"]) if not account_model else account_model
+        account_model.attention = 2 if account_model.attention != 1 else 1
+        account_model.self = "达人" if account_model.self != "自营" else "自营"
         account_model.profile_link = notes_Info["profile_link"]
         account_model.plat = plat_model
 
-        db.session.merge(account_model)
-        db.session.merge(pvcontent_model)
-        db.session.merge(pvcontent_today_model)
+        pvcontent_model.account = account_model
+
+        db.session.add(account_model)
+
+        db.session.add(pvcontent_today_model)
         db.session.commit()
 
     def writeAccountNotes(self, profile_link, notes_Info):
+        account_id = MakeRealURL().makeAccountID(profile_link)
+        account_model = AccountModel.query.filter_by(account_id=account_id).first()
+
+        plat = MakeRealURL().makePlatName(profile_link)
+        plat_model = PlatModel.query.filter_by(name=plat).first()
+
         note_link = notes_Info["content_link"]
-        pvcontent_models = PVContentModel.query.filter_by(content_link=note_link).all()
-        if len(pvcontent_models) > 1:
-            for pvcontent_model in pvcontent_models:
-                self.__writeAccountNotes(profile_link, notes_Info, pvcontent_model, note_link)
-        else:
-            pvcontent_model = pvcontent_models[0]
-            self.__writeAccountNotes(profile_link, notes_Info, pvcontent_model, note_link)
+        content_id = MakeRealURL().makeContentID(note_link)
+        pvcontent_model = PVContentModel.query.filter(PVContentModel.content_id == content_id).first()
+        pvcontent_model = PVContentModel(content_id=content_id) if not pvcontent_model else pvcontent_model
 
-    def __writeAccountNotes(self, profile_link, notes_Info, pvcontent_model, note_link):
-        account_model = AccountModel.query.filter_by(profile_link=profile_link).first()
-
-        pvcontent_model = PVContentModel(content_link=note_link) if not pvcontent_model else pvcontent_model
-
-        date_today = datetime.now().strftime("%Y-%m-%d")
-        info = note_link + date_today
-        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
-        pvcontent_model.attention = 0
-
-        pvcontent_model.title = notes_Info["title"]
-        pvcontent_model.content_id = notes_Info["content_id"]
-        pvcontent_model.liked = notes_Info["liked"]
-        pvcontent_model.desc = notes_Info["desc"]
-        pvcontent_model.collected = notes_Info["collected"]
-        pvcontent_model.forwarded = notes_Info["forwarded"]
-        pvcontent_model.commented = notes_Info["commented"]
-        pvcontent_model.video_link = notes_Info["video_link"]
-        pvcontent_model.imageList = ",".join(notes_Info["imageList"]) if notes_Info["imageList"] else ""
-        pvcontent_model.contenttype = "视频" if notes_Info["video_link"] else "图文"
-        pvcontent_model.spyder_url = notes_Info["spyder_url"]
-        pvcontent_model.status = notes_Info["status"]
-        pvcontent_model.upload_time = notes_Info["upload_time"]
-        pvcontent_model.upgrade_time = date_today
+        for key, value in notes_Info.items(): setattr(pvcontent_model, key, value)
         pvcontent_model.account = account_model
+        pvcontent_model.plat = plat_model
+        pvcontent_model.attention = 2
 
+        DaydataID = MakeRealURL().makeUniqueDayId(note_link)
         pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
         pvcontent_today_model = PVDataModel() if not pvcontent_today_model else pvcontent_today_model
         pvcontent_today_model.search_id = DaydataID
@@ -410,10 +303,9 @@ class WriteSQLData(object):
         pvcontent_today_model.collected = notes_Info["collected"]
         pvcontent_today_model.forwarded = notes_Info["forwarded"]
         pvcontent_today_model.commented = notes_Info["commented"]
-        pvcontent_today_model.createtime = date_today
 
-        db.session.merge(pvcontent_model)
-        db.session.merge(pvcontent_today_model)
+        db.session.add(pvcontent_model)
+        db.session.add(pvcontent_today_model)
         db.session.commit()
 
     def changeSQLNoteStatus(self, note_link, status):
@@ -433,44 +325,30 @@ class WriteSQLData(object):
         db.session.commit()
 
     def WriteSqlAccount(self, profile_link, account_Info, plat, selfs=""):
+        """写入推广账号"""
+        account_id = MakeRealURL().makeAccountID(profile_link)
+        print(account_id)
+        account_model = AccountModel.query.filter(AccountModel.account_id == account_id).first()
+        account_model = AccountModel(account_id=account_id) if not account_model else account_model
 
-        account_models = AccountModel.query.filter(AccountModel.profile_link == profile_link).all()
-        if len(account_models) > 1:
-            for account_model in account_models:
-                self.__writeAccount(profile_link, account_Info, plat, account_model, selfs)
-        else:
-            account_model = account_models[0]
-            self.__writeAccount(profile_link, account_Info, plat, account_model, selfs)
-
-    def __writeAccount(self, profile_link, account_Info, plat, account_model, selfs="", ):
-        date_today = datetime.now().strftime("%Y-%m-%d")
-        info = profile_link + date_today
-        DaydataID = hashlib.sha1(info.encode()).hexdigest()[:20]
-
+        UNIQUE_ID = MakeRealURL().makeUniqueDayId(profile_link)
         plat_model = PlatModel.query.filter_by(name=plat).first()
-        if account_model:
-            for key, value in account_Info.items(): setattr(account_model, key, value)
-        else:
-            account_model = AccountModel(**account_Info)  # 实例化账号模型
-        account_model.profile_link = MakeRealURL().makeAccountURL(profile_link)
-        account_model.upgradetime = date_today
+        for key, value in account_Info.items(): setattr(account_model, key, value)
         account_model.attention = 0 if account_model.attention != 1 else 1
         selfs = selfs if selfs else ""
         account_model.plat = plat_model
         account_model.self = selfs
 
-        account_today_model = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == DaydataID).first()
-        account_today_model = AccountDayDataModel() if not account_today_model else account_today_model
-        account_today_model.search_id = DaydataID
-        account_today_model.account = account_model
-        account_today_model.nickname = account_Info["nickname"]
-        account_today_model.fans = account_Info["fans"]
-        account_today_model.notes = account_Info["notes"]
-        account_today_model.liked = account_Info["liked"]
-        account_today_model.collected = account_Info["collected"]
-        account_today_model.follow = account_Info["follow"]
-        account_today_model.upgradetime = date_today
+        account_Day = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == UNIQUE_ID).first()
+        account_Day = AccountDayDataModel(search_id=UNIQUE_ID) if not account_Day else account_Day
+        account_Day.account = account_model
+        account_Day.nickname = account_Info["nickname"]
+        account_Day.fans = account_Info["fans"]
+        account_Day.notes = account_Info["notes"]
+        account_Day.liked = account_Info["liked"]
+        account_Day.collected = account_Info["collected"]
+        account_Day.follow = account_Info["follow"]
 
-        db.session.merge(account_model)
-        db.session.merge(account_today_model)
+        db.session.add(account_model)
+        db.session.add(account_Day)
         db.session.commit()

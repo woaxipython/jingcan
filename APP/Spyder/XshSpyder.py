@@ -7,6 +7,8 @@ import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from APP.Spyder.makeRealURL import MakeRealURL
+from APP.Spyder.makeXHSInfo.makeInfo import get_note_info, getHeaders, makeUserSpyderURL, get_profile_info, \
+    get_user_note, makeNotesSpyderURL, makeNoteSpyderURL
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -15,23 +17,13 @@ makeRealURL = MakeRealURL()
 
 class GetXhsSpyder():
     def __init__(self, ):
-        self.agent = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF XWEB/6939',
-            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat']
-
-        self.headers = {
-            'Host': 'www.xiaohongshu.com',
-            'user-agent': random.choice(self.agent),
-        }
+        self.headers = getHeaders()
 
         self.base_url = 'https://www.xiaohongshu.com'
-        # self.test_note_url = 'https://www.xiaohongshu.com/explore/643c87440000000013035e63?app_platform=ios&app_version=7.78&share_from_user_hidden=true&type=normal&xhsshare=WeixinSession&appuid=5c015af7000000000800d647&apptime=1678243355'
-        # self.test_note_url = 'https://www.xiaohongshu.com/explore/642e5c730000000013007b5d'
         test_url = ['https://www.xiaohongshu.com/user/profile/623b189f00000000210213f8',
                     'https://www.xiaohongshu.com/explore/6468845f0000000013008a91'
                     ]
         self.test_note_url = random.choice(test_url)
-
         self.test_user_url = 'https://www.xiaohongshu.com/user/profile/63454e9000000000180216d9'
 
     def testCookie(self, token=""):
@@ -42,87 +34,39 @@ class GetXhsSpyder():
         else:
             return result
 
-    def m_md5(self, data: str):
-        m = hashlib.md5()
-        m.update(data.encode())
-        return m.hexdigest()
-
     def getUserInfo(self, token, url=""):
         self.headers['authorization'] = token
         url = url if url else self.test_user_url
         uid = makeRealURL.makeXHSAccount_id(url)
         if not uid:
             return {'status': '0', 'message': "请输入正确的主页连接"}
-        real_user_url = f'/fe_api/burdock/weixin/v2/user/{uid}'
-        xsign = 'X' + self.m_md5(real_user_url + "WSUDD")
-        self.headers['x-sign'] = xsign
-        spyder_url = self.base_url + real_user_url
-        response = requests.get(spyder_url, headers=self.headers, verify=False)
-        if response.status_code == 200 and response.json()["success"] == True:
-            data = response.json()['data']
-            Account_result = {
-                "nickname": data.get("nickname", ""),
-                "follow": data.get("follows", 0),
-                "fans": data.get("fans", 0),
-                "gender": data.get("gender", 0),
-                "liked": data.get("liked", ""),
-                "account_id": data.get("id", 0),
-                "notes": data.get("notes", 0),
-                "boards": data.get("boards", 0),
-                "location": data.get("location", ""),
-                "collected": data.get("collected", 0),
-                "desc": data.get("desc", ""),
-                "officialVerifyName": data.get("officialVerifyName", ""),
-                "spyder_url": spyder_url,
-                "profile_link": url,
-                "status": "正常",
-            }
-            return {'status': '1', 'message': Account_result}
-        else:
+        spyder_url, headers = makeUserSpyderURL(uid, self.headers)
+        response = requests.get(spyder_url, headers=headers, verify=False)
+        if not response.status_code == 200 and not response.json()["success"] == True:
             try:
                 response_json = response.json()
                 return {'status': '2', 'message': response_json['msg']}
             except:
                 return {'status': '3', 'message': "账号异常，请检查账号是否存在"}
+        result = get_profile_info(response, url, spyder_url)
+        return {'status': '1', 'message': result}
 
     def getNoteList(self, token, page, url=""):
         self.headers['authorization'] = token
         url = url if url else self.test_user_url
-        if "profile" in url:
-            uid = re.findall(r"profile/(.+)", url)[0]
-            real_user_url = f'/fe_api/burdock/weixin/v2/user/{uid}/notes?page={page}'
-            xsign = 'X' + self.m_md5(real_user_url + "WSUDD")
-            self.headers['x-sign'] = xsign
-            spyder_url = self.base_url + real_user_url
-            response = requests.get(spyder_url, headers=self.headers, verify=False)
-            if response.status_code == 200 and response.json()["success"] == True:
-                for note in response.json()['data']:
-                    notes_result = {
-                        "title": note['title'],
-                        "content_id": note['id'],
-                        "liked": note['likes'],
-                        "desc": "",
-                        "collected": note['collects'],
-                        "forwarded": "",
-                        "commented": note['comments'],
-                        "imageList": "",
-                        "commentList": "",
-                        "hashTags": "",
-                        "video_link": "",
-                        "spyder_url": "",
-                        "upload_time": note['time'],
-                        "content_link": "https://www.xiaohongshu.com/explore/" + note['id'],
-                        "status": "正常",
-                    }
-                    yield {'status': '1', 'message': notes_result}
-            else:
-                try:
-                    response_json = response.json()
-                    yield {'status': '2', 'message': response_json['msg']}
-                except:
-                    yield {'status': '2', 'message': "笔记状态异常，请检查笔记是否存在"}
-        else:
-            yield {'status': '0', 'message': "请输入主页连接"}
+        if not "profile" in url:
+            yield {'status': '0', 'message': "请输入正确的主页连接"}
+        spyder_url, headers = makeNotesSpyderURL(url, page, self.headers)
+        response = requests.get(spyder_url, headers=headers, verify=False)
+        if not response.status_code == 200 and not response.json()["success"] == True:
+            try:
+                response_json = response.json()
+                yield {'status': '2', 'message': response_json['msg']}
+            except:
+                yield {'status': '2', 'message': "笔记状态异常，请检查笔记是否存在"}
+        for note in response.json()['data']:
+            result = get_user_note(note)
+            yield {'status': '1', 'message': result}
 
     def getNoteInfo(self, token, url=""):
         self.headers['authorization'] = token
@@ -130,42 +74,17 @@ class GetXhsSpyder():
         uid = makeRealURL.makeXHSContent_id(url)
         if not uid:
             return {'status': '0', 'message': "请输入正确的笔记连接"}
-        real_note_url = f'/fe_api/burdock/weixin/v2/note/{uid}/single_feed'
-        xsign = 'X' + self.m_md5(real_note_url + "WSUDD")
-        self.headers['x-sign'] = xsign
-        spyder_url = self.base_url + real_note_url
-        response = requests.get(spyder_url, headers=self.headers, verify=False)
-
-        if response.status_code == 200:
-            data = response.json()['data']
-            account_id = data['user']['id']
-            title_result = {
-                "title": data['title'],
-                "content_id": uid,
-                "liked": data['likes'],
-                "desc": data['desc'],
-                "collected": data['collects'],
-                "forwarded": data['shareCount'],
-                "commented": data['comments'],
-                "imageList": [img["url"] for img in data['imageList'] if data.get('imageList')],
-                "commentList": [data['commentList'][0]["content"] if data.get('commentList') else ""],
-                "hashTags": [tags["name"] for tags in data['hashTags'] if data.get('hashTags')],
-                "video_link": data['video']['url'] if data.get('video') else "",
-                "spyder_url": spyder_url,
-                "upload_time": data['time'],
-                "content_link": url.split("?")[0],
-                "status": "正常",
-                "account_id": data['user']['id'],
-                "profile_link": "https://www.xiaohongshu.com/user/profile/" + account_id,
-            }
-            return {"status": "1", "message": title_result}
-
-        else:
+        spyder_url, headers = makeNoteSpyderURL(uid, self.headers)
+        response = requests.get(spyder_url, headers=headers, verify=False)
+        if not response.status_code == 200:
             try:
                 response_json = response.json()
                 return {'status': '2', 'message': response_json['msg']}
             except:
                 return {'status': '3', 'message': "笔记不存在"}
+
+        result = get_note_info(response, spyder_url, url, uid)
+        return {"status": "1", "message": result}
 
 
 if __name__ == '__main__':
@@ -177,4 +96,5 @@ if __name__ == '__main__':
     #     ass = xhs.getNoteList(token=token, page=page)
     #     for a in ass:
     #         print(a)
-    xhs.getNoteInfo(token=token)
+    result = xhs.getUserInfo(token=token)
+    print(result)

@@ -125,6 +125,8 @@ class DyTokenModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     wechat = db.Column(db.String(30), nullable=False, unique=True)
     name = db.Column(db.Text, nullable=False)
+    webid = db.Column(db.Text, nullable=False,)
+    msToken = db.Column(db.Text, nullable=False)
     phone = db.Column(db.String(30), nullable=False, unique=True)
     status = db.Column(db.String(30), default="正常")
     createTime = db.Column(db.DateTime, default=datetime.now)
