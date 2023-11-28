@@ -164,8 +164,9 @@ def testDy():
     token_id = request.args.get("token_id")
     if token_id:
         token_model = DyTokenModel.query.filter_by(id=token_id).first()
-        webid, msToken, cookies = token_model.webid, token_model.msToken, token_model.name
-        test_result = dy.testCookie(webid, msToken, cookies)
+        webid, msToken, token = token_model.webid, token_model.msToken, token_model.name
+
+        test_result = dy.testCookie(token, webid, msToken)
         if test_result['message'] == "登录已过期":
             token_model.status = "登录已过期"
             db.session.add(token_model)
@@ -180,8 +181,8 @@ def testDy():
         message = ""
         for token in token_list:
             token_model = DyTokenModel.query.filter_by(name=token.name).first()
-            webid, msToken, cookies = token_model.webid, token_model.msToken, token_model.name
-            test_result = dy.testCookie(webid, msToken, cookies)
+            webid, msToken, token = token_model.webid, token_model.msToken, token_model.name
+            test_result = dy.testCookie(token, webid, msToken)
             if test_result["message"] == "登录已过期":
                 token_model.status = "登录已过期"
                 message += token.phone + " 登录已过期"

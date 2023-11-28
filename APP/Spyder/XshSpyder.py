@@ -34,40 +34,6 @@ class GetXhsSpyder():
         else:
             return result
 
-    def getUserInfo(self, token, url=""):
-        self.headers['authorization'] = token
-        url = url if url else self.test_user_url
-        uid = makeRealURL.makeXHSAccount_id(url)
-        if not uid:
-            return {'status': '0', 'message': "请输入正确的主页连接"}
-        spyder_url, headers = makeUserSpyderURL(uid, self.headers)
-        response = requests.get(spyder_url, headers=headers, verify=False)
-        if not response.status_code == 200 and not response.json()["success"] == True:
-            try:
-                response_json = response.json()
-                return {'status': '2', 'message': response_json['msg']}
-            except:
-                return {'status': '3', 'message': "账号异常，请检查账号是否存在"}
-        result = get_profile_info(response, url, spyder_url)
-        return {'status': '1', 'message': result}
-
-    def getNoteList(self, token, page, url=""):
-        self.headers['authorization'] = token
-        url = url if url else self.test_user_url
-        if not "profile" in url:
-            yield {'status': '0', 'message': "请输入正确的主页连接"}
-        spyder_url, headers = makeNotesSpyderURL(url, page, self.headers)
-        response = requests.get(spyder_url, headers=headers, verify=False)
-        if not response.status_code == 200 and not response.json()["success"] == True:
-            try:
-                response_json = response.json()
-                yield {'status': '2', 'message': response_json['msg']}
-            except:
-                yield {'status': '2', 'message': "笔记状态异常，请检查笔记是否存在"}
-        for note in response.json()['data']:
-            result = get_user_note(note)
-            yield {'status': '1', 'message': result}
-
     def getNoteInfo(self, token, url=""):
         self.headers['authorization'] = token
         url = url if url else self.test_note_url
@@ -85,6 +51,41 @@ class GetXhsSpyder():
 
         result = get_note_info(response, spyder_url, url, uid)
         return {"status": "1", "message": result}
+
+    def getUserInfo(self, token, url=""):
+        self.headers['authorization'] = token
+        url = url if url else self.test_user_url
+        uid = makeRealURL.makeXHSAccount_id(url)
+        if not uid:
+            return {'status': '0', 'message': "请输入正确的主页连接"}
+        spyder_url, headers = makeUserSpyderURL(uid, self.headers)
+        response = requests.get(spyder_url, headers=headers, verify=False)
+        if not response.status_code == 200 and not response.json()["success"] == True:
+            try:
+                response_json = response.json()
+                return {'status': '2', 'message': response_json['msg']}
+            except:
+                return {'status': '3', 'message': "账号异常，请检查账号是否存在"}
+        result = get_profile_info(response, url, spyder_url)
+        return {'status': '1', 'message': result}
+
+    def getUserNoteList(self, token, page, url=""):
+        self.headers['authorization'] = token
+        url = url if url else self.test_user_url
+        if not "profile" in url:
+            yield {'status': '0', 'message': "请输入正确的主页连接"}
+        spyder_url, headers = makeNotesSpyderURL(url, page, self.headers)
+        response = requests.get(spyder_url, headers=headers, verify=False)
+        if not response.status_code == 200 and not response.json()["success"] == True:
+            try:
+                response_json = response.json()
+                yield {'status': '2', 'message': response_json['msg']}
+            except:
+                yield {'status': '2', 'message': "笔记状态异常，请检查笔记是否存在"}
+        for note in response.json()['data']:
+            result = get_user_note(note)
+            yield {'status': '1', 'message': result}
+
 
 
 if __name__ == '__main__':

@@ -236,7 +236,7 @@ class searchAccount(object):
             else:
                 return {"status": "2", "message": profile_result["message"]}
         else:
-            print(profile_result["message"]['title'])
+            print(profile_result["message"]['nickname'])
             return {"status": "1", "message": profile_result["message"]}
 
     def spyderDYAccount(self, profile_link):
@@ -264,7 +264,7 @@ class searchAccountNotes(object):
         token = xhsToken()
         if not token:
             yield {"status": "4", "message": "正常小红书账号已用完，请联系管理员"}
-        profile_results = xhs.getNoteList(token=token, page=page, url=profile_link)
+        profile_results = xhs.getUserNoteList(token=token, page=page, url=profile_link)
         for profile_result in profile_results:
             has_more = profile_result.get("has_more")
             max_cursor = profile_result.get("max_cursor")
@@ -303,7 +303,7 @@ class searchAccountNotes(object):
         token, msToken, webid = dyToken()
         if not token:
             yield {"status": "4", "message": "正常抖音账号已用完，请联系管理员"}
-        profile_results = dy.getNoteList(token, webid, msToken, url=profile_link, max_cursor=max_cursor)
+        profile_results = dy.getUserNoteList(token, webid, msToken, url=profile_link, max_cursor=max_cursor)
 
         for profile_result in profile_results:
             has_more = profile_result.get("has_more")
