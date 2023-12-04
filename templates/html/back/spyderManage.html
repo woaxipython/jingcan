@@ -16,7 +16,7 @@
                 <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
                     role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a href="#tabs-xhs" class="nav-link active" data-bs-toggle="tab"
+                        <a href="#tabs-xhs" class="nav-link" data-bs-toggle="tab"
                            aria-selected="true" role="tab">
                             <!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -293,14 +293,6 @@
                         <div class="card-body border-top-0" style="min-height: 25rem">
                             <div class="col-auto d-flex ">
                                 <div class="me-2 d-inline-block">
-                                    <select class="form-control px-4" data-promotion="plat">
-                                        <option value="" disabled selected>选择平台</option>
-                                        {% for content_plat in content_plats %}
-                                            <option value="{{ content_plat.name }}">{{ content_plat.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="me-2 d-inline-block">
                                     <select class="form-control px-4" data-promotion="attention">
                                         <option value="all" disabled selected>选择内容</option>
                                         <option value="all">所有内容</option>
@@ -324,14 +316,6 @@
                             </div>
                             <hr>
                             <div class="col-auto d-flex ">
-                                <div class="me-2 d-inline-block">
-                                    <select class="form-control px-4" data-promotion="plat">
-                                        <option value="" disabled selected>选择平台</option>
-                                        {% for content_plat in content_plats %}
-                                            <option value="{{ content_plat.name }}">{{ content_plat.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
                                 <div class="me-2 d-inline-block">
                                     <select class="form-control px-4" data-promotion="attention">
                                         <option value="all" disabled selected>选择内容</option>
@@ -380,6 +364,26 @@
                                 </div>
                                 <div class="modal-footer ms-auto">
                                     <button class="btn btn-blue" id="newXHSAccount">获取账号</button>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="modal-title mb-1">新增关键词数据</div>
+                            <div class="col-auto d-flex border-bottom">
+                                <div class="col-8">
+                                    <form id="newKeywordForm" method="post">
+                                        <div class="modal-body me-3">
+                                            <input type="hidden" name="csrf_token"
+                                                   value="{{ csrf_token() }}">
+                                            <input type="text" class="form-control required" name="newKeyword"
+                                                   placeholder="输入关键词">
+                                            <small class="text-danger d-none"
+                                                   data-input="newKeyword">不能为空</small>
+                                            <input type="hidden" name="note_info" value="">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer ms-auto">
+                                    <button class="btn btn-blue" id="newKeyword">点击新增</button>
                                 </div>
                             </div>
                         </div>

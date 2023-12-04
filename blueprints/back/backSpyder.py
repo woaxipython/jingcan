@@ -198,27 +198,17 @@ def testDy():
 def getAccountData():
     plat = request.args.get("plat")
     attention = request.args.get("attention")
-    plat = "" if plat == "null" else plat
     attention = "" if attention == "null" else attention
-    if plat:
-        current_app.celery.send_task("GetAccount", (attention, plat,))
-        return jsonify({"status": "success", "message": "正在更新内容数据"})
-    else:
-        return jsonify({"status": "failed", "message": "请选择平台"})
+    current_app.celery.send_task("GetAccount", (attention,))
+    return jsonify({"status": "success", "message": "正在更新内容数据"})
 
 
 @bp.route("/getPVcontentData")
 def getPVcontentData():
-    plat = request.args.get("plat")
     attention = request.args.get("attention")
-    print(plat, attention)
-    plat = "" if plat == "null" else plat
     attention = "" if attention == "null" else attention
-    if plat:
-        current_app.celery.send_task("GetNote", (attention, plat,))
-        return jsonify({"status": "failed", "message": "正在更新内容数据"})
-    else:
-        return jsonify({"status": "failed", "message": "请选择平台"})
+    current_app.celery.send_task("GetNote", (attention,))
+    return jsonify({"status": "failed", "message": "正在更新内容数据"})
 
 
 @bp.route("/addAccount", methods=['POST'])

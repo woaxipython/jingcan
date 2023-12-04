@@ -48,13 +48,13 @@ def time_plat_sleep(plat):
         time.sleep(random.randint(3, 8))
 
 
-def GetAccount(attention, plat):
-    getAccount(attention=attention, plat=plat)
+def GetAccount(attention):
+    getAccount(attention=attention)
 
 
-def GetNote(attention, plat):
+def GetNote(attention):
     # changePlat()
-    getNote(attention=attention, plat=plat)
+    getNote(attention=attention)
 
 
 def GetAccountNote(profile_link, account_Info, plat):

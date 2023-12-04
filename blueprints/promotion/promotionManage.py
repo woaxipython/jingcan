@@ -1,8 +1,8 @@
 import os
 
-from APP.SQLAPP.addEdit.promotion import writeNewPromotionModel, writePromotionFee
-from APP.SQLAPP.makePandas.promotion import PromotionData
-from APP.SQLAPP.search.promotion import searchPVContentSql, makePVContentExcel
+from APP.SQLAPP.addEdit.promotion import writePromotionFee
+from APP.SQLAPP.makePandas.promotion import promotionChartData
+from APP.SQLAPP.search.promotion import searchPVContentSql, makePVContentExcel, searchTotalDataSql
 from blueprints.sale.saleManage import allExcelFile
 from exts import db
 from form.fileValidate import PromotionFileForm
@@ -10,12 +10,9 @@ from form.fileValidate import PromotionFileForm
 from form.formValidate import NewPromotionForm, EditPromotionForm, ProfileLinkForm, NotesLinkForm, GetPromotionForm
 from flask import Blueprint, request, current_app, render_template, send_file, \
     jsonify, redirect, url_for
-from werkzeug.utils import secure_filename
 
 from models.back import PlatModel, RateModel, FeeModel, OutputModel
 from models.product import GroupModel
-from models.promotion import PromotionModel
-from models.promotiondata import PVContentModel
 from models.user import UserModel
 
 bp = Blueprint("promotion", __name__, url_prefix="/promotion")
@@ -33,6 +30,30 @@ def manage():
 
     return render_template("html/promotion/promotionManage.html", plats=plats, groups=groups, users=users, rates=rates,
                            feeModels=fee_models, outputs=outputs, promotions=promotions)
+
+
+@bp.route("/data")
+def data():
+    promotion_data = searchTotalDataSql()
+    message = {
+        "counted": promotion_data[0].count,
+        "liked": promotion_data[0].liked,
+        "commented": promotion_data[0].commented,
+        "collected": promotion_data[0].collected,
+    }
+    return jsonify({"status": "success", "message": message})
+
+
+@bp.route("/dayData", methods=['GET', 'POST'])
+def dayData():
+    cycle = request.args.get("cycle")
+    interval = request.args.get("interval")
+    interval = int(interval) if interval else 30
+    cycle = cycle.upper() if cycle else "D"
+    promotion_data = searchTotalDataSql(interval=interval, group_by="1")
+    promotion_data = promotionChartData(promotion_data, cycle=cycle,
+                                        values=["count", "liked", "commented", "collected"])
+    return jsonify({"data": promotion_data})
 
 
 @bp.route("/downFile")
@@ -81,9 +102,6 @@ def editPromotion():
         print(form.messages)
         return jsonify({"status": "failed", "message": form.messages})
 
-@bp.route("/data")
-def data():
-    return jsonify({"status": "failed", "message": ""})
 
 def allowImageFile(filename):
     return '.' in filename and filename.split('.')[1].lower() in current_app.config.get('IMAGE_ALLOWED_EXTENSIONS')

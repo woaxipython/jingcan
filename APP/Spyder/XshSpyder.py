@@ -2,13 +2,14 @@ import hashlib
 import json
 import random
 import re
+from urllib import parse
 
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from APP.Spyder.makeRealURL import MakeRealURL
 from APP.Spyder.makeXHSInfo.makeInfo import get_note_info, getHeaders, makeUserSpyderURL, get_profile_info, \
-    get_user_note, makeNotesSpyderURL, makeNoteSpyderURL
+    get_user_note, makeNotesSpyderURL, makeNoteSpyderURL, makeSearchNotesSpyderURL, get_search_note_info
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -86,6 +87,32 @@ class GetXhsSpyder():
             result = get_user_note(note)
             yield {'status': '1', 'message': result}
 
+    def getSearchNoteList(self, token, keyword, page=1, sort_by='hot_desc', ):
+        self.headers['authorization'] = token
+        yield_info = {'status': '0', 'message': "请输入正确的主页连接"}
+        """
+        :param keyword:
+        :param d_page: 页数
+        :param sort_by: general：综合排序，hot_desc：热度排序 create_time_desc:创建时间倒序
+        :return:
+        """
+        spyder_url, headers = makeSearchNotesSpyderURL(self.headers, keyword, page, sort_by)
+        response = requests.get(spyder_url, headers=headers, verify=False)
+        print(response.json())
+
+        if not response.status_code == 200 and not response.json()["success"] == True:
+            try:
+                response_json = response.json()
+                yield {'status': '2', 'message': response_json['msg']}
+            except:
+                yield {'status': '2', 'message': "笔记状态异常，请检查笔记是否存在"}
+        data = response.json()['data']
+        if not data:
+            return {'status': '3', 'message': "查找数据为空"}
+        for note in data['notes']:
+            print("----------------------------")
+            result = get_search_note_info(note)
+            yield {'status': '1', 'message': result, "keyword": keyword}
 
 
 if __name__ == '__main__':
@@ -97,5 +124,18 @@ if __name__ == '__main__':
     #     ass = xhs.getNoteList(token=token, page=page)
     #     for a in ass:
     #         print(a)
-    result = xhs.getUserInfo(token=token)
-    print(result)
+    # result = xhs.getUserInfo(token=token)
+    page = 0
+    i = 0
+    for j in range(0, 5):
+        results = xhs.getSearchNoteList(token=token, keyword="手工胶水", page=page)
+
+        page += 1
+        for result in results:
+            message = result['message']
+            if isinstance(message, str):
+                print(message)
+            else:
+                print(message.get("title"))
+            i += 1
+            print(i)

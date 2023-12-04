@@ -2,12 +2,42 @@ from shortuuid import uuid
 from datetime import datetime
 from exts import db
 
+class SearchContentKeyWordModel(db.Model):
+    __tablename__ = 'search_keyword'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content_id = db.Column(db.Integer, db.ForeignKey('search_content.id'))
+    keyword_id = db.Column(db.Integer, db.ForeignKey('keyword.id'))
 
 class ContentKeyWordModel(db.Model):
     __tablename__ = 'content_keyword'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content_id = db.Column(db.Integer, db.ForeignKey('pvcontent.id'))
     keyword_id = db.Column(db.Integer, db.ForeignKey('keyword.id'))
+
+class SearchContentModel(db.Model):
+    __tablename__ = 'search_content'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    search_id = db.Column(db.String(100), default=uuid)
+
+    title = db.Column(db.String(100))
+    content_id = db.Column(db.String(500))
+    desc = db.Column(db.String(500))
+    liked = db.Column(db.Integer)
+    collected = db.Column(db.Integer)
+    commented = db.Column(db.Integer)
+    forwarded = db.Column(db.Integer)
+    content_link = db.Column(db.String(200))
+    video_link = db.Column(db.String(200))
+    imageList = db.Column(db.Text)
+    contenttype = db.Column(db.String(20), default='图文')
+    status = db.Column(db.String(20), default='正常')
+    attention = db.Column(db.Integer, default=2)
+    upload_time = db.Column(db.DateTime, )
+
+    spyder_url = db.Column(db.String(200))
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    upgrade_time = db.Column(db.DateTime, )
+    key_words = db.relationship('KeyWordModel', secondary=SearchContentKeyWordModel.__tablename__, backref='search_contents')
 
 
 # 图文
@@ -52,6 +82,7 @@ class KeyWordModel(db.Model):
     __tablename__ = 'keyword'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     keyword = db.Column(db.String(100))
+    attention = db.Column(db.Integer, default=2)
     createtime = db.Column(db.DateTime, default=datetime.now)
 
 

@@ -56,9 +56,12 @@ function saleAllStoreBarShow(element, url = '/storeProData') {
 function makeSaleAllStoreBarShow(element, result) {
     var seriesItem = []
     var total = 0
+    var total_id = $("#month_payment")
+
     $.each(result, function (i, v) {
         total += parseFloat(v[1])
     })
+    total_id.text(total.toFixed(0))
     $.each(result, function (i, v) {
         writeMonthOrdersDiv(v, total)
         var saleItem = lineCharts(name = v[0], stack = "total", type = "bar")
@@ -194,111 +197,58 @@ function writeMonthOrdersDiv(v, total) {
 
 }
 
-function PromotionPlatData(countChart, ValueChart) {
-    var url = '/pro/chartData'
+function PromotionData() {
+    url = '/promotion/dayData'
+    var PrChart = echarts.init(document.getElementById('prData'));
+    var likedChart = echarts.init(document.getElementById('likedData'));
     GetRequest(url)
         .then(function (result) {
-            var seriesItem = []
-            $.each(result.plat, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            var saleOption = StackLineChart(xAxisData = result.plat.date, seriesData = seriesItem,)
-            countChart.setOption(saleOption);
-
-            seriesItem = []
-            $.each(result.plat_liked, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key + "-点赞", stack = "", type = "line", areaStyle = "")
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            $.each(result.collected, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key + "-收藏", stack = "", type = "line", areaStyle = "")
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            $.each(result.commented, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key + "-评论", stack = "", type = "line", areaStyle = "")
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            saleOption = StackLineChart(xAxisData = result.plat_liked.date, seriesData = seriesItem,)
-            ValueChart.setOption(saleOption);
+            makePrDataShow(PrChart, result['data'])
+            makeLikedShow(likedChart, result['data'])
         })
         .catch(function (error) {
             alert(error)
         })
 }
 
-function PromotionUserData(UserSendChart) {
-    var url = '/pro/chartData2'
-    GetRequest(url)
-        .then(function (result) {
-            var seriesItem = []
-            $.each(result, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key, stack = "", type = "line", areaStyle = null)
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            var saleOption = StackLineChart(xAxisData = result.date, seriesData = seriesItem,)
-            UserSendChart.setOption(saleOption);
-        })
-        .catch(function (error) {
-            alert(error)
-        })
+function makePrDataShow(element, result) {
+    var seriesItem = []
+    $.each(result.count, function (key, value) {
+        if (key !== 'date') {
+            var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
+            saleItem.data = value
+            seriesItem.push(saleItem)
+        }
+    })
+    var saleOption = StackLineChart(xAxisData = result.date, seriesData = seriesItem,)
+    element.setOption(saleOption);
 }
 
-function PromotionUserData2(UserFeeChart, UserTotalChart, UserROIChart) {
-    var url = '/pro/chartData3'
-    GetRequest(url)
-        .then(function (result) {
-            var seriesItem = []
-            $.each(result.fee, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key, stack = "", type = "line", areaStyle = null)
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            var saleOption = StackLineChart(xAxisData = result.fee.date, seriesData = seriesItem,)
-            UserFeeChart.setOption(saleOption);
-
-            seriesItem = []
-            $.each(result.total, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key, stack = "", type = "line", areaStyle = null)
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            saleOption = StackLineChart(xAxisData = result.total.date, seriesData = seriesItem,)
-            UserTotalChart.setOption(saleOption);
-
-            seriesItem = []
-            $.each(result.ratio, function (key, value) {
-                if (key !== 'date') {
-                    var saleItem = lineCharts(name = key, stack = "", type = "line", areaStyle = null)
-                    saleItem.data = value
-                    seriesItem.push(saleItem)
-                }
-            })
-            saleOption = StackLineChart(xAxisData = result.ratio.date, seriesData = seriesItem,)
-            UserROIChart.setOption(saleOption);
-        })
-        .catch(function (error) {
-            alert(error)
-        })
+function makeLikedShow(element, result) {
+    var seriesItem = []
+    $.each(result.liked, function (key, value) {
+        if (key !== 'date') {
+            var saleItem = lineCharts(name = key + "_点赞", stack = "total", type = "line", areaStyle = "show")
+            saleItem.data = value
+            seriesItem.push(saleItem)
+        }
+    })
+    $.each(result.collected, function (key, value) {
+        if (key !== 'date') {
+            var saleItem = lineCharts(name = key + "_收藏", stack = "total", type = "line", areaStyle = "show")
+            saleItem.data = value
+            seriesItem.push(saleItem)
+        }
+    })
+    $.each(result.commented, function (key, value) {
+        if (key !== 'date') {
+            var saleItem = lineCharts(name = key + "_评论", stack = "total", type = "line", areaStyle = "show")
+            saleItem.data = value
+            seriesItem.push(saleItem)
+        }
+    })
+    var saleOption = StackLineChart(xAxisData = result.date, seriesData = seriesItem,)
+    element.setOption(saleOption);
 }
 
 function InitializationCycle() {
@@ -314,7 +264,6 @@ function writeTodayInfo() {
         .then(function (result) {
             $('#today_payment_orders').text(result.today_payment_orders)
             $('#today_refund_payment').text(result.today_refund_payment)
-            $('#month_payment').text(result.month_payment)
             $('#today_express_d').text(result.today_express_d)
             $('#today_express_w').text(result.today_express_w)
             $('#today_order_count').text(result.today_order_count)
@@ -326,3 +275,14 @@ function writeTodayInfo() {
         })
 }
 
+
+function writePrmotionData() {
+    url = '/promotion/data'
+    GetRequest(url)
+        .then(function (result) {
+            $('#pr_count').text(result['message'].counted)
+            $('#pr_liked').text(result['message'].liked)
+            $('#pr_collected').text(result['message'].collected)
+            $('#pr_commented').text(result['message'].commented)
+        })
+}

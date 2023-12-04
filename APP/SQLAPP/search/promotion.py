@@ -4,70 +4,17 @@ from datetime import datetime, timedelta
 import pandas as pd
 from sqlalchemy import or_, func, Date, cast, and_
 
-from APP.DataCalculate.CalCulate import AccountBasicData
 from APP.Spyder.DySpyder import DouYinSpyder
 from APP.Spyder.XshSpyder import GetXhsSpyder
 from exts import db
-from flask import jsonify
 
-from models.back import PlatModel, XhsTokenModel, DyTokenModel, RateModel, FeeModel, OutputModel, PrtypeModel
+from models.back import PlatModel, XhsTokenModel, DyTokenModel
 from models.product import GroupModel
-from models.promotion import AccountModel, PromotionModel, BlogerModel, PromotionGroupsModel
-from models.promotiondata import PVContentModel, PVDataModel
-from models.store import ParentOrderModel
-from models.user import UserModel
+from models.promotion import AccountModel
+from models.promotiondata import PVContentModel
 
 xhs = GetXhsSpyder()
 dy = DouYinSpyder()
-
-
-# class GetPromotionModel():
-#     def __init__(self, end_date="", start_date="", interval=90, ):
-#         self.end_date = end_date
-#         self.start_date = start_date
-#         self.interval = interval
-#         self.makeDate()
-#         self.makeEntity()
-#         self.filters = [PromotionModel.createtime >= self.start_date, PromotionModel.createtime < self.end_date, ]
-#
-#     def makeDate(self):
-#         self.end_date = datetime.strptime(self.end_date, "%Y-%m-%d") if self.end_date else datetime.now()
-#         self.start_date = datetime.strptime(self.start_date, "%Y-%m-%d") if self.start_date else \
-#             self.end_date - timedelta(days=self.interval)
-#
-#     def makeEntity(self):
-#         self.entities = [
-#             PromotionModel.createtime.label('date'),
-#             GroupModel.name.label("group_name"),
-#             BlogerModel.wechat.label('bloger'),
-#             UserModel.name.label('user'),
-#             PromotionModel.fee.label('fee'),
-#             OutputModel.name.label('output'),
-#             RateModel.name.label('rate'),
-#             PlatModel.name.label('plat'),
-#             AccountModel.nickname.label('account'),
-#             PVContentModel.title.label('title'),
-#             PVContentModel.status.label('status'),
-#             PVContentModel.content_link.label('content_link'),
-#             PVContentModel.liked.label('liked'),
-#             PVContentModel.collected.label('collected'),
-#             PVContentModel.commented.label('commented'),
-#         ]
-#
-#     def getSQlData(self):
-#         orders = db.session.query(PromotionModel, GroupModel).filter(*self.filters) \
-#             .join(PromotionGroupsModel, PromotionGroupsModel.promotion_id == PromotionModel.id) \
-#             .join(GroupModel, PromotionGroupsModel.group_id == GroupModel.id) \
-#             .join(PromotionModel.pvcontents) \
-#             .join(OutputModel) \
-#             .join(UserModel) \
-#             .join(BlogerModel) \
-#             .join(AccountModel) \
-#             .join(RateModel) \
-#             .join(PlatModel) \
-#             .with_entities(*self.entities).all()
-#
-#         return orders
 
 
 def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
@@ -78,7 +25,6 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
     interval = 365 if interval == 171 else interval
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
     start_date = end_date - timedelta(days=interval)
-    print(plat)
     filters = [
         PVContentModel.liked >= liked_s, PVContentModel.liked < liked_e,
         PVContentModel.commented >= commented_s, PVContentModel.commented < commented_e,
@@ -113,7 +59,8 @@ def searchPVContentSql(end_date=datetime.now().strftime("%Y-%m-%d"), self="",
                 PVContentModel.contenttype.label('contenttype'),
                 PVContentModel.attention.label('attention'),
                 PlatModel.name.label('plat')]
-    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.plat).join(PVContentModel.account).with_entities(*entities) \
+    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.plat).join(
+        PVContentModel.account).with_entities(*entities) \
         .order_by(PVContentModel.liked.desc()).distinct().all()
     return pvcontent_list
 
@@ -144,6 +91,34 @@ def searchPVContentSql2(plat="", attention=""):
         PlatModel.name.label('plat')]
     pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.plat).with_entities(*entities).all()
     return pvcontent_list
+
+
+def searchAccountSql(plat="all", nickname="", self="自营"):
+    filters = [AccountModel.profile_link != None,
+               AccountModel.self == self, ]
+
+    if plat != "all":
+        filters = filters + [PlatModel.id == plat]
+
+    if nickname:
+        filters = filters + [AccountModel.id == nickname]
+
+    entities = [AccountModel.id.label('id'),
+                AccountModel.account_id.label('account_id'),
+                AccountModel.nickname.label('nickname'),
+                AccountModel.profile_link.label('profile_link'),
+                AccountModel.self.label('self'),
+                AccountModel.liked.label('liked'),
+                AccountModel.attention.label('attention'),
+                AccountModel.fans.label('fans'),
+                AccountModel.follow.label('follow'),
+                AccountModel.desc.label('desc'),
+                AccountModel.collected.label('collected'),
+                AccountModel.notes.label('notes'),
+                PlatModel.name.label('plat'),
+                ]
+    account_list = AccountModel.query.filter(*filters).join(AccountModel.plat).with_entities(*entities).all()
+    return account_list
 
 
 def searchAccountSql2(plat="", attention=""):
@@ -177,31 +152,53 @@ def searchAccountSql2(plat="", attention=""):
     return account_list
 
 
-def dictPromotionORM(promotion_ORM):
-    data = []
-    for promotion in promotion_ORM:
-        promotion = {
-            "id": promotion.id,
-            "search_id": promotion.search_id,
-            "fee": promotion.fee,
-            "commission": promotion.commission,
-            "feeImgLink": promotion.feeImgLink,
-            'bloger': {'id': promotion.bloger.id, 'wechat': promotion.bloger.wechat},
-            'account': [{'id': pvcontent.account.account_id,
-                         'name': pvcontent.account.nickname,
-                         'profile_link': pvcontent.account.profile_link,
-                         'plat': {'id': pvcontent.account.plat.id,
-                                  'name': pvcontent.account.plat.name}} for pvcontent in promotion.pvcontents],
-            'pvcontent': [{'id': pvcontent.search_id, 'title': pvcontent.title, 'content_link': pvcontent.content_link,
-                           'out_put': {'id': pvcontent.output.id,
-                                       'name': pvcontent.output.name}} for pvcontent in promotion.pvcontents],
-            'rate': {'id': promotion.rate.id, 'name': promotion.rate.name},
-            'feeModel': {'id': promotion.feeModel.id, 'name': promotion.feeModel.name},
-            'user': {'id': promotion.user.id, 'name': promotion.user.name},
-            'group': [{'id': group.id, 'name': group.name} for group in promotion.group if group],
-        }
-        data.append(promotion)
-    return data
+def searchAccountSql3(account_id):
+    filters = [
+        PVContentModel.upload_time != None,
+        PVContentModel.content_link != None,
+        AccountModel.account_id == account_id]
+
+    entities = [cast(PVContentModel.upload_time, Date).label('date'),
+                AccountModel.self.label('self'),
+                AccountModel.nickname.label('account'),
+                AccountModel.profile_link.label('profile_link'),
+                PVContentModel.title.label('title'),
+                PVContentModel.content_id.label('content_id'),
+                PVContentModel.id.label('search_id'),
+                PVContentModel.content_link.label('link'),
+                PVContentModel.liked.label('liked'),
+                PVContentModel.commented.label('commented'),
+                PVContentModel.forwarded.label('forwarded'),
+                PVContentModel.collected.label('collected'),
+                PVContentModel.video_link.label('video'),
+                PVContentModel.imageList.label('imageList'),
+                PVContentModel.contenttype.label('contenttype'),
+                PVContentModel.attention.label('attention'),
+                PlatModel.name.label('plat')]
+    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.plat).join(
+        PVContentModel.account).with_entities(*entities) \
+        .order_by(PVContentModel.liked.desc()).distinct().all()
+    return pvcontent_list
+
+
+def searchTotalDataSql(end_date=datetime.now().strftime("%Y-%m-%d"), interval=100000, group_by=[]):
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    start_date = end_date - timedelta(days=interval)
+    filters = [
+        PVContentModel.upload_time >= start_date,
+        PVContentModel.upload_time < end_date,
+        PVContentModel.upload_time != None,
+        PVContentModel.content_link != None]
+    group_by = ["plat", "date"] if group_by else group_by
+    entities = [cast(PVContentModel.upload_time, Date).label('date'),
+                PlatModel.name.label('plat'),
+                func.count(PVContentModel.content_id).label('count'),
+                func.sum(PVContentModel.liked).label('liked'),
+                func.sum(PVContentModel.commented).label('commented'),
+                func.sum(PVContentModel.collected).label('collected'), ]
+    pvcontent_list = PVContentModel.query.filter(*filters).join(PVContentModel.plat).with_entities(*entities).group_by(
+        *group_by).all()
+    return pvcontent_list
 
 
 class searchAccount(object):

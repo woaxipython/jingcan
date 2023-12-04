@@ -162,6 +162,33 @@ $('tbody').on('click', '.testXhs', function () {
         })
 })
 
+$("tbody").on('click', '.checkAccountNotes', function () {
+    var tr = $(this).closest("tr")
+    var account_id = tr.data('id')
+    var url = '/outAccount/Notes' + "?account_id=" + account_id
+    GetRequest(url)
+})
+
+$("tbody").on('click', '.editAccountAttention', function () {
+    var tr = $(this).closest("tr")
+    var account_id = tr.data('id')
+    var a = $(this).find('a')
+    var text = a.text()
+    console.log(text)
+    if (text === '关注') {
+        var attention = 1
+    } else {
+        attention = 0
+    }
+    var url = '/outAccount/attention' + "?account_id=" + account_id + '&attention=' + attention
+    GetRequest(url)
+        .then(function (result) {
+            a.text(result['message'])
+        })
+        .catch(function (error) {
+            alert(error)
+        })
+})
 $("tbody").on('click', '.editAttention', function () {
     var tr = $(this).closest("tr")
     var search_id = tr.data('id')
@@ -257,12 +284,9 @@ $("#newGroupSearchSale").click(function () {
 
 // 监听周期select点击事件,并使用get请求，获取数据
 $('select[data-select="cycle"]').change(function () {
-    var element = echarts.init(document.getElementById('saleData'));
-
     var a = $(this).closest("a")
     var aHref = a.attr("href")
     var a_url = aHref.replace("#", "").replace("_", "/")
-    console.log(a_url)
 
     var store = a.find("select[data-store='store']").val()
     if (!store) {
@@ -276,6 +300,9 @@ $('select[data-select="cycle"]').change(function () {
     var cycle = a.find("select[data-cycle='cycle']").val()
     if (!cycle) {
         cycle = "d"
+    }
+    if (a_url === "promotion/liked") {
+        a_url = "promotion/dayData"
     }
     var url = '/' + a_url + "?cycle=" + cycle + '&interval=' + date + '&store=' + store
     GetRequest(url)
@@ -295,6 +322,11 @@ $('select[data-select="cycle"]').change(function () {
             } else if (aHref === '#sale_tabs-pr') {
                 element = echarts.init(document.getElementById('groupData'));
                 makeGroupSaleShow(element, result)
+            } else if (aHref === '#promotion_dayData' || a_url === 'promotion/dayData') {
+                var PrChart = echarts.init(document.getElementById('prData'));
+                var likedChart = echarts.init(document.getElementById('likedData'));
+                makePrDataShow(PrChart, result['data'])
+                makeLikedShow(likedChart, result['data'])
             }
 
         })

@@ -1,0 +1,387 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta17
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% extends "PromotionBase.html" %}
+<!-- Navbar -->
+{% block promotion %}
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                        </div>
+                        <h2 class="page-title" id="TitleID" data-plat="{{ title_id }}">
+                            {{ title }}
+                        </h2>
+                    </div>
+                    <!-- Page title actions -->
+                </div>
+            </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">账号数量</div>
+                                </div>
+                                <div class="h1 mb-3"><span>10000</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">累计发布</div>
+                                </div>
+                                <div class="h1 mb-3"><span>10000</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">累计粉丝</div>
+                                </div>
+                                <div class="h1 mb-3"><span>10000</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">累计获赞</div>
+                                </div>
+                                <div class="h1 mb-3"><span>10000</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row row-cards">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-danger text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+     stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none"
+                                                                                            d="M0 0h24v24H0z"
+                                                                                            fill="none"></path><path
+        d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12z"></path><path d="M19 16h-12a2 2 0 0 0 -2 2"></path><path
+        d="M9 8h6"></path></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>自营数量 </span><span id="own_send"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path
+                                      d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 17h-11v-14h-2"/><path
+                                      d="M6 5l14 1l-1 7h-13"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>达人数量 </span><span id="co_send"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>素人数量 </span><span id="ks_send"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                            <span class="bg-twitter text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-twitter -->
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"
+                                                                                        fill="none"/><path
+                                      d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c0 -.249 1.51 -2.772 1.818 -4.013z"/></svg>
+                            </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span>其他 </span><span id="other_send"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">账号列表</h3>
+                            </div>
+                            <div class="card-body border-bottom py-3">
+                                <form action="{{ url_for("outAccount.manage") }}" method="post">
+                                    <input type="hidden" name="csrf_token"
+                                           value="{{ csrf_token() }}">
+                                    <input type="hidden" name="nickname" value="">
+                                    <input type="hidden" name="plat" value="all">
+                                    <div class="d-flex">
+                                        <div class="me-2 d-inline-block">
+                                            <select class="form-control px-2 select-input" data-select="plat">
+                                                <option value="all" disabled selected>平台</option>
+                                                <option value="all">所有平台</option>
+                                                {% for plat in plats %}
+                                                    <option value="{{ plat.id }}">{{ plat.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="me-2 d-inline-block">
+                                            <select class="form-control px-2 select-input" data-select="nickname">
+                                                <option value="0" disabled selected>自营账号</option>
+                                                {% for nickname in nicknames %}
+                                                    <option value="{{ nickname.id }}">{{ nickname.nickname }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="ms-auto text-muted">
+                                            <button type="submit" class="btn btn-blue px-3">查找</button>
+                                            <button type="button" onclick="window.location.href='/spyder/manage'"
+                                                    class="btn btn-blue px-3">新增账号
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table card-table table-vcenter text-nowrap datatable"
+                                       id="AccountManageTable">
+                                    <thead class="sticky-top">
+                                    <tr>
+                                        <th>账号</th>
+                                        <th>描述</th>
+                                        <th>粉丝</th>
+                                        <th>点赞</th>
+                                        <th>收藏</th>
+                                        <th>图文数量</th>
+                                        <th>平台</th>
+                                        <th>
+                                            <div class="d-flex justify-content-center">查看图文</div>
+                                        </th>
+                                        <th>
+                                            <div class="d-flex justify-content-center">重点关注</div>
+                                        </th>
+                                        <th>
+                                            <div class="d-flex justify-content-center">详情</div>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for account in accounts %}
+                                        <tr data-id="{{ account.account_id }}">
+                                            <td>
+                                                <small><a
+                                                        href="{{ account.profile_link }}"
+                                                        target="_blank"><span>{{ account.nickname }}</span></a></small>
+                                            </td>
+                                            <td>
+                                                <div style="width: 200px" class="text-truncate">
+                                                    <small><span>{{ account.desc }}</span></small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{ account.fans }}
+                                            </td>
+                                            <td>
+                                                {{ account.liked }}
+                                            </td>
+                                            <td>
+                                                {{ account.collected }}
+                                            </td>
+                                            <td>
+                                                {{ account.notes }}
+                                            </td>
+                                            <td>
+                                                <small>
+                                                    {% if account.plat == "小红书" %}
+                                                        <div class="badge bg-danger"></div>
+                                                    {% else %}
+                                                        <div class="badge bg-dark"></div>
+                                                    {% endif %}
+                                                    <span class="text-muted text-black">{{ account.plat }}</span></small>
+                                            </td>
+                                            <td class="checkAccountNotes">
+                                                <a target="_blank" href="/outAccount/Notes?account_id={{ account.account_id }}"><span
+                                                        class="cursor-pointer text-blue d-flex justify-content-center">查看</span></a>
+                                            </td>
+                                            <td class="editAccountAttention">
+                                                {% if account.attention==1 %}
+                                                    <a class="cursor-pointer text-danger d-flex justify-content-center">取消关注</a>
+                                                {% else %}
+                                                    <a class="cursor-pointer text-blue d-flex justify-content-center">关注</a>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                                                        <span class="text-danger hover-shadow p-1 cursor-pointer d-flex justify-content-center"
+                                                                                              data-bs-toggle="tooltip"
+                                                                                              data-bs-placement="top"
+                                                                                              title="数据展示功能待开发">
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                                     class="icon icon-tabler icon-tabler-antenna-bars-5"
+                                                                                                     width="24"
+                                                                                                     height="24"
+                                                                                                     viewBox="0 0 24 24"
+                                                                                                     stroke-width="2"
+                                                                                                     stroke="currentColor"
+                                                                                                     fill="none"
+                                                                                                     stroke-linecap="round"
+                                                                                                     stroke-linejoin="round">
+                                                                                                    <path stroke="none"
+                                                                                                          d="M0 0h24v24H0z"
+                                                                                                          fill="none"></path>
+                                                                                                    <path d="M6 18l0 -3"></path>
+                                                                                                    <path d="M10 18l0 -6"></path>
+                                                                                                    <path d="M14 18l0 -9"></path>
+                                                                                                    <path d="M18 18l0 -12"></path>
+                                                                                                </svg>
+                                                                                                </span></td>
+
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer footer-transparent d-print-none">
+            <div class="container-xl">
+                <div class="row text-center align-items-center flex-row-reverse">
+                    <div class="col-lg-auto ms-lg-auto">
+                        <ul class="list-inline list-inline-dots mb-0">
+                            <li class="list-inline-item">
+                                <a href="https://github.com/sponsors/codecalm" target="_blank" class="link-secondary"
+                                   rel="noopener">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="icon text-pink icon-filled icon-inline" width="24" height="24"
+                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
+                                    </svg>
+                                    Actions and thoughts are equally important.
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+{% endblock %}
+{% block modal %}
+
+{% endblock %}
+<!-- Libs JS -->
+{% block script %}
+    <script>
+        getPromotiondata()
+    </script>
+    <script>
+        $(function () {
+            $('#AccountManageTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "order": [[2, "desc"], [3, "desc"]],
+                "lengthMenu": [[10, 25, 50, -1], ["10", "25", "50", "全部"]], // 设置显示entries的选项和对应的文本
+                language: {
+                    info: '共计 _TOTAL_ 条推广数据',
+                    search: "搜索：",  // 修改搜索框前的文字
+                    searchPlaceholder: "输入关键词搜索", // 修改搜索框的placeholder
+                    lengthMenu: "每页显示 _MENU_ 条数据",
+                    paginate: {
+                        next: '下一页',
+                        previous: '上一页',
+                        first: '首页',
+                        last: '尾页'
+                    },
+
+                    zeroRecords: '没有找到符合条件的数据',
+                    infoEmpty: '没有符合条件的数据',
+                    infoFiltered: '(从 _MAX_ 条数据中过滤)'
+
+                },
+            });
+        });
+        $(function () {
+
+        });
+    </script>
+    <script>
+        var nav_bar = $('.navbar-nav li');
+        nav_bar.removeClass('active');
+        nav_bar.eq(2).addClass('active');
+        var var_a = nav_bar.eq(2).find('a')
+        var_a.removeClass('active');
+        var_a.eq(1).addClass('active');
+    </script>
+{% endblock %}

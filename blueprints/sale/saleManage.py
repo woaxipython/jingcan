@@ -99,6 +99,7 @@ def tabs_sales():
     for column in totals.columns:
         if column != "date":
             store_total_dict[column] = totals[column].tolist()
+    print(store_total_dict)
     return jsonify({"total": store_total_dict, })
 
 

@@ -21,24 +21,34 @@ def makeHASID(link):
 
 def time_plat_sleep(plat):
     if plat == "小红书":
-        time.sleep(random.randint(15, 30))
+        time.sleep(random.randint(10, 20))
     elif plat == "抖音":
         time.sleep(random.randint(3, 8))
 
 
-def getNote(attention, plat):
+def tim_plat_sleep2(plat):
+    if plat == "小红书":
+        time.sleep(random.randint(7, 15))
+    elif plat == "抖音":
+        time.sleep(random.randint(2, 5))
+
+
+def getNote(attention):
     notes = searchNotes()
-    contents = searchPVContentSql2(attention=attention, plat=plat)
+    contents = searchPVContentSql2(attention=attention)
     i = 1
+    old_wait = ""
     for content in contents:
         url = content.link
         DaydataID = MakeRealURL().makeUniqueDayId(url)
         pvcontent_today_model = PVDataModel.query.filter(PVDataModel.search_id == DaydataID).first()
+        plat = MakeRealURL().makePlatName(url)
         if pvcontent_today_model:
             i += 1
-            print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents) + 1, plat, i,
-                                                                            len(contents) + 1 - i))
+            print("共计{}条图文数据待更新，已更新至第{}条{}平台,共计剩余{}条".format(len(contents) + 1, i, plat,
+                                                                                    len(contents) + 1 - i))
             continue
+
         if plat == "小红书":
             result = notes.spyderXHSNote(note_link=url)
         elif plat == "抖音":
@@ -53,11 +63,15 @@ def getNote(attention, plat):
             print("链接错误")
             continue
         i += 1
-        print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents) + 1, plat, i,
-                                                                        len(contents) + 1 - i))
+        print("共计{}条图文数据待更新，已更新至第{}条{}平台,共计剩余{}条".format(len(contents) + 1, i, plat,
+                                                                                len(contents) + 1 - i))
         if len(contents) + 1 - i == 0:
             break
-        time_plat_sleep(plat)
+        if old_wait == plat:
+            time_plat_sleep(plat)
+        else:
+            tim_plat_sleep2(plat)
+        old_wait = plat
 
 
 def writeNote(result, note_link):
@@ -79,26 +93,28 @@ def writeNote(result, note_link):
         return "0"
 
 
-def getAccount(attention, plat):
-    contents = searchAccountSql2(attention=attention, plat=plat)
+def getAccount(attention):
+    contents = searchAccountSql2(attention=attention)
     accounts = searchAccount()
     i = 1
+    old_wait = ""
     for content in contents:
-        link = content.link
-        DaydataID = makeHASID(link)
+        url = content.link
+        DaydataID = makeHASID(url)
+        plat = MakeRealURL().makePlatName(url)
         account_today_model = AccountDayDataModel.query.filter(AccountDayDataModel.search_id == DaydataID).first()
         if account_today_model:
             i += 1
-            print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents) + 1, plat, i,
-                                                                            len(contents) + 1 - i))
+            print("共计{}条账号数据待更新，已更新至第{}条{}平台,剩余{}条".format(len(contents) + 1, i, plat,
+                                                                                len(contents) + 1 - i))
             continue
         if plat == "小红书":
-            result = accounts.sypderXHSAccount(profile_link=link)
+            result = accounts.sypderXHSAccount(profile_link=url)
         elif plat == "抖音":
-            result = accounts.spyderDYAccount(profile_link=link)
+            result = accounts.spyderDYAccount(profile_link=url)
         else:
             return "0"
-        status = writeAccount(link, result, plat)
+        status = writeAccount(url, result, plat)
         if status == "4":
             print("token已经全部失效")
             break
@@ -106,11 +122,15 @@ def getAccount(attention, plat):
             print("链接错误")
             continue
         i += 1
-        print("共计{}条{}图文数据待更新，已更新至第{}条,剩余{}条".format(len(contents) + 1, plat, i,
-                                                                        len(contents) + 1 - i))
+        print("共计{}条账号数据待更新，已更新至第{}条{}平台,剩余{}条".format(len(contents) + 1, i, plat,
+                                                                            len(contents) + 1 - i))
         if len(contents) + 1 - i == 0:
             break
-        time_plat_sleep(plat)
+        if old_wait == plat:
+            time_plat_sleep(plat)
+        else:
+            tim_plat_sleep2(plat)
+        old_wait = plat
 
 
 def writeAccount(profile_link, result, plat):

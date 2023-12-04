@@ -15,6 +15,7 @@ from flask_wtf import CSRFProtect
 from blueprints.sale.saleManage import bp as sale_bp, convert_to_number
 from blueprints.promotion.promotionManage import bp as prm_bp
 from blueprints.promotion.promotionPV import bp as pv_bp
+from blueprints.promotion.promotionAccount import bp as poa_bp
 from blueprints.handOrderManage import bp as hd_bp
 from blueprints.back.backManage import bp as bk_bp
 from blueprints.back.product import bp as pr_bp
@@ -55,6 +56,7 @@ app.register_blueprint(hd_bp)
 app.register_blueprint(bk_bp)
 app.register_blueprint(pr_bp)
 app.register_blueprint(pv_bp)
+app.register_blueprint(poa_bp)
 app.register_blueprint(per_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(store_bp)
@@ -153,7 +155,9 @@ def storeProData():
                                    interval=40, store_id="0", count=1)
     month_orders = makePOrderStore(month_orders, cycle="M", )
     month_orders = month_orders.T
-    del month_orders[0]
+    while month_orders.columns.size > 1:
+        month_orders = month_orders.drop(month_orders.columns[0], axis=1)
+
     month_orders = month_orders.reset_index()
     month_orders.columns = ["store", "total"]
     month_orders.drop(month_orders.index[0], inplace=True)

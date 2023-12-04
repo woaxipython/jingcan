@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 from APP.SQLAPP.addEdit.promotion import writeNewPromotionModel, writePromotionFee
-from APP.SQLAPP.makePandas.promotion import PromotionData, makePVEcel
+from APP.SQLAPP.makePandas.promotion import makePVEcel
 from APP.SQLAPP.search.promotion import searchAccount, searchPVContentSql, searchNotes
 from blueprints.sale.saleManage import allExcelFile, convert_to_number
 from exts import db

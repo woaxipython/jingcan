@@ -55,11 +55,8 @@ def mainPvcontentData(pro):
 
     pv_data = pv_data.sort_values(by='liked', ascending=False)
     pv_data = pv_data.reset_index()
-    # pv_data['title'] = "1"
-    # pv_data['account'] = "1"
     pv_data = pv_data[pv_data['liked'] > 800]
     pv_data = pv_data.drop(['index'], axis=1)
-    # pv_data = pv_data.reset_index()
     return pv_data.values.tolist()
 
 
@@ -101,79 +98,29 @@ def unNormal(pro):
     return un_normal_data.values.tolist()
 
 
-def cycleData(pro, cycle=""):
-    if cycle == "week":
-        pro = pro.resample('W').sum()
-    elif cycle == "15":
-        pro = pro.resample('15D').sum()
-    elif cycle == "month":
-        pro = pro.resample('M').sum()
-    elif cycle == "quarter":
-        pro = pro.resample('Q').sum()
-    elif cycle == "year":
-        pro = pro.resample('Y').sum()
-    else:
-        pro = pro
-    have_send = pro[pro["content_link"] != ""].count()["content_link"]
-    wait_send = pro['content_link'].count() - have_send
-    normal = pro[pro["status"] == "正常"].count()["status"]
-    un_normal = pro['status'].count() - normal
-    account = len(pro["account"].unique().tolist())
-    pvcontent = len(pro["content_link"].unique().tolist())
-    return have_send, wait_send, normal, un_normal, account, pvcontent
-
-
-def promotionChartData(sql_list, cycle="D", values='output', column="plat", count=True, index=""):
-    columns = ["date", "group_name", "bloger", "user", "fee", "output", "rate", "plat", "account", "title", "status",
-               "content_link", "liked", "collected", "commented"]
+def promotionChartData(sql_list, cycle="D", values="count"):
+    columns = ["date", "plat", "count", "liked", "commented", "collected"]
     pro = pd.DataFrame(sql_list, columns=columns)
-    pro = pro.set_index('date')
-    pro = pro[
-        ["user", "plat", "group_name", "output", "status", "liked", "collected", "commented", "fee", "content_link"]]
-    pro['content_link'] = pro['content_link'].apply(lambda x: "已发稿" if x else "待发稿")
-    pro = pro.reset_index()
+    pro["liked"] = pro["liked"].fillna(0)
+    pro["collected"] = pro["collected"].fillna(0)
+    pro["commented"] = pro["commented"].fillna(0)
+    pro["count"] = pro["count"].fillna(0)
     pro['date'] = pd.to_datetime(pro['date'])
-    index_list = [pd.Grouper(key="date", freq=cycle), index] if index else pd.Grouper(key="date", freq=cycle)
-    if count:
-
-        pro = pro.pivot_table(index=index_list, columns=column, values=values,
-                              aggfunc='count').fillna(0)
-    else:
-        pro = pro.pivot_table(index=index_list, columns=column, values=values,
-                              aggfunc='sum').fillna(0)
-    if cycle == "D":
-        pro = pro.reset_index()
-        pro = pro.set_index('date')
-        pro = pro.resample('D').sum()
-        print(pro.columns)
-
-    return pro
-
-
-def promotionChartData2(sql_list, cycle="D", values='output', column="plat", count=True, index=""):
-    columns = ["date", "group_name", "bloger", "user", "fee", "output", "rate", "plat", "account", "title", "status",
-               "content_link", "liked", "collected", "commented"]
-    pro = pd.DataFrame(sql_list, columns=columns)
-    pro = pro.set_index('date')
-    pro = pro[
-        ["user", "plat", "group_name", "output", "status", "liked", "collected", "commented", "fee", "content_link"]]
-    pro['content_link'] = pro['content_link'].apply(lambda x: "已发稿" if x else "待发稿")
-    pro = pro.reset_index()
-    pro['date'] = pd.to_datetime(pro['date'])
-    pro = pro.set_index('date')
-    pro = pro[["user", "content_link", "liked", "collected", "commented", "fee", ]]
-    pro['content_link'] = pro['content_link'].apply(lambda x: "已发稿" if x else "待发稿")
-    pro = pro.loc[pro['content_link'] == "已发稿"]
-    pro['total'] = pro['liked'] + pro['collected'] + pro['commented']
-    pro = pro.reset_index()
-    pro = pro.pivot_table(index=pd.Grouper(key="date", freq=cycle), columns=["user"], values=["fee", "total"],
+    pro = pro.pivot_table(index=pd.Grouper(key="date", freq=cycle), columns=["plat"], values=values,
                           aggfunc='sum').fillna(0)
-
-    users = pro.columns.get_level_values(1).unique()
-    ratios = pd.DataFrame()
-    for user in users:
-        ratio = round(pro['fee', user] / pro['total', user].replace(0, 1), 2)
-        ratios[user] = ratio
-    ratios = ratios.reset_index()
     pro = pro.reset_index()
-    return pro, ratios
+    pro['date'] = pro['date'].dt.strftime('%Y-%m-%d')
+    pro = pro.to_dict(orient="list")
+
+    data_dict = {}
+    for key, value in pro.items():
+        new_pro = {}
+        if key[0] == "date":
+            new_pro[key[0]] = value
+        else:
+            new_pro[key[1]] = value
+        if data_dict.get(key[0]):
+            data_dict[key[0]].update(new_pro)
+        else:
+            data_dict[key[0]] = new_pro if key[0] != "date" else value
+    return data_dict

@@ -39,14 +39,14 @@ def makeProfileSpyderURL(webid, msToken, sec_user_id):
     return spyder_url
 
 
-def makeSearchNoteSpyderURL(webid, msToken, keyword, sort_type, offset):
+def makeSearchNoteSpyderURL(webid, msToken, keyword, sort_type, page):
     search_url = "https://www.douyin.com/aweme/v1/web/general/search/single/?"
+    offset = str((page - 1) * 25)
     params = get_search_note_params(webid, msToken, keyword, sort_type, offset)
     splice_url_str = splice_url(params)
     xs = js.call('get_dy_xb', splice_url_str)
     params['X-Bogus'] = xs
     spyder_url = search_url + splice_url(params)
-    print(spyder_url)
     return spyder_url
 
 

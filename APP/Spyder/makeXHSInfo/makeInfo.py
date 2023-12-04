@@ -3,6 +3,7 @@ import hashlib
 import re
 import time
 import random
+from urllib import parse
 
 base_url = 'https://www.xiaohongshu.com'
 
@@ -32,6 +33,19 @@ def makeUserSpyderURL(uid, headers):
 def makeNotesSpyderURL(url, page, headers):
     uid = re.findall(r"profile/(.+)", url)[0]
     real_user_url = f'/fe_api/burdock/weixin/v2/user/{uid}/notes?page={page}'
+    xsign = 'X' + m_md5(real_user_url + "WSUDD")
+    headers['x-sign'] = xsign
+    spyder_url = base_url + real_user_url
+    return spyder_url, headers
+
+
+def makeSearchNotesSpyderURL(headers, keyword, page, sort_by):
+    # real_user_url = f'fe_api/burdock/weixin/v2/search/notes?keyword={keyword}&sortBy=hot_desc&page={page}&pageSize=20&needGifCover=true&sid=session.1575338664880906512653'
+    # "fe_api/burdock/weixin/v2/search/notes?keyword=%E6%9D%AD%E5%B7%9E%E4%BA%B2%E5%AD%90&sortBy=hot_desc&page={}&pageSize=20&needGifCover=true&sid=session.1575338664880906512653"
+    real_user_url = '/fe_api/burdock/weixin/v2/search/notes?keyword={}&sortBy={}' \
+                    '&page={}&pageSize=20&prependNoteIds=&needGifCover=true'.format(parse.quote(keyword),
+                                                                                    sort_by,
+                                                                                    page + 1)
     xsign = 'X' + m_md5(real_user_url + "WSUDD")
     headers['x-sign'] = xsign
     spyder_url = base_url + real_user_url
@@ -117,3 +131,23 @@ def get_user_note(note):
         "content_link": "https://www.xiaohongshu.com/explore/" + note['id'],
         "status": "正常",
     }
+
+
+def get_search_note_info(note):
+    return {"title": note['title'],
+            "content_id": note['id'],
+            "liked": note['likes'],
+            "desc": "",
+            "collected": note['collects'],
+            "forwarded": "",
+            "commented": note['comments'],
+            "imageList": "",
+            "commentList": "",
+            "hashTags": "",
+            "upgrade_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "video_link": "",
+            "contenttype": "图文",
+            "spyder_url": "",
+            "upload_time": note['time'],
+            "content_link": "https://www.xiaohongshu.com/explore/" + note['id'],
+            "status": "正常", }

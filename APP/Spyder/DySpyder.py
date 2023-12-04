@@ -69,7 +69,7 @@ class DouYinSpyder():
         response = requests.get(spyder_url, headers=self.headers)
         if not response.status_code == 200:
             return {"status": "2", "message": "登录已过期"}
-        print(response.json())
+        print("----------------------------")
         data = response.json()['user']
         if not data:
             return {"status": "3", "message": "用户不存在"}
@@ -90,21 +90,23 @@ class DouYinSpyder():
         max_cursor = str(data['max_cursor'])
         hsa_more = data['has_more']
         for item in data['aweme_list']:
+            print("----------------------------")
             result = get_user_note_info(item)
             yield {'status': '1', 'message': result, "max_cursor": max_cursor, "has_more": hsa_more}
 
-    def getSearchNoteList(self, token, webid, msToken, keyword, sort_type="0", offset="0"):
+    def getSearchNoteList(self, token, webid, msToken, keyword, sort_type="0", page=1):
+        # 0 智能排序, type='1' 热门排序, type='2' 最新排序
         self.headers['cookie'] = token
-
-        spyder_url = makeSearchNoteSpyderURL(webid, msToken, keyword, sort_type, offset)
+        spyder_url = makeSearchNoteSpyderURL(webid, msToken, keyword, sort_type, page)
         response = requests.get(spyder_url, headers=self.headers)
         if not response.status_code == 200 and not response.json():
-            return {"status": "2", "message": "登录已过期"}
+            yield {"status": "2", "message": "登录已过期"}
         data = response.json().get("data")
         if not data:
-            return {"status": "2", "message": "登录已过期"}
+            yield {"status": "2", "message": "登录已过期"}
         for item in data:
             if item.get("type") == 1 and item.get("aweme_info").get("desc"):
+                print("----------------------------")
                 # print(item)
                 result = get_search_note_info(item["aweme_info"])
                 yield {'status': '1', 'message': result}
@@ -116,20 +118,23 @@ if __name__ == '__main__':
     webid = "7303072417411532314"
     msToken = "sKLFrV90_J0tjuNAYj-qAS_09943_UIcnyF4bAtDA3eRf0x0mFFxBXwvYSJL95WxDRvesQs04uA5282o7TBY3PFQvCBg0RC_AYEBzYnt9Y1rI9gCLh8zEa6YptXY"
     # result = dy.getNoteInfo(token=token, webid=webid, msToken=msToken)
-    result = dy.testCookie(token=token, webid=webid, msToken=msToken)
-    print(result)
+    # result = dy.testCookie(token=token, webid=webid, msToken=msToken)
+    # print(result)
     # result = dy.getUserInfo(token=token, webid=webid, msToken=msToken)
     # results = dy.getNoteList(token=token, webid=webid, msToken=msToken)
     # offset = "0"
-    # num = 0
-    # for i in range(0, 2):
-    #     results = dy.getSearchNoteList(token=token, webid=webid, msToken=msToken, keyword="胶水", offset=offset)
-    #     offset = str(int(offset) + 20)
-    #     for result in results:
-    #         print(result)
-    #         print(num)
-    #         num += 1
-    #         print("-------------------")
+    num = 0
+    for i in range(1, 100):
+        results = dy.getSearchNoteList(token=token, webid=webid, msToken=msToken, keyword="胶水", page=i)
+        for result in results:
+            print(result)
+            print(result['message']['title'], result['message']['liked'])
+
+            print(num)
+            print("-----------------------------------")
+            num += 1
+
+        time.sleep(3)
     # for result in results:
     #     print(result)
     max_cursor = "0"

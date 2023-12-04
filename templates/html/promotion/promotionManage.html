@@ -64,7 +64,7 @@
                                 <div class="d-flex align-items-center">
                                     <div class="subheader">累计图文数量</div>
                                 </div>
-                                <div class="h1 mb-3"><span>10000</span></div>
+                                <div class="h1 mb-3"><span id="pr_count"></span></div>
                             </div>
                         </div>
                     </div>
@@ -72,9 +72,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
-                                    <div class="subheader">累计视频数量</div>
+                                    <div class="subheader">累计点赞数</div>
                                 </div>
-                                <div class="h1 mb-3"><span>10000</span></div>
+                                <div class="h1 mb-3"><span id="pr_liked"></span></div>
                             </div>
                         </div>
                     </div>
@@ -82,9 +82,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
-                                    <div class="subheader">累计点赞数量</div>
+                                    <div class="subheader">累计收藏数</div>
                                 </div>
-                                <div class="h1 mb-3"><span>10000</span></div>
+                                <div class="h1 mb-3"><span id="pr_collected"></span></div>
                             </div>
                         </div>
                     </div>
@@ -94,12 +94,118 @@
                                 <div class="d-flex align-items-center">
                                     <div class="subheader">累计评论数量</div>
                                 </div>
-                                <div class="h1 mb-3"><span>10000</span></div>
+                                <div class="h1 mb-3"><span id="pr_commented"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="tab-content h-100">
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs"
+                                        role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#promotion_dayData" class="nav-link active d-flex"
+                                               data-bs-toggle="tab"
+                                               aria-selected="true" role="tab">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-brand-cohost me-2"
+                                                     width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M17 14m-3 0a3 2 0 1 0 6 0a3 2 0 1 0 -6 0"></path>
+                                                    <path d="M4.526 17.666c-1.133 -.772 -1.897 -1.924 -2.291 -3.456c-.398 -1.54 -.29 -2.937 .32 -4.19c.61 -1.255 1.59 -2.34 2.938 -3.254c1.348 -.914 2.93 -1.625 4.749 -2.132c1.81 -.504 3.516 -.708 5.12 -.61c1.608 .1 2.979 .537 4.112 1.31s1.897 1.924 2.291 3.456c.398 1.541 .29 2.938 -.32 4.192c-.61 1.253 -1.59 2.337 -2.938 3.252c-1.348 .915 -2.93 1.626 -4.749 2.133c-1.81 .503 -3.516 .707 -5.12 .61c-1.608 -.102 -2.979 -.538 -4.112 -1.31z"></path>
+                                                    <path d="M11 12.508c-.53 -.316 -1.23 -.508 -2 -.508c-1.657 0 -3 .895 -3 2s1.343 2 3 2c.767 0 1.467 -.192 2 -.508"></path>
+                                                </svg>
+                                                发布数据
+                                                <div class="d-flex ms-auto" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-interval="interval">
+                                                        <option value="30" disabled selected>周期</option>
+                                                        <option value="30">最近30天</option>
+                                                        <option value="90">最近90天</option>
+                                                        <option value="180">180天</option>
+                                                        <option value="365">1年</option>
+                                                        <option value="730">2年</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-cycle="cycle">
+                                                        <option value="" disabled selected>分布</option>
+                                                        <option value="d">日</option>
+                                                        <option value="w">周</option>
+                                                        <option value="m">月</option>
+                                                        <option value="q">季</option>
+                                                        <option value="y">年</option>
+                                                    </select>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#promotion_liked" class="nav-link d-flex" data-bs-toggle="tab"
+                                               aria-selected="false" role="tab" tabindex="-1">
+                                                <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     class="icon icon-tabler icon-tabler-layout-navbar me-2" width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="1.25"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                                    <path d="M4 9l16 0"></path>
+                                                </svg>
+                                                互动数据
+                                                <div class="d-flex ms-auto" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-interval="interval">
+                                                        <option value="30" disabled selected>周期</option>
+                                                        <option value="30">最近30天</option>
+                                                        <option value="90">最近90天</option>
+                                                        <option value="180">180天</option>
+                                                        <option value="365">1年</option>
+                                                        <option value="730">2年</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="d-flex ms-1" data-div="cycle">
+                                                    <select class="badge border-0 p-0" data-select="cycle"
+                                                            data-cycle="cycle">
+                                                        <option value="" disabled selected>分布</option>
+                                                        <option value="d">日</option>
+                                                        <option value="w">周</option>
+                                                        <option value="m">月</option>
+                                                        <option value="q">季</option>
+                                                        <option value="y">年</option>
+                                                    </select>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active show row" id="promotion_dayData"
+                                             role="tabpanel">
+                                            <div id="prData" class="card-body w-100 p-0" style="height: 25rem"></div>
+                                        </div>
+                                        <div class="tab-pane row h-100 active show" id="promotion_liked"
+                                             role="tabpanel">
+                                            <div id="likedData" class="card-body w-100 p-0"
+                                                 style="height: 25rem"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
         <footer class="footer footer-transparent d-print-none">
             <div class="container-xl">
@@ -132,7 +238,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content card">
                 <div class="tab-pane active show" id="tabs-pro" role="tabpanel">
-                    <div class="card-body border-top-0" >
+                    <div class="card-body border-top-0">
                         <div class="col-12 pb-3">
                             <small>批量上传推广记录</small>
                             <form class="dropzone form-control " action="../" autocomplete="off" novalidate="">
@@ -161,33 +267,21 @@
 <!-- Libs JS -->
 {% block script %}
     <script>
-        getPromotiondata()
-    </script>
-    <script>
-        $(function () {
-            $('#promotionManageTable').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                language: {
-                    info: '共计 _TOTAL_ 条推广数据',
-                    paginate: {
-                        next: '下一页',
-                        previous: '上一页',
-                        first: '首页',
-                        last: '尾页'
-                    },
-                    zeroRecords: '没有找到符合条件的数据',
-                    infoEmpty: '没有符合条件的数据',
-                    infoFiltered: '(从 _MAX_ 条数据中过滤)'
+        writePrmotionData();
+        PromotionData()
+        var PrChart = echarts.init(document.getElementById('prData'));
+        var likedChart = echarts.init(document.getElementById('likedData'));
+        window.addEventListener('resize', function () {
+            var activetab = $('.tab-pane.active')
+            $('.tab-pane').addClass("show active")
+            PrChart.resize();
+            likedChart.resize();
+            $('.tab-pane').removeClass("show active")
+            activetab.addClass("show active")
+        })
 
-                },
-            });
-        });
-        $(function () {
-
-        });
+        $('.tab-pane').removeClass("active")
+        $("#promotion_dayData").addClass("show active")
     </script>
     <script>
         var nav_bar = $('.navbar-nav li');
