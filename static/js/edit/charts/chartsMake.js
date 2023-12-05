@@ -228,6 +228,7 @@ function makePrDataShow(element, result) {
 
 function makeLikedShow(element, result) {
     var seriesItem = []
+    console.log(result.liked)
     $.each(result.liked, function (key, value) {
         if (key !== 'date') {
             var saleItem = lineCharts(name = key + "_点赞", stack = "total", type = "line", areaStyle = "show")
