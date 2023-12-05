@@ -268,9 +268,9 @@
 {% block script %}
     <script>
         writePrmotionData();
-
-        var PrChart = echarts.init(document.getElementById('prData'));
         var likedChart = echarts.init(document.getElementById('likedPrData'));
+        var PrChart = echarts.init(document.getElementById('prData'));
+
         PromotionData()
         window.addEventListener('resize', function () {
             var activetab = $('.tab-pane.active')

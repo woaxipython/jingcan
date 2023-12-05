@@ -199,12 +199,14 @@ function writeMonthOrdersDiv(v, total) {
 
 function PromotionData() {
     url = '/promotion/dayData'
-    var PrChart = echarts.init(document.getElementById('prData'));
     var likedChart = echarts.init(document.getElementById('likedPrData'));
+    var PrChart = echarts.init(document.getElementById('prData'));
+
     GetRequest(url)
         .then(function (result) {
-            makePrDataShow(PrChart, result['data'])
             makeLikedShow(likedChart, result['data'])
+            makePrDataShow(PrChart, result['data'])
+
         })
         .catch(function (error) {
             alert(error)
