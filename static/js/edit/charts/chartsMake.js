@@ -200,7 +200,7 @@ function writeMonthOrdersDiv(v, total) {
 function PromotionData() {
     url = '/promotion/dayData'
     var PrChart = echarts.init(document.getElementById('prData'));
-    var likedChart = echarts.init(document.getElementById('likedData'));
+    var likedChart = echarts.init(document.getElementById('likedPrData'));
     GetRequest(url)
         .then(function (result) {
             makePrDataShow(PrChart, result['data'])

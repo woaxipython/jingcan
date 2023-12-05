@@ -195,7 +195,7 @@
                                         </div>
                                         <div class="tab-pane row h-100 active show" id="promotion_liked"
                                              role="tabpanel">
-                                            <div id="likedData" class="card-body w-100 p-0"
+                                            <div id="likedPrData" class="card-body w-100 p-0"
                                                  style="height: 25rem"></div>
                                         </div>
                                     </div>
@@ -270,7 +270,7 @@
         writePrmotionData();
         PromotionData()
         var PrChart = echarts.init(document.getElementById('prData'));
-        var likedChart = echarts.init(document.getElementById('likedData'));
+        var likedChart = echarts.init(document.getElementById('likedPrData'));
         window.addEventListener('resize', function () {
             var activetab = $('.tab-pane.active')
             $('.tab-pane').addClass("show active")

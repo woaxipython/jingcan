@@ -324,7 +324,7 @@ $('select[data-select="cycle"]').change(function () {
                 makeGroupSaleShow(element, result)
             } else if (aHref === '#promotion_dayData' || a_url === 'promotion/dayData') {
                 var PrChart = echarts.init(document.getElementById('prData'));
-                var likedChart = echarts.init(document.getElementById('likedData'));
+                var likedChart = echarts.init(document.getElementById('likedPrData'));
                 makePrDataShow(PrChart, result['data'])
                 makeLikedShow(likedChart, result['data'])
             }
