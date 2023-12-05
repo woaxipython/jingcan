@@ -215,6 +215,7 @@ function PromotionData() {
 
 function makePrDataShow(element, result) {
     var seriesItem = []
+    console.log(result.count)
     $.each(result.count, function (key, value) {
         if (key !== 'date') {
             var saleItem = lineCharts(name = key, stack = "total", type = "line", areaStyle = "show")
